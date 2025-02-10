@@ -28,8 +28,6 @@
 
 </details>
 
-
-
 ## App link 🚀
 
 This simple app is hosted [> on github-pages <](https://odysseu.github.io/python-app/)
@@ -40,19 +38,6 @@ This is a static website merely using local files and javascript packages downlo
 
 If you wish to build the app loccaly and visualising it on your browser, simply use at the project root :
 
-```bash
+```sh
 python -m http.server
 ```
-
-## Contribute 🤝
-
-This is an open-source project meant to be used by anyone as this is all public information.
-
-### File an issue 😱
-
-Filing an issue is the best way to suggest any improvement or problem regarding the site.  
-You can check [the issue board](https://github.com/odysseu/python-app/issues?q=is%3Aissue) to see if your issue is already known.
-
-### Add a translation 📚️
-
-TODO : list steps and files to change in order to add a translation
