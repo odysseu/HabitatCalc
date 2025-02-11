@@ -107,6 +107,7 @@ header h1 {
     max-width: 32px;
     max-height: 32px;
     cursor: pointer;
+    display: flex;
 }
 
 /* Toggle switch styles */
