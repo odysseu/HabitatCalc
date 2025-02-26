@@ -21,11 +21,31 @@ function ajouterLoyer() {
             // If both are valid numbers, create the new inputs
             newLoyer = document.createElement('div');
             newLoyer.className = 'loyer-container';
-            newLoyer.innerHTML = `
-            <input type="number" id="loyer-${loyerCount}" name="loyer-${loyerCount}" value="${currentLoyerValue}" placeholder="Loyer mensuel (€)" required>
-            <input type="number" step="0.01" id="duree-location-${loyerCount}" name="duree-location-${loyerCount}" value="${currentDurationValue}" placeholder="Durée (% de l'année)" required>
-            <button type="button" onclick="supprimerLoyer(this)">-</button>
-            `;
+            const inputLoyer = document.createElement('input');
+            inputLoyer.type = 'number';
+            inputLoyer.id = `loyer-${loyerCount}`;
+            inputLoyer.name = `loyer-${loyerCount}`;
+            inputLoyer.value = currentLoyerValue;
+            inputLoyer.placeholder = 'Loyer mensuel (€)';
+            inputLoyer.required = true;
+
+            const inputDuree = document.createElement('input');
+            inputDuree.type = 'number';
+            inputDuree.step = '0.01';
+            inputDuree.id = `duree-location-${loyerCount}`;
+            inputDuree.name = `duree-location-${loyerCount}`;
+            inputDuree.value = currentDurationValue;
+            inputDuree.placeholder = 'Durée (% de l\'année)';
+            inputDuree.required = true;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.textContent = '-';
+            deleteButton.onclick = function() { supprimerLoyer(this); };
+
+            newLoyer.appendChild(inputLoyer);
+            newLoyer.appendChild(inputDuree);
+            newLoyer.appendChild(deleteButton);
             container.appendChild(newLoyer);
             loyerCount++;
         } else {
