@@ -5,7 +5,7 @@
     --dark-bg-color: #1e2a38;
     --dark-text-color: #d1dbe0;
     --primary-color: #2196F3;
-    --secondary-color: #555;
+    --secondary-color: #949494;
     --welcome-message-light-bg-color: #aac3cf;
     --welcome-message-dark-bg-color: #314050;
 }
@@ -317,4 +317,27 @@ body.dark-mode #language-select {
     background-color: var(--dark-bg-color);
     color: var(--dark-text-color);
     border-color: var(--dark-bg-color);
+}
+
+.input-container {
+    position: relative; /* for absolute child element */
+    display: inline-block; /* to take the width of the input */
+    /* width: 100%; */
+}
+
+.input-overlay {
+     /* to align it to left and positon it over the input */
+    position: absolute;
+    /* top: -33%; */
+    top: 0;
+    left: 50px;
+    /* transform: translateY(-200%); */
+    pointer-events: none;
+    color: var(--secondary-color);
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.input-field {
+    text-align: left;
 }

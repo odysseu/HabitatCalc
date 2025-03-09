@@ -121,7 +121,7 @@ function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, appo
 
 function calculerPertesAchat(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, cumulLoyers, fraisCoproriete) {
     const pertesAchat = [];
-    const coutInitial = prix + fraisNotaire + fraisCommission;
+    const coutInitial = prix + fraisNotaire + fraisCommission - apport;
     for (let t = 1; t <= duree; t++) {
         const valeurRevente = prix * Math.pow(1 + tauxAppreciation, t);
         const cumulMensualites = t <= dureePret ? mensualite * 12 * t : mensualite * 12 * dureePret;
