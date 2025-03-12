@@ -67,6 +67,10 @@ function extraireLoyers() {
     return cumulLoyers;
 }
 
+function calculerMensualite(montantEmprunte, dureePret, taux) {
+    return taux === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * taux / 12) / (1 - Math.pow(1 + taux / 12, -dureePret * 12));
+}
+
 function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {
     const coutInitial = prix + fraisNotaire + fraisCommission - apport;
     for (let t = 1; t <= duree; t++) {
@@ -88,7 +92,7 @@ function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, appo
 
 function calculerPertesAchat(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, cumulLoyers, fraisCoproriete) {
     const pertesAchat = [];
-    const coutInitial = prix + fraisNotaire + fraisCommission;
+    const coutInitial = prix + fraisNotaire + fraisCommission - apport;
     for (let t = 1; t <= duree; t++) {
         const valeurRevente = prix * Math.pow(1 + tauxAppreciation, t);
         const cumulMensualites = t <= dureePret ? mensualite * 12 * t : mensualite * 12 * dureePret;
@@ -97,7 +101,6 @@ function calculerPertesAchat(prix, fraisNotaire, fraisCommission, apport, mensua
         const pertesNettesAchat = coutInitial + cumulMensualites + cumulTaxeFonciere + cumulFraisCoproriete - valeurRevente - cumulLoyers;
         pertesAchat.push(pertesNettesAchat);
     }
-
     return pertesAchat;
 }
 

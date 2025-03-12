@@ -67,14 +67,34 @@ test('vérifie que les éléments du DOM sont utilisés correctement', () => {
 
   // Test trouverAnneePertesInferieures function
   // trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers)
-  const anneePertes = dom.window.trouverAnneePertesInferieures(200000, (8/100)*200000, 0, 5000, 1000, 1000, 0.02, 30, 20, 1100, 0.01, 0, 0);
-  expect(anneePertes).toBeGreaterThanOrEqual(2);
+  const anneePertes = dom.window.trouverAnneePertesInferieures(
+    200000,                 // prix
+    (8/100) * 200000,       // fraisNotaire
+    0,                      // fraisCommision
+    5000,                   // apport
+    1000,                   // mensualite
+    1000,                   // taxeFonciere
+    0.02,                   // tauxAppreciation
+    30,                     // duree
+    20,                     // dureePret
+    1100,                   // loyerFictif
+    0.01,                   // tauxLoyerFictif
+    0,                      // cumulLoyers
+    0                       // fraisCopropriete
+  );
+  console.log("anneePertes: ", anneePertes);
+  expect(anneePertes).toEqual(2);
 
   // Test calculerPertesAchat function
   const pertesAchat = dom.window.calculerPertesAchat(200000, 10000, 5000, 50000, 1000, 1000, 0.02, 30, 20, cumulLoyers, 0);
-  expect(pertesAchat.length).toBe(30);
+  expect(pertesAchat.length).toEqual(30);
+
+  // Test calculerPertesAchat function
+  const pertesAchatOneYear = dom.window.calculerPertesAchat(300000, 17000, 6000, 50000, 0, 0, 0, 1, 1, 0, 0);
+  expect(pertesAchatOneYear).toEqual([17000 + 6000 - 50000]);
 
   // Test calculerPertesLocation function
   const pertesLocation = dom.window.calculerPertesLocation(1500, 30, 0.03);
-  expect(pertesLocation.length).toBe(30);
+  console.log("pertesLocation: ", pertesLocation);
+  expect(pertesLocation.length).toEqual(30);
 });
