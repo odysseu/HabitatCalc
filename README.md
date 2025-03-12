@@ -30,14 +30,64 @@
 
 ## App link 🚀
 
-This simple app is hosted [> on github-pages <](https://odysseu.github.io/python-app/)
+This simple app accessible [> on github-pages <](https://odysseu.github.io/python-app/)
 
-## Develop locally 💻
+## Deploy locally 💻
 
 This is a static website merely using local files and javascript packages downloaded from the [jsdeliver **C**ontent **D**elivery **N**etwork](https://cdn.jsdelivr.net).
 
-If you wish to build the app loccaly and visualising it on your browser, simply use at the project root :
+If you wish to deploy the app localy and visualise it in your browser :
 
-```sh
-python -m http.server
+- Clone the Repository:
+
+  ```sh
+  git clone https://github.com/odysseu/HabitatCalc.git
+  cd HabitatCalc
+  ```
+
+- simply execute at the project root :
+
+  ```sh
+  python -m http.server
+  ```
+- Open in your favorite browser `http://localhost:8000/`
+
+## Testing 🧪
+
+### Prerequisites
+
+- **Node.js**: Ensure you have Node.js (version 14 or higher) installed. Download it from [nodejs.org](https://nodejs.org).
+- **npm**: npm is included with Node.js. Ensure it's up-to-date.
+
+### Setup
+
+- Clone the Repository:
+
+  ```
+  git clone https://github.com/odysseu/HabitatCalc.git
+  cd HabitatCalc
+  ```
+
+- Install Dependencies:
+
+  ```
+  npm install
+  ```
+
+### Running Tests
+
+To run the tests, use the following command:
+
 ```
+npm test
+```
+
+### Writing Tests
+
+- **Framework**: We use [Jest](https://jestjs.io) for testing.
+- **Test Files**: Place your test files in the `tests/` directory. Use the `.test.js` or `.spec.js` extensions.
+- **Assertions**: Use Jest's built-in matchers for assertions.
+
+#### Example Test Files
+
+See the `*.test.js` files in the `tests/` directory for test file inspiration

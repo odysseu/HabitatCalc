@@ -96,11 +96,11 @@ function extraireLoyers() {
     return cumulLoyers;
 }
 
-function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete, tauxAssurance) {
-    // rappel: TAEG = Taux Annuel Effectif Global
-    // taux nominal mensuel = n((1 + TAEG)^(1/n) - 1)
-    // ou encore TAEG = (1 + taux_nominal_mensuel/n)^(n) - 1
-    // TAEG_mensuel = (1 + taux_nominal_annuel/12) - 1
+function calculerMensualite(montantEmprunte, dureePret, taux) {
+    return taux === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * taux / 12) / (1 - Math.pow(1 + taux / 12, -dureePret * 12));
+}
+
+function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {
     const coutInitial = prix + fraisNotaire + fraisCommission - apport;
     for (let t = 1; t <= duree; t++) {
         // achat
@@ -130,7 +130,6 @@ function calculerPertesAchat(prix, fraisNotaire, fraisCommission, apport, mensua
         const pertesNettesAchat = coutInitial + cumulMensualites + cumulTaxeFonciere + cumulFraisCoproriete - valeurRevente - cumulLoyers;
         pertesAchat.push(pertesNettesAchat);
     }
-
     return pertesAchat;
 }
 

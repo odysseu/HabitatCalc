@@ -102,6 +102,7 @@ test('vérifie que les fonctions utilisées dans form-handler.js existent', () =
   expect(typeof dom.window.ajouterLoyer).toBe('function');
   expect(typeof dom.window.supprimerLoyer).toBe('function');
   expect(typeof dom.window.extraireLoyers).toBe('function');
+  expect(typeof dom.window.calculerMensualite).toBe('function');
   expect(typeof dom.window.trouverAnneePertesInferieures).toBe('function');
   expect(typeof dom.window.calculerPertesAchat).toBe('function');
   expect(typeof dom.window.calculerPertesLocation).toBe('function');

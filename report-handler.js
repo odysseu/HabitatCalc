@@ -21,7 +21,7 @@ function genererRapport() {
     const fraisCommission = prix * commission;
     const totalAchat = prix + fraisNotaire + fraisCommission;
     const montantEmprunte = totalAchat - apport;
-    const mensualite = tauxInteret === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * tauxInteret / 12) / (1 - Math.pow(1 + tauxInteret / 12, -dureePret * 12));
+    const mensualite = calculerMensualite(montantEmprunte, dureePret, taux);
     const coutTotalEmprunt = mensualite * dureePret * 12;
     const coutTotalInterets = coutTotalEmprunt - montantEmprunte;
     const cumulLoyers = extraireLoyers();
