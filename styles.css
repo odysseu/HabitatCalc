@@ -331,7 +331,7 @@ body.dark-mode #language-select {
     /* top: -33%; */
     top: 0;
     left: 50px;
-    /* transform: translateY(-200%); */
+    transform: translateY(-200%);
     pointer-events: none;
     color: var(--secondary-color);
     font-size: 0.9em;
