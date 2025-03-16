@@ -8,6 +8,31 @@ function resetForm() {
     loadTranslations(languageSelect.value);
 }
 
+document.getElementById('taux-assurance').addEventListener('input', calculateTAEG);
+document.getElementById('taux-interet').addEventListener('input', calculateTAEG);
+
+function calculateTAEG() {
+    const tauxAssurance = parseFloat(document.getElementById('taux-assurance').value) || 0;
+    const tauxInteret = parseFloat(document.getElementById('taux-interet').value) || 0;
+    const fraisDossier = parseFloat(document.getElementById('frais-dossier').value) || 0;
+    const montantEmprunte = parseFloat(document.getElementById('montant-emprunte').value) || 0;
+    const dureePret = parseFloat(document.getElementById('duree-pret').value) || 0;
+
+    // Calcul du coût total de l'assurance
+    const coutAssurance = montantEmprunte * tauxAssurance * dureePret / 100;
+
+    // Calcul du coût total des intérêts
+    const coutInterets = montantEmprunte * tauxInteret * dureePret / 100;
+
+    // Calcul du coût total du prêt
+    const coutTotal = montantEmprunte + coutAssurance + coutInterets + fraisDossier;
+
+    // Calcul du TAEG
+    const taeg = ((coutTotal - montantEmprunte) / montantEmprunte) / dureePret * 100;
+
+    document.getElementById('taeg-overlay').textContent = `TAEG: ${taeg.toFixed(2)}%`;
+}
+
 function ajouterLoyer() {
     let loyerCount = document.querySelectorAll('.loyer-container').length;
     const container = document.getElementById('loyers-container');
@@ -96,8 +121,10 @@ function extraireLoyers() {
     return cumulLoyers;
 }
 
-function calculerMensualite(montantEmprunte, dureePret, taux) {
-    return taux === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * taux / 12) / (1 - Math.pow(1 + taux / 12, -dureePret * 12));
+function calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance) {
+    const mensualiteBase = tauxInteret === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * tauxInteret / 12) / (1 - Math.pow(1 + tauxInteret / 12, -dureePret * 12));
+    const mensualiteAssurance = montantEmprunte * tauxAssurance / 12;
+    return mensualiteBase + mensualiteAssurance;
 }
 
 function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {

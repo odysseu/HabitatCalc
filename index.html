@@ -59,6 +59,9 @@
                 </div>
                 <div>
                     <h2 id="section-emprunt">Emprunt</h2>
+                    <label for="frais-dossier">Frais de dossier (€): <span class="help-icon">? <span class="help-text">Montant des frais de dossier, frais d'entrée, frais de courtage.</span></span></label>
+                    <input type="number" step="1" id="frais-dossier" name="frais-dossier" value="0" required>
+
                     <label for="apport">Apport personnel (€): <span class="help-icon">? <span class="help-text">Montant de l'apport personnel.</span></span></label>
                     <input type="number" step="0.01" id="apport" name="apport" value="0" required>
 
@@ -113,23 +116,10 @@
     <script src="dark-mode.js"></script>
     <script src="handle-language.js"></script>
     <script>
-        document.getElementById('taux-assurance').addEventListener('input', calculateTAEG);
-        document.getElementById('taux-interet').addEventListener('input', calculateTAEG);
-
-        function calculateTAEG() {
-            const tauxAssurance = parseFloat(document.getElementById('taux-assurance').value) || 0;
-            const tauxInteret = parseFloat(document.getElementById('taux-interet').value) || 0;
-
-            // Simplified TAEG calculation for demonstration
-            const taeg = tauxInteret + tauxAssurance;
-
-            document.getElementById('taeg-overlay').textContent = `TAEG: ${taeg.toFixed(2)}%`;
+        function resetForm() {
+            document.getElementById('calculette-form').reset();
         }
-
-        function genererRapport() {
-            // Report generation logic
-            console.log('Generating report...');
-        }
+        calculateTAEG();
     </script>
 </body>
 </html>
