@@ -15,18 +15,20 @@ function calculateTAEG() {
     const tauxAssurance = parseFloat(document.getElementById('taux-assurance').value) || 0;
     const tauxInteret = parseFloat(document.getElementById('taux-interet').value) || 0;
     const fraisDossier = parseFloat(document.getElementById('frais-dossier').value) || 0;
-    const montantEmprunte = parseFloat(document.getElementById('montant-emprunte').value) || 0;
+    const prix = parseFloat(document.getElementById('prix').value) || 0;
+    const notaire = parseFloat(document.getElementById('notaire').value) || 0;
+    const commission = parseFloat(document.getElementById('commission').value) || 0;
+    const apport = parseFloat(document.getElementById('apport').value) || 0;
     const dureePret = parseFloat(document.getElementById('duree-pret').value) || 0;
-
+    const fraisNotaire = prix * notaire
+    const fraisCommission = prix * commission
+    const montantEmprunte = prix + fraisNotaire + fraisCommission - apport;
     // Calcul du coût total de l'assurance
     const coutAssurance = montantEmprunte * tauxAssurance * dureePret / 100;
-
     // Calcul du coût total des intérêts
     const coutInterets = montantEmprunte * tauxInteret * dureePret / 100;
-
     // Calcul du coût total du prêt
     const coutTotal = montantEmprunte + coutAssurance + coutInterets + fraisDossier;
-
     // Calcul du TAEG
     const taeg = ((coutTotal - montantEmprunte) / montantEmprunte) / dureePret * 100;
 
