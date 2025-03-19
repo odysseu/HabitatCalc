@@ -8,6 +8,40 @@ function resetForm() {
     loadTranslations(languageSelect.value);
 }
 
+document.getElementById('taux-assurance').addEventListener('input', calculateTAEG);
+document.getElementById('taux-interet').addEventListener('input', calculateTAEG);
+document.getElementById('frais-dossier').addEventListener('input', calculateTAEG);
+document.getElementById('prix').addEventListener('input', calculateTAEG);
+document.getElementById('commission').addEventListener('input', calculateTAEG);
+document.getElementById('apport').addEventListener('input', calculateTAEG);
+document.getElementById('duree-pret').addEventListener('input', calculateTAEG);
+document.getElementById('notaire').addEventListener('input', calculateTAEG);
+
+function calculateTAEG() {
+    const tauxAssurance = parseFloat(document.getElementById('taux-assurance').value) || 0;
+    const tauxInteret = parseFloat(document.getElementById('taux-interet').value) || 0;
+    const fraisDossier = parseFloat(document.getElementById('frais-dossier').value) || 0;
+    const prix = parseFloat(document.getElementById('prix').value) || 0;
+    const notaire = parseFloat(document.getElementById('notaire').value) || 0;
+    const commission = parseFloat(document.getElementById('commission').value) || 0;
+    const apport = parseFloat(document.getElementById('apport').value) || 0;
+    const dureePret = parseFloat(document.getElementById('duree-pret').value) || 0;
+    const fraisNotaire = prix * notaire
+    const fraisCommission = prix * commission
+    const montantEmprunte = prix + fraisNotaire + fraisCommission - apport;
+    // Calcul du coût total de l'assurance
+    const coutAssurance = montantEmprunte * tauxAssurance / 100 * dureePret;
+    // Calcul du coût total des intérêts
+    const coutInterets = montantEmprunte * tauxInteret / 100 * dureePret;
+    // Calcul du coût total du prêt
+    const coutTotal = montantEmprunte + coutAssurance + coutInterets + fraisDossier;
+    // Calcul du TAEG
+    const taeg = ((coutTotal - montantEmprunte) / montantEmprunte) / dureePret * 100;
+
+    document.getElementById('taeg-overlay').textContent = `TAEG: ${taeg.toFixed(2)}%`;
+    return(taeg);
+}
+
 function ajouterLoyer() {
     let loyerCount = document.querySelectorAll('.loyer-container').length;
     const container = document.getElementById('loyers-container');
@@ -16,22 +50,46 @@ function ajouterLoyer() {
     const currentDurationValue = container.querySelector('input[name="duree-location-0"]').value.trim();
 
     let newLoyer;
-    if (isValidNumber(currentLoyerValue) && isValidNumber(currentDurationValue)) {
-        // If both are valid numbers, create the new inputs
-        newLoyer = document.createElement('div');
-        newLoyer.className = 'loyer-container';
-        newLoyer.innerHTML = `
-        <input type="number" id="loyer-${loyerCount}" name="loyer-${loyerCount}" value="${currentLoyerValue}" placeholder="Loyer mensuel (€)" required>
-        <input type="number" step="0.01" id="duree-location-${loyerCount}" name="duree-location-${loyerCount}" value="${currentDurationValue}" placeholder="Durée (% de l'année)" required>
-        <button type="button" onclick="supprimerLoyer(this)">-</button>
-    `;
+    try {
+        if (isValidNumber(currentLoyerValue) && isValidNumber(currentDurationValue)) {
+            // If both are valid numbers, create the new inputs
+            newLoyer = document.createElement('div');
+            newLoyer.className = 'loyer-container';
+            const inputLoyer = document.createElement('input');
+            inputLoyer.type = 'number';
+            inputLoyer.id = `loyer-${loyerCount}`;
+            inputLoyer.name = `loyer-${loyerCount}`;
+            inputLoyer.value = currentLoyerValue;
+            inputLoyer.placeholder = 'Loyer mensuel (€)';
+            inputLoyer.required = true;
 
-        container.appendChild(newLoyer);
-        loyerCount++;
-    } else {
-        // Handle the case where the input fields are empty or not valid numbers
-        // You can show a message to the user, or just not add the new fields
-        console.log("Invalid input. Please check the form.");
+            const inputDuree = document.createElement('input');
+            inputDuree.type = 'number';
+            inputDuree.step = '0.01';
+            inputDuree.id = `duree-location-${loyerCount}`;
+            inputDuree.name = `duree-location-${loyerCount}`;
+            inputDuree.value = currentDurationValue;
+            inputDuree.placeholder = 'Durée (% de l\'année)';
+            inputDuree.required = true;
+
+            const deleteButton = document.createElement('button');
+            deleteButton.type = 'button';
+            deleteButton.textContent = '-';
+            deleteButton.onclick = function() { supprimerLoyer(this); };
+
+            newLoyer.appendChild(inputLoyer);
+            newLoyer.appendChild(inputDuree);
+            newLoyer.appendChild(deleteButton);
+            container.appendChild(newLoyer);
+            loyerCount++;
+        } else {
+            console.log("Invalid input detected:", {
+                loyer: currentLoyerValue,
+                duration: currentDurationValue
+            });
+        }
+    } catch (error) {
+        console.log("Error validating input:", error);
     }
     
     // Reset the fields to ensure next inputs will be added in the form
@@ -41,7 +99,12 @@ function ajouterLoyer() {
 }
 
 function isValidNumber(value) {
-    return !isNaN(parseFloat(value)) && isFinite(value) && value.trim() !== "";
+    try {
+        return !isNaN(parseFloat(value)) && isFinite(value) && value.trim() !== "";
+    } catch (error) {
+        console.error("Error checking if value is a valid number:", { value, error });
+        return false;
+    }
 }
 
 function supprimerLoyer(button) {
@@ -67,8 +130,10 @@ function extraireLoyers() {
     return cumulLoyers;
 }
 
-function calculerMensualite(montantEmprunte, dureePret, taux) {
-    return taux === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * taux / 12) / (1 - Math.pow(1 + taux / 12, -dureePret * 12));
+function calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance) {
+    const mensualiteBase = tauxInteret === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * tauxInteret / 12) / (1 - Math.pow(1 + tauxInteret / 12, -dureePret * 12));
+    const mensualiteAssurance = montantEmprunte * tauxAssurance / 100 * dureePret;
+    return mensualiteBase + mensualiteAssurance;
 }
 
 function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {
