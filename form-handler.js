@@ -10,6 +10,12 @@ function resetForm() {
 
 document.getElementById('taux-assurance').addEventListener('input', calculateTAEG);
 document.getElementById('taux-interet').addEventListener('input', calculateTAEG);
+document.getElementById('frais-dossier').addEventListener('input', calculateTAEG);
+document.getElementById('prix').addEventListener('input', calculateTAEG);
+document.getElementById('commission').addEventListener('input', calculateTAEG);
+document.getElementById('apport').addEventListener('input', calculateTAEG);
+document.getElementById('duree-pret').addEventListener('input', calculateTAEG);
+document.getElementById('notaire').addEventListener('input', calculateTAEG);
 
 function calculateTAEG() {
     const tauxAssurance = parseFloat(document.getElementById('taux-assurance').value) || 0;
@@ -24,15 +30,16 @@ function calculateTAEG() {
     const fraisCommission = prix * commission
     const montantEmprunte = prix + fraisNotaire + fraisCommission - apport;
     // Calcul du coût total de l'assurance
-    const coutAssurance = montantEmprunte * tauxAssurance * dureePret / 100;
+    const coutAssurance = montantEmprunte * tauxAssurance / 100 * dureePret;
     // Calcul du coût total des intérêts
-    const coutInterets = montantEmprunte * tauxInteret * dureePret / 100;
+    const coutInterets = montantEmprunte * tauxInteret / 100 * dureePret;
     // Calcul du coût total du prêt
     const coutTotal = montantEmprunte + coutAssurance + coutInterets + fraisDossier;
     // Calcul du TAEG
     const taeg = ((coutTotal - montantEmprunte) / montantEmprunte) / dureePret * 100;
 
     document.getElementById('taeg-overlay').textContent = `TAEG: ${taeg.toFixed(2)}%`;
+    return(taeg);
 }
 
 function ajouterLoyer() {
@@ -125,7 +132,7 @@ function extraireLoyers() {
 
 function calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance) {
     const mensualiteBase = tauxInteret === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * tauxInteret / 12) / (1 - Math.pow(1 + tauxInteret / 12, -dureePret * 12));
-    const mensualiteAssurance = montantEmprunte * tauxAssurance / 12;
+    const mensualiteAssurance = montantEmprunte * tauxAssurance / 100 * dureePret;
     return mensualiteBase + mensualiteAssurance;
 }
 

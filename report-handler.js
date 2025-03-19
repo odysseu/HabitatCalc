@@ -26,6 +26,7 @@ function genererRapport() {
     const coutTotalInterets = coutTotalEmprunt - montantEmprunte;
     const cumulLoyers = extraireLoyers();
     const cumulMensuelLoyers = cumulLoyers / 12;
+    const TAEG = calculateTAEG();
 
     const anneeRemboursement = trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
     const maxDuree = Math.max(dureePret, anneeRemboursement) + 1; // 1 more year to see after meeting year
@@ -69,6 +70,10 @@ function genererRapport() {
             <h3>${translations.reportEmprunt}</h3>
             <table>
                 <tr>
+                    <td>${translations.apport}:</td>
+                    <td style="text-align: right;">${apport.toFixed(2)} €</td>
+                </tr>
+                <tr>
                     <td>${translations.reportMontantEmprunte}:</td>
                     <td style="text-align: right;">${montantEmprunte.toFixed(2)} €</td>
                 </tr>
@@ -79,6 +84,10 @@ function genererRapport() {
                 <tr>
                     <td>${translations.reportTauxInteret}:</td>
                     <td style="text-align: right;">${(tauxInteret * 100).toFixed(2)} %</td>
+                </tr>
+                <tr>
+                    <td>${translations.reportTAEG}:</td>
+                    <td style="text-align: right;">${(TAEG).toFixed(2)} %</td>
                 </tr>
                 <tr>
                     <td>${translations.reportMensualite}:</td>
@@ -223,6 +232,7 @@ function telechargerPDF() {
     const loyerFictif = parseFloat(document.getElementById('loyer-fictif').value);
     const taxeHabitation = parseFloat(document.getElementById('taxe-habitation').value);
     const taxeFonciere = parseFloat(document.getElementById('taxe-fonciere').value);
+    const TAEG = calculateTAEG();
 
     const fraisNotaire = prix * notaire;
     const fraisCommission = prix * commission;
@@ -250,9 +260,11 @@ function telechargerPDF() {
     doc.autoTable({
         head: [[`${translations.reportEmprunt}`, `${translations.reportPrix}`]],
         body: [
+            [`${translations.apport}`, `${apport.toFixed(0)} €`],
             [`${translations.reportMontantEmprunte}`, `${montantEmprunte.toFixed(0)} €`],
             [`${translations.reportTauxInteret}`, `${(tauxInteret * 100).toFixed(2)} %`],
             [`${translations.reportTauxAssurance}`, `${(tauxAssurance * 100).toFixed(2)} %`],
+            [`${translations.reportTAEG}`, `${(TAEG).toFixed(2)} %`],
             [`${translations.reportMensualite}`, `${mensualite.toFixed(0)} €`],
             [`${translations.reportInteretsTotaux}`, `${coutTotalInterets.toFixed(0)} €`],
             [`${translations.reportCoutTotalEmprunt}`, `${coutTotalEmprunt.toFixed(0)} €`]
@@ -277,7 +289,8 @@ function telechargerPDF() {
     const chartImage = chart.toDataURL('image/png');
     doc.addImage(chartImage, 'PNG', 15, 200, 180, 90);
 
-    const filename = document.getElementById('pdf-filename').value || translations.pdfFilenamePlaceHolder;
+    const filename = document.getElementById('pdf-filename').placeholder || translations.pdfFilenamePlaceHolder;
+    console.log('pdf-filename : ', document.getElementById('pdf-filename').placeholder);
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
     doc.save(pdfFilename);
 

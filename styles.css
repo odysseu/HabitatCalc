@@ -14,7 +14,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: var(--light-bg-color);
     color: var(--light-text-color);
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
     width: calc(100% - 10px);
     margin: 5px;
 }
@@ -322,16 +322,14 @@ body.dark-mode #language-select {
 .input-container {
     position: relative; /* for absolute child element */
     display: inline-block; /* to take the width of the input */
-    /* width: 100%; */
+    width: 100%;
 }
 
 .input-overlay {
      /* to align it to left and positon it over the input */
     position: absolute;
-    /* top: -33%; */
-    top: 0;
     left: 50px;
-    transform: translateY(-200%);
+    transform: translateY(-220%);
     pointer-events: none;
     color: var(--secondary-color);
     font-size: 0.9em;
