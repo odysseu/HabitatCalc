@@ -1,8 +1,9 @@
+let translations = {};
+
 document.addEventListener('DOMContentLoaded', function() {
     const welcomeMessage = document.getElementById('welcome-message');
     const closeButton = document.getElementById('close-welcome');
     const languageSelect = document.getElementById('language-select');
-    console.log('Detected language :', languageSelect.value);
 
     closeButton.addEventListener('click', function() {
         welcomeMessage.style.display = 'none';
@@ -21,7 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial call to set the language based on the default selection
     const defaultLanguage = languageSelect.value;
+    console.log('Detected language :', defaultLanguage);
     loadTranslations(defaultLanguage);
+    calculateTAEG();
 
     document.getElementById('calculer-button').addEventListener('click', genererRapport);
 });
@@ -57,6 +60,7 @@ function updateContent(translations) {
         const sectionEmprunt = document.getElementById('section-emprunt');
         const sectionFinancement = document.getElementById('section-financement');
         const sectionTitre = document.getElementById('section-titre');
+        const taeg = document.getElementById('taeg-overlay');
         const taxeFonciereLabel = document.querySelector('label[for="taxe-fonciere"]');
         const taxeHabitationLabel = document.querySelector('label[for="taxe-habitation"]');
         const telechargerButton = document.querySelector('#telecharger-button button');
@@ -86,6 +90,7 @@ function updateContent(translations) {
         if (sectionEmprunt) sectionEmprunt.textContent = translations.sectionEmprunt;
         if (sectionFinancement) sectionFinancement.textContent = translations.sectionFinancement;
         if (sectionTitre) sectionTitre.textContent = translations.sectionTitle;
+        if (taeg) calculateTAEG(); //taeg.textContent = `${translations.reportTAEG}: `;
         if (tauxAppreciationLabel) tauxAppreciationLabel.innerHTML = `${translations.tauxAppreciation} <span class="help-icon">? <span class="help-text">${translations.helpTauxAppreciation}</span></span>`;
         if (tauxAssuranceLabel) tauxAssuranceLabel.innerHTML = `${translations.tauxAssurance} <span class="help-icon">? <span class="help-text">${translations.helpTauxAssurance}</span></span>`;
         if (tauxInteretLabel) tauxInteretLabel.innerHTML = `${translations.tauxInteret} <span class="help-icon">? <span class="help-text">${translations.helpTauxInteret}</span></span>`;

@@ -26,8 +26,8 @@ function calculateTAEG() {
     const commission = parseFloat(document.getElementById('commission').value) || 0;
     const apport = parseFloat(document.getElementById('apport').value) || 0;
     const dureePret = parseFloat(document.getElementById('duree-pret').value) || 0;
-    const fraisNotaire = prix * notaire
-    const fraisCommission = prix * commission
+    const fraisNotaire = prix * notaire;
+    const fraisCommission = prix * commission;
     const montantEmprunte = prix + fraisNotaire + fraisCommission - apport;
     // Calcul du coût total de l'assurance
     const coutAssurance = montantEmprunte * tauxAssurance / 100 * dureePret;
@@ -38,8 +38,8 @@ function calculateTAEG() {
     // Calcul du TAEG
     const taeg = ((coutTotal - montantEmprunte) / montantEmprunte) / dureePret * 100;
 
-    document.getElementById('taeg-overlay').textContent = `TAEG: ${taeg.toFixed(2)}%`;
-    return(taeg);
+    document.getElementById('taeg-overlay').textContent = `${translations.reportTAEG}: ${taeg.toFixed(2)}%`;
+    return taeg;
 }
 
 function ajouterLoyer() {
