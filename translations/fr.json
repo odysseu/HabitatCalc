@@ -19,7 +19,7 @@
     "helpNotaire": "Pourcentage des frais de notaire applicables (4 pour du neuf, 8 pour de l'ancien).",
     "helpPrix": "Le prix d'achat du bien immobilier.",
     "helpTauxInteret": "Taux d'intérêt annuel du prêt immobilier.",
-    "helpTauxAppreciation": "Taux d'évolution annuel du prix du bien.",
+    "helpTauxAppreciation": "Le taux annuel moyen de changement du prix du bien immobilier attendu.",
     "helpTauxAssurance": "Pourcentage du prêt, elle garantit le prêt immobilier.",
     "helpTauxLoyerFictif": "Taux d'évolution du loyer fictif annuel si vous louiez au lieu d'acheter (%).",
     "helpTaxeFonciere": "Montant annuel de la taxe foncière.",

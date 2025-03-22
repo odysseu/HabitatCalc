@@ -19,7 +19,7 @@
     "helpNotaire": "Percentage of applicable notary fees (4 for new, 8 for old).",
     "helpPrix": "The purchase price of the real estate property.",
     "helpTauxInteret": "Annual interest rate of the real estate loan.",
-    "helpTauxAppreciation": "Annual appreciation rate of the property price.",
+    "helpTauxAppreciation": "The expected average annual rate of change in the price of the property.",
     "helpTauxAssurance": "Pourcentage of the loan; the loan cover insurance.",
     "helpTauxLoyerFictif": "Annual increase rate of the fictitious rent if you rented instead of buying (%).",
     "helpTaxeFonciere": "Annual amount of the property tax.",
