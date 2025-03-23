@@ -7,8 +7,9 @@ function genererRapport() {
     const tauxAppreciation = parseFloat(document.getElementById('taux-appreciation').value) / 100;
     const commission = parseFloat(document.getElementById('commission').value) / 100;
     const apport = parseFloat(document.getElementById('apport').value);
-    const taux = parseFloat(document.getElementById('taux').value) / 100;
+    const tauxInteret = parseFloat(document.getElementById('taux-interet').value) / 100;
     const dureePret = parseInt(document.getElementById('duree-pret').value);
+    const tauxAssurance = parseInt(document.getElementById('taux-assurance').value);
     const loyerFictif = parseFloat(document.getElementById('loyer-fictif').value);
     const taxeHabitation = parseFloat(document.getElementById('taxe-habitation').value);
     const taxeFonciere = parseFloat(document.getElementById('taxe-fonciere').value);
@@ -20,11 +21,12 @@ function genererRapport() {
     const fraisCommission = prix * commission;
     const totalAchat = prix + fraisNotaire + fraisCommission;
     const montantEmprunte = totalAchat - apport;
-    const mensualite = calculerMensualite(montantEmprunte, dureePret, taux);
+    const mensualite = calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance) ;
     const coutTotalEmprunt = mensualite * dureePret * 12;
     const coutTotalInterets = coutTotalEmprunt - montantEmprunte;
     const cumulLoyers = extraireLoyers();
     const cumulMensuelLoyers = cumulLoyers / 12;
+    const TAEG = calculateTAEG();
 
     const anneeRemboursement = trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
     const maxDuree = Math.max(dureePret, anneeRemboursement) + 1; // 1 more year to see after meeting year
@@ -59,7 +61,7 @@ function genererRapport() {
                     <td style="text-align: right;">${totalAchat.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.copropriete}:</td>
+                    <td>${translations.reportCopropriete}:</td>
                     <td style="text-align: right;">${fraisCopropriete.toFixed(2)} €</td>
                 </tr>
             </table>
@@ -68,12 +70,24 @@ function genererRapport() {
             <h3>${translations.reportEmprunt}</h3>
             <table>
                 <tr>
+                    <td>${translations.apport}:</td>
+                    <td style="text-align: right;">${apport.toFixed(2)} €</td>
+                </tr>
+                <tr>
                     <td>${translations.reportMontantEmprunte}:</td>
                     <td style="text-align: right;">${montantEmprunte.toFixed(2)} €</td>
                 </tr>
                 <tr>
+                    <td>${translations.reportTauxAssurance}:</td>
+                    <td style="text-align: right;">${(tauxAssurance * 100).toFixed(2)} %</td>
+                </tr>
+                <tr>
                     <td>${translations.reportTauxInteret}:</td>
-                    <td style="text-align: right;">${(taux * 100).toFixed(2)} %</td>
+                    <td style="text-align: right;">${(tauxInteret * 100).toFixed(2)} %</td>
+                </tr>
+                <tr>
+                    <td>${translations.reportTAEG}:</td>
+                    <td style="text-align: right;">${(TAEG).toFixed(2)} %</td>
                 </tr>
                 <tr>
                     <td>${translations.reportMensualite}:</td>
@@ -134,7 +148,7 @@ function genererRapport() {
     genererGraphique(cumulLocation, cumulAchat, maxDuree);
 
     const rapportBouton = `
-        <label for="pdf-filename">${translations.pdfFilename}</label>
+        <label for="pdf-filename">${translations.pdfFileName}</label>
         <input type="text" id="pdf-filename" name="pdf-filename" placeholder="rapport-immobilier.pdf" required>
         <button id="telecharger-button">${translations.downloadPDF}</button>
     `;
@@ -212,17 +226,19 @@ function telechargerPDF() {
     const tauxLoyerFictif = parseFloat(document.getElementById('taux-loyer-fictif').value) / 100;
     const commission = parseFloat(document.getElementById('commission').value) / 100;
     const apport = parseFloat(document.getElementById('apport').value);
-    const taux = parseFloat(document.getElementById('taux').value) / 100;
+    const tauxInteret = parseFloat(document.getElementById('taux-interet').value) / 100;
     const dureePret = parseInt(document.getElementById('duree-pret').value);
+    const tauxAssurance = parseInt(document.getElementById('taux-assurance').value);
     const loyerFictif = parseFloat(document.getElementById('loyer-fictif').value);
     const taxeHabitation = parseFloat(document.getElementById('taxe-habitation').value);
     const taxeFonciere = parseFloat(document.getElementById('taxe-fonciere').value);
+    const TAEG = calculateTAEG();
 
     const fraisNotaire = prix * notaire;
     const fraisCommission = prix * commission;
     const totalAchat = prix + fraisNotaire + fraisCommission;
     const montantEmprunte = totalAchat - apport;
-    const mensualite = taux === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * taux / 12) / (1 - Math.pow(1 + taux / 12, -dureePret * 12));
+    const mensualite = tauxInteret === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * tauxInteret / 12) / (1 - Math.pow(1 + tauxInteret / 12, -dureePret * 12));
     const coutTotalEmprunt = mensualite * dureePret * 12;
     const coutTotalInterets = coutTotalEmprunt - montantEmprunte;
 
@@ -235,7 +251,7 @@ function telechargerPDF() {
             [`${translations.reportTauxAppreciation}`, `${(tauxAppreciation * 100).toFixed(2)} %`],
             [`${translations.reportCommission}`, `${fraisCommission.toFixed(2)} €`],
             [`${translations.reportTotalAchat}`, `${totalAchat.toFixed(2)} €`],
-            [`${translations.copropriete}`, `${copropriete.toFixed(2)} €`]
+            [`${translations.reportCopropriete}`, `${copropriete.toFixed(2)} €`]
         ],
         startY: 20
     });
@@ -244,8 +260,11 @@ function telechargerPDF() {
     doc.autoTable({
         head: [[`${translations.reportEmprunt}`, `${translations.reportPrix}`]],
         body: [
+            [`${translations.apport}`, `${apport.toFixed(0)} €`],
             [`${translations.reportMontantEmprunte}`, `${montantEmprunte.toFixed(0)} €`],
-            [`${translations.reportTauxInteret}`, `${(taux * 100).toFixed(2)} %`],
+            [`${translations.reportTauxInteret}`, `${(tauxInteret * 100).toFixed(2)} %`],
+            [`${translations.reportTauxAssurance}`, `${(tauxAssurance * 100).toFixed(2)} %`],
+            [`${translations.reportTAEG}`, `${(TAEG).toFixed(2)} %`],
             [`${translations.reportMensualite}`, `${mensualite.toFixed(0)} €`],
             [`${translations.reportInteretsTotaux}`, `${coutTotalInterets.toFixed(0)} €`],
             [`${translations.reportCoutTotalEmprunt}`, `${coutTotalEmprunt.toFixed(0)} €`]
@@ -270,7 +289,8 @@ function telechargerPDF() {
     const chartImage = chart.toDataURL('image/png');
     doc.addImage(chartImage, 'PNG', 15, 200, 180, 90);
 
-    const filename = document.getElementById('pdf-filename').value || translations.pdfFilenamePlaceHolder;
+    const filename = document.getElementById('pdf-filename').placeholder || translations.pdfFilenamePlaceHolder;
+    console.log('pdf-filename : ', document.getElementById('pdf-filename').placeholder);
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
     doc.save(pdfFilename);
 
