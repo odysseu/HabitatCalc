@@ -1,3 +1,4 @@
+// Description: Tests for form-handler.js
 global.TextEncoder = require("util").TextEncoder;
 global.TextDecoder = require("util").TextDecoder;
 const fs = require('fs');
@@ -21,9 +22,12 @@ beforeEach(() => {
 
 test('vérifie que les fonctions existent', () => {
   expect(typeof dom.window.resetForm).toBe('function');
+  expect(typeof dom.window.calculateTAEG).toBe('function');
   expect(typeof dom.window.ajouterLoyer).toBe('function');
   expect(typeof dom.window.supprimerLoyer).toBe('function');
   expect(typeof dom.window.extraireLoyers).toBe('function');
+  expect(typeof dom.window.isValidNumber).toBe('function');
+  expect(typeof dom.window.calculerMensualite).toBe('function');
   expect(typeof dom.window.trouverAnneePertesInferieures).toBe('function');
   expect(typeof dom.window.calculerPertesAchat).toBe('function');
   expect(typeof dom.window.calculerPertesLocation).toBe('function');
@@ -82,8 +86,20 @@ test('vérifie que les éléments du DOM sont utilisés correctement', () => {
     0,                      // cumulLoyers
     0                       // fraisCopropriete
   );
-  console.log("anneePertes: ", anneePertes);
   expect(anneePertes).toEqual(2);
+
+  // Test calculerMensualite function avec zéro emprunt
+  const mensualite0 = dom.window.calculerMensualite(0, 20, 1/100, 0);
+  expect(mensualite0).toEqual(0);
+
+  // Test calculerMensualite function avec zéro emprunt
+  const taegDefault = dom.window.calculateTAEG();
+  expect(taegDefault).toBeCloseTo(10, 0);
+  
+  // Test calculerMensualite function avec un emprunt de 324000 sur 20 ans à 1% d'intérêt
+  const mensualite324000 = dom.window.calculerMensualite(324000, 20, 1/100, 0);
+  expect(mensualite324000).toBeCloseTo(1490, 0);
+  
 
   // Test calculerPertesAchat function
   const pertesAchat = dom.window.calculerPertesAchat(200000, 10000, 5000, 50000, 1000, 1000, 0.02, 30, 20, cumulLoyers, 0);

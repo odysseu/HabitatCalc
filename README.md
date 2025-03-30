@@ -30,7 +30,7 @@
 
 ## App link 🚀
 
-This simple app accessible [> on github-pages <](https://odysseu.github.io/python-app/)
+This simple app accessible [> on github-pages <](https://odysseu.github.io/HabitatCalc/)
 
 ## Deploy locally 💻
 
@@ -51,6 +51,10 @@ If you wish to deploy the app localy and visualise it in your browser :
   python -m http.server
   ```
 - Open in your favorite browser `http://localhost:8000/`
+
+### Hint if developing in codespace
+
+If you're using codespace, say `https://fictional-something-...-end.github.dev`, you'll be able to see the app at `https://fictional-something-...-end-8000.app.github.dev`
 
 ## Testing 🧪
 

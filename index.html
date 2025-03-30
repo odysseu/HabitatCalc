@@ -23,14 +23,13 @@
         </div>
         <h1 id="section-titre">Calculette Projet Immobilier</h1>
         <div class="header-right">
-            <a href="https://github.com/odysseu/python-app" target="_blank">
+            <a href="https://github.com/odysseu/python-app" target="_self">
                 <img src="logos/github-logo-light.png" alt="GitHub Logo" class="github-logo" id="github-logo">
                 <span class="logo-help">Aller au projet GitHub</span>
             </a>
             <label class="switch">
                 <input type="checkbox" id="dark-mode-toggle">
                 <span class="slider round"></span>
-                <span class="switch-help">Changer de mode</span>
             </label>
             <select id="language-select">
                 <option value="fr">Français 🇫🇷</option>
@@ -44,7 +43,7 @@
                 <div>
                     <h2 id="section-achat">Achat</h2>
                     <label for="prix">Prix du bien (€): <span class="help-icon">? <span class="help-text">Le prix d'achat du bien immobilier.</span></span></label>
-                    <input type="number" id="prix" name="prix" value="300000" required>
+                    <input type="number" step="0.01" id="prix" name="prix" value="300000" required>
 
                     <label for="notaire">Frais de notaire (%): <span class="help-icon">? <span class="help-text">Pourcentage des frais de notaire applicables (4 pour du neuf, 8 pour de l'ancien).</span></span></label>
                     <input type="number" step="0.01" id="notaire" name="notaire" value="8" required>
@@ -60,14 +59,23 @@
                 </div>
                 <div>
                     <h2 id="section-emprunt">Emprunt</h2>
-                    <label for="apport">Apport personnel (€): <span class="help-icon">? <span class="help-text">Montant de l'apport personnel.</span></span></label>
-                    <input type="number" id="apport" name="apport" value="0" required>
+                    <label for="frais-dossier">Frais de dossier (€): <span class="help-icon">? <span class="help-text">Montant des frais de dossier, frais d'entrée, frais de courtage.</span></span></label>
+                    <input type="number" step="1" id="frais-dossier" name="frais-dossier" value="0" required>
 
-                    <label for="taux">Taux d'intérêt (%): <span class="help-icon">? <span class="help-text">Taux d'intérêt annuel du prêt immobilier.</span></span></label>
-                    <input type="number" step="0.01" id="taux" name="taux" value="1" required>
+                    <label for="apport">Apport personnel (€): <span class="help-icon">? <span class="help-text">Montant de l'apport personnel.</span></span></label>
+                    <input type="number" step="0.01" id="apport" name="apport" value="0" required>
+
+                    <div class="input-container">
+                        <label for="taux-interet">Taux d'intérêt (%): <span class="help-icon">? <span class="help-text">Taux d'intérêt annuel du prêt immobilier.</span></span></label>
+                        <input type="number" step="0.01" id="taux-interet" name="taux-interet" value="1" required>
+                        <div class="input-overlay" id="taeg-overlay">TAEG: 0.00%</div>
+                    </div>
+
+                    <label for="taux-assurance">Taux de l'assurance emprunteur (%): <span class="help-icon">? <span class="help-text">Pourcentage du prêt pour l'assurance emprunteur.</span></span></label>
+                    <input type="number" step="0.01" id="taux-assurance" name="taux-assurance" value="0" required>
 
                     <label for="duree-pret">Durée du prêt (années): <span class="help-icon">? <span class="help-text">Durée totale du prêt en années.</span></span></label>
-                    <input type="number" id="duree-pret" name="duree-pret" value="20" required>
+                    <input type="number" step="1" id="duree-pret" name="duree-pret" value="20" required>
                 </div>
             </div>
             <h2 id="section-financement">Financement</h2>
@@ -100,17 +108,12 @@
         <div id="rapport-bouton"></div>
         <div id="telecharger-button"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@5.0.2/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.js"></script>
     <script src="form-handler.js"></script>
     <script src="report-handler.js"></script>
     <script src="dark-mode.js"></script>
     <script src="handle-language.js"></script>
-    <script>
-        function resetForm() {
-            document.getElementById('calculette-form').reset();
-        }
-    </script>
 </body>
 </html>
