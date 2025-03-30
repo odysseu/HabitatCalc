@@ -21,7 +21,7 @@ function genererRapport() {
     const fraisCommission = prix * commission;
     const totalAchat = prix + fraisNotaire + fraisCommission;
     const montantEmprunte = totalAchat - apport;
-    const mensualite = calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance) ;
+    const mensualite = calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance);
     const coutTotalEmprunt = mensualite * dureePret * 12;
     const coutTotalInterets = coutTotalEmprunt - montantEmprunte;
     const cumulLoyers = extraireLoyers();
@@ -158,17 +158,23 @@ function genererRapport() {
     // Attacher l'événement de téléchargement au bouton
     document.getElementById('telecharger-button').addEventListener('click', telechargerPDF);
 }
-
 function genererGraphique(cumulLocation, cumulAchat, maxDuree) {
     // 1. Détruire le graphique existant s'il existe
     if (myChart) {
         myChart.destroy();
     }
 
-    // 2. Obtenir l'élément canvas
+    // 2. Obtenir l'élément canvas et ajuster sa taille
     const ctx = document.getElementById('myChart').getContext('2d');
+    const canvas = ctx.canvas;
+    const parent = canvas.parentNode;
+    const parentWidth = parent.clientWidth;
+    const parentHeight = parent.clientHeight;
+    // Ajuster la taille du canvas en fonction de la taille de l'écran
+    canvas.width = parentWidth;
+    canvas.height = parentHeight;
     const labels = Array.from({ length: maxDuree + 1 }, (_, i) => `${translations.annee} ${i}`);
-    // 3. Créer le nouveau graphique
+    // 3. Créer le nouveau graphique avec des options de responsivité
     myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -190,7 +196,7 @@ function genererGraphique(cumulLocation, cumulAchat, maxDuree) {
         },
         options: {
             responsive: true,
-            devicePixelRatio: 2,
+            maintainAspectRatio: true, //false, // Désactiver le maintien du ratio d'aspect pour s'adapter à la taille du parent
             scales: {
                 y: {
                     ticks: {
@@ -212,7 +218,7 @@ function genererGraphique(cumulLocation, cumulAchat, maxDuree) {
     document.getElementById('myChart').innerHTML = myChart;
 }
 
-function telechargerPDF() {
+async function telechargerPDF() {
     const wasDarkMode = forcerModeClair();
 
     const { jsPDF } = window.jspdf;
@@ -220,6 +226,8 @@ function telechargerPDF() {
     // Configuration des marges et positions
     const margin = 20;
     const tableSpacing = 10;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const availableWidth = pageWidth - 2 * margin;
 
     doc.text(margin, margin, `${translations.reportTitle}`);
     var finalY = doc.lastAutoTable.finalY || tableSpacing
@@ -291,14 +299,19 @@ function telechargerPDF() {
     doc.addPage();
     // Ajouter le graphique au PDF
     const chart = document.getElementById('myChart');
-    const chartImage = chart.toDataURL('image/png');
+    const chartImageData = chart.toDataURL('image/png');
+
+    // Calculer la hauteur de l'image en fonction de la largeur disponible
+    const imageWidth = availableWidth;
+    const imageHeight = (chart.height * imageWidth) / chart.width;
+
     doc.addImage(
-        chartImage, 'PNG', margin, margin, 180, 90
+        chartImageData, 'PNG', margin, margin, imageWidth, imageHeight
     );
     // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
 
     const filename = document.getElementById('pdf-filename').placeholder || translations.pdfFilenamePlaceHolder;
-    console.log('pdf-filename : ', document.getElementById('pdf-filename').placeholder);
+    // console.log('pdf-filename : ', document.getElementById('pdf-filename').placeholder);
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
     doc.save(pdfFilename);
 
