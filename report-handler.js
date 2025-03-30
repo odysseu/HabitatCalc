@@ -217,7 +217,12 @@ function telechargerPDF() {
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text(20, 20, `${translations.reportTitle}`);
+    // Configuration des marges et positions
+    const margin = 20;
+    const tableSpacing = 10;
+
+    doc.text(margin, margin, `${translations.reportTitle}`);
+    var finalY = doc.lastAutoTable.finalY || tableSpacing
 
     const prix = parseFloat(document.getElementById('prix').value);
     const notaire = parseFloat(document.getElementById('notaire').value) / 100;
@@ -244,6 +249,7 @@ function telechargerPDF() {
 
     // Tableau Achat
     doc.autoTable({
+        startY: finalY + margin,
         head: [[`${translations.reportAchat}`, `${translations.reportPrix}`]],
         body: [
             [`${translations.reportPrix}`, `${prix.toFixed(2)} €`],
@@ -252,12 +258,12 @@ function telechargerPDF() {
             [`${translations.reportCommission}`, `${fraisCommission.toFixed(2)} €`],
             [`${translations.reportTotalAchat}`, `${totalAchat.toFixed(2)} €`],
             [`${translations.reportCopropriete}`, `${copropriete.toFixed(2)} €`]
-        ],
-        startY: 20
+        ]
     });
 
     // Tableau Emprunt
     doc.autoTable({
+        startY: doc.lastAutoTable.finalY + tableSpacing,
         head: [[`${translations.reportEmprunt}`, `${translations.reportPrix}`]],
         body: [
             [`${translations.apport}`, `${apport.toFixed(0)} €`],
@@ -268,26 +274,28 @@ function telechargerPDF() {
             [`${translations.reportMensualite}`, `${mensualite.toFixed(0)} €`],
             [`${translations.reportInteretsTotaux}`, `${coutTotalInterets.toFixed(0)} €`],
             [`${translations.reportCoutTotalEmprunt}`, `${coutTotalEmprunt.toFixed(0)} €`]
-        ],
-        startY: doc.previousAutoTable.finalY + 10
+        ]
     });
 
     // Tableau Financement
     doc.autoTable({
+        startY: doc.lastAutoTable.finalY + tableSpacing,
         head: [[`${translations.reportFinancement}`, `${translations.reportPrix}`]],
         body: [
             [`${translations.reportLoyerFictifMensuel}`, `${loyerFictif.toFixed(0)} €`],
             [`${translations.reportTauxEvolutionLoyerFictif}`, `${(tauxLoyerFictif * 100).toFixed(2)} %`],
             [`${translations.reportTaxeHabitationAnnuelle}`, `${taxeHabitation.toFixed(0)} €`],
             [`${translations.reportTaxeFonciereAnnuelle}`, `${taxeFonciere.toFixed(0)} €`]
-        ],
-        startY: doc.previousAutoTable.finalY + 10
+        ]
     });
-
+    doc.addPage();
     // Ajouter le graphique au PDF
     const chart = document.getElementById('myChart');
     const chartImage = chart.toDataURL('image/png');
-    doc.addImage(chartImage, 'PNG', 15, 200, 180, 90);
+    doc.addImage(
+        chartImage, 'PNG', margin, margin, 180, 90
+    );
+    // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
 
     const filename = document.getElementById('pdf-filename').placeholder || translations.pdfFilenamePlaceHolder;
     console.log('pdf-filename : ', document.getElementById('pdf-filename').placeholder);

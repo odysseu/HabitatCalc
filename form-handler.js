@@ -1,3 +1,4 @@
+// description: This script handles the form submission, validation, and calculation of TAEG and other financial metrics.
 function resetForm() {
     document.getElementById('calculette-form').reset();
     document.getElementById('resultat').innerHTML = '';
@@ -12,33 +13,40 @@ document.getElementById('taux-assurance').addEventListener('input', calculateTAE
 document.getElementById('taux-interet').addEventListener('input', calculateTAEG);
 document.getElementById('frais-dossier').addEventListener('input', calculateTAEG);
 document.getElementById('prix').addEventListener('input', calculateTAEG);
+document.getElementById('notaire').addEventListener('input', calculateTAEG);
 document.getElementById('commission').addEventListener('input', calculateTAEG);
 document.getElementById('apport').addEventListener('input', calculateTAEG);
 document.getElementById('duree-pret').addEventListener('input', calculateTAEG);
-document.getElementById('notaire').addEventListener('input', calculateTAEG);
 
 function calculateTAEG() {
-    const tauxAssurance = parseFloat(document.getElementById('taux-assurance').value) || 0;
-    const tauxInteret = parseFloat(document.getElementById('taux-interet').value) || 0;
+    // Récupération des valeurs du formulaire
+    const tauxAssurance = parseFloat(document.getElementById('taux-assurance').value) / 100 || 0;
+    const tauxInteret = parseFloat(document.getElementById('taux-interet').value) / 100 || 0;
     const fraisDossier = parseFloat(document.getElementById('frais-dossier').value) || 0;
     const prix = parseFloat(document.getElementById('prix').value) || 0;
-    const notaire = parseFloat(document.getElementById('notaire').value) || 0;
-    const commission = parseFloat(document.getElementById('commission').value) || 0;
+    const notaire = parseFloat(document.getElementById('notaire').value) / 100 || 0;
+    const commission = parseFloat(document.getElementById('commission').value) / 100 || 0;
     const apport = parseFloat(document.getElementById('apport').value) || 0;
     const dureePret = parseFloat(document.getElementById('duree-pret').value) || 0;
+    // Calcul des frais et du montant emprunté
     const fraisNotaire = prix * notaire;
     const fraisCommission = prix * commission;
-    const montantEmprunte = prix + fraisNotaire + fraisCommission - apport;
-    // Calcul du coût total de l'assurance
-    const coutAssurance = montantEmprunte * tauxAssurance / 100 * dureePret;
-    // Calcul du coût total des intérêts
-    const coutInterets = montantEmprunte * tauxInteret / 100 * dureePret;
-    // Calcul du coût total du prêt
-    const coutTotal = montantEmprunte + coutAssurance + coutInterets + fraisDossier;
-    // Calcul du TAEG
-    const taeg = ((coutTotal - montantEmprunte) / montantEmprunte) / dureePret * 100;
-
-    document.getElementById('taeg-overlay').textContent = `${translations.reportTAEG}: ${taeg.toFixed(2)}%`;
+    const montantEmprunte = prix + fraisNotaire + fraisCommission + fraisDossier - apport;
+    // Initialisation du TAEG
+    let taeg = 0;
+    // Calcul du TAEG si le montant emprunté est valide
+    if (montantEmprunte > 0) {
+        const mensualitePretAssurance = calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance);
+        const coutEmprunt = (mensualitePretAssurance * dureePret * 12) - montantEmprunte;
+        taeg = coutEmprunt / montantEmprunte * 100;
+    } else if (montantEmprunte < 0) {
+        console.error('Montant emprunté négatif:', montantEmprunte);
+    }
+    // Mise à jour de l'affichage avec les traductions
+    const taegElement = document.getElementById('taeg-overlay');
+    if (taegElement && typeof translations !== 'undefined' && translations && translations.reportTAEG) {
+        taegElement.textContent = `${translations.TAEG}: ${taeg.toFixed(2)}%`;
+    }
     return taeg;
 }
 
@@ -130,10 +138,11 @@ function extraireLoyers() {
     return cumulLoyers;
 }
 
-function calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance) {
-    const mensualiteBase = tauxInteret === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * tauxInteret / 12) / (1 - Math.pow(1 + tauxInteret / 12, -dureePret * 12));
-    const mensualiteAssurance = montantEmprunte * tauxAssurance / 100 * dureePret;
-    return mensualiteBase + mensualiteAssurance;
+function calculerMensualite(montantEmprunte, dureePret, tauxInteretAnnuel, tauxAssurance) {
+    const nombreMois = dureePret * 12;
+    const mensualiteEmprunt = tauxInteretAnnuel === 0 ? montantEmprunte / nombreMois : (montantEmprunte * (tauxInteretAnnuel / 12)) / (1 - Math.pow(1 + (tauxInteretAnnuel / 12), -(dureePret * 12)));
+    const mensualiteAssurance = montantEmprunte * tauxAssurance / nombreMois;
+    return mensualiteEmprunt + mensualiteAssurance;
 }
 
 function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {

@@ -71,7 +71,7 @@
                         <div class="input-overlay" id="taeg-overlay">TAEG: 0.00%</div>
                     </div>
 
-                    <label for="taux-assurance">Assurance emprunteur (%): <span class="help-icon">? <span class="help-text">Pourcentage du prêt pour l'assurance emprunteur.</span></span></label>
+                    <label for="taux-assurance">Taux de l'assurance emprunteur (%): <span class="help-icon">? <span class="help-text">Pourcentage du prêt pour l'assurance emprunteur.</span></span></label>
                     <input type="number" step="0.01" id="taux-assurance" name="taux-assurance" value="0" required>
 
                     <label for="duree-pret">Durée du prêt (années): <span class="help-icon">? <span class="help-text">Durée totale du prêt en années.</span></span></label>
@@ -108,18 +108,12 @@
         <div id="rapport-bouton"></div>
         <div id="telecharger-button"></div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@5.0.2/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.js"></script>
     <script src="form-handler.js"></script>
     <script src="report-handler.js"></script>
     <script src="dark-mode.js"></script>
     <script src="handle-language.js"></script>
-    <script>
-        function resetForm() {
-            document.getElementById('calculette-form').reset();
-        }
-        calculateTAEG();
-    </script>
 </body>
 </html>

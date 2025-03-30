@@ -1,3 +1,7 @@
+// Description: This script handles the language selection and translation of the web page content.
+// It loads the appropriate translation file based on the selected language and updates the content accordingly.
+// It also manages the welcome message display and the close button functionality.
+// It uses the Fetch API to load translation files in JSON format and updates the DOM elements with the translated text.
 let translations = {};
 
 document.addEventListener('DOMContentLoaded', function() {
