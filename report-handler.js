@@ -158,6 +158,7 @@ function genererRapport() {
     // Attacher l'événement de téléchargement au bouton
     document.getElementById('telecharger-button').addEventListener('click', telechargerPDF);
 }
+
 function genererGraphique(cumulLocation, cumulAchat, maxDuree) {
     // 1. Détruire le graphique existant s'il existe
     if (myChart) {
@@ -255,6 +256,10 @@ async function telechargerPDF() {
     const coutTotalEmprunt = mensualite * dureePret * 12;
     const coutTotalInterets = coutTotalEmprunt - montantEmprunte;
 
+    const dureeMax = 500;
+    const fraisCopropriete = parseFloat(document.getElementById('copropriete').value);
+    const cumulLoyers = extraireLoyers();
+    const anneeRemboursement = trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
     // Tableau Achat
     doc.autoTable({
         startY: finalY + margin,
@@ -297,6 +302,11 @@ async function telechargerPDF() {
         ]
     });
     doc.addPage();
+
+    // Ajouter la phrase de rappel
+    doc.text(`${translations.reportAnneeRemboursement}: ${anneeRemboursement}`, margin, doc.lastAutoTable.finalY + tableSpacing);
+    doc.text(`${translations.reportRappelRentabilite}: ${anneeRemboursement}`, margin, doc.lastAutoTable.finalY + tableSpacing * 2);
+
     // Ajouter le graphique au PDF
     const chart = document.getElementById('myChart');
     const chartImageData = chart.toDataURL('image/png');
