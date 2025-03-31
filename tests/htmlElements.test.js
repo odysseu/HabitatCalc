@@ -42,7 +42,7 @@ test('vérifie que les identifiants utilisés dans form-handler.js existent', ()
   const resultat = htmlBody.querySelector('#resultat');
   const myChart = htmlBody.querySelector('#myChart');
   const loyersContainer = htmlBody.querySelector('#loyers-container');
-  const prixInput = htmlBody.querySelector('#prix');
+  const priceInput = htmlBody.querySelector('#price');
   const notaireInput = htmlBody.querySelector('#notaire');
   const coproprieteInput = htmlBody.querySelector('#copropriete');
   const tauxAppreciationInput = htmlBody.querySelector('#taux-appreciation');
@@ -62,7 +62,7 @@ test('vérifie que les identifiants utilisés dans form-handler.js existent', ()
   expect(resultat).toBeInTheDocument();
   expect(myChart).toBeInTheDocument();
   expect(loyersContainer).toBeInTheDocument();
-  expect(prixInput).toBeInTheDocument();
+  expect(priceInput).toBeInTheDocument();
   expect(notaireInput).toBeInTheDocument();
   expect(coproprieteInput).toBeInTheDocument();
   expect(tauxAppreciationInput).toBeInTheDocument();

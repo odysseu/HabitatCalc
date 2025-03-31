@@ -59,11 +59,11 @@ function updateContent(translations) {
         const notaireLabel = document.querySelector('label[for="notaire"]');
         const pdfFileNameLabel = document.querySelector('label[for="pdf-filename"]');
         const pdfFileNamePlaceHolder = document.getElementById('placerholder["pdf-filename"]');
-        const prixLabel = document.querySelector('label[for="prix"]');
-        const sectionAchat = document.getElementById('section-achat');
-        const sectionEmprunt = document.getElementById('section-emprunt');
-        const sectionFinancement = document.getElementById('section-financement');
-        const sectionTitre = document.getElementById('section-titre');
+        const priceLabel = document.querySelector('label[for="price"]');
+        const sectionAchat = document.getElementById('buy-section');
+        const sectionEmprunt = document.getElementById('loan-section');
+        const sectionFinancement = document.getElementById('financing-section');
+        const sectionTitre = document.getElementById('title-section');
         const taeg = document.getElementById('taeg-overlay');
         const taxeFonciereLabel = document.querySelector('label[for="taxe-fonciere"]');
         const taxeHabitationLabel = document.querySelector('label[for="taxe-habitation"]');
@@ -89,7 +89,7 @@ function updateContent(translations) {
         if (notaireLabel) notaireLabel.innerHTML = `${translations.notaire} <span class="help-icon">? <span class="help-text">${translations.helpNotaire}</span></span>`;
         if (pdfFileNameLabel) pdfFileNameLabel.textContent = translations.pdfFileName;
         if (pdfFileNamePlaceHolder) pdfFileNamePlaceHolder.placeholder = translations.pdfFileNamePlaceHolder;
-        if (prixLabel) prixLabel.innerHTML = `${translations.prix} <span class="help-icon">? <span class="help-text">${translations.helpPrix}</span></span>`;
+        if (priceLabel) priceLabel.innerHTML = `${translations.price} <span class="help-icon">? <span class="help-text">${translations.helpPrice}</span></span>`;
         if (sectionAchat) sectionAchat.textContent = translations.sectionAchat;
         if (sectionEmprunt) sectionEmprunt.textContent = translations.sectionEmprunt;
         if (sectionFinancement) sectionFinancement.textContent = translations.sectionFinancement;

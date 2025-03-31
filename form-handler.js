@@ -12,7 +12,7 @@ function resetForm() {
 document.getElementById('taux-assurance').addEventListener('input', calculateTAEG);
 document.getElementById('taux-interet').addEventListener('input', calculateTAEG);
 document.getElementById('frais-dossier').addEventListener('input', calculateTAEG);
-document.getElementById('prix').addEventListener('input', calculateTAEG);
+document.getElementById('price').addEventListener('input', calculateTAEG);
 document.getElementById('notaire').addEventListener('input', calculateTAEG);
 document.getElementById('commission').addEventListener('input', calculateTAEG);
 document.getElementById('apport').addEventListener('input', calculateTAEG);
@@ -23,15 +23,15 @@ function calculateTAEG() {
     const tauxAssurance = parseFloat(document.getElementById('taux-assurance').value) / 100 || 0;
     const tauxInteret = parseFloat(document.getElementById('taux-interet').value) / 100 || 0;
     const fraisDossier = parseFloat(document.getElementById('frais-dossier').value) || 0;
-    const prix = parseFloat(document.getElementById('prix').value) || 0;
+    const price = parseFloat(document.getElementById('price').value) || 0;
     const notaire = parseFloat(document.getElementById('notaire').value) / 100 || 0;
     const commission = parseFloat(document.getElementById('commission').value) / 100 || 0;
     const apport = parseFloat(document.getElementById('apport').value) || 0;
     const dureePret = parseFloat(document.getElementById('duree-pret').value) || 0;
     // Calcul des frais et du montant emprunté
-    const fraisNotaire = prix * notaire;
-    const fraisCommission = prix * commission;
-    const montantEmprunte = prix + fraisNotaire + fraisCommission + fraisDossier - apport;
+    const fraisNotaire = price * notaire;
+    const fraisCommission = price * commission;
+    const montantEmprunte = price + fraisNotaire + fraisCommission + fraisDossier - apport;
     // Initialisation du TAEG
     let taeg = 0;
     // Calcul du TAEG si le montant emprunté est valide
@@ -145,11 +145,11 @@ function calculerMensualite(montantEmprunte, dureePret, tauxInteretAnnuel, tauxA
     return mensualiteEmprunt + mensualiteAssurance;
 }
 
-function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {
-    const coutInitial = prix + fraisNotaire + fraisCommission - apport;
+function trouverAnneePertesInferieures(price, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {
+    const coutInitial = price + fraisNotaire + fraisCommission - apport;
     for (let t = 1; t <= duree; t++) {
         // achat
-        const valeurRevente = prix * Math.pow(1 + tauxAppreciation, t);
+        const valeurRevente = price * Math.pow(1 + tauxAppreciation, t);
         const cumulMensualites = t <= dureePret ? mensualite * 12 * t : mensualite * 12 * dureePret;
         const cumulTaxeFonciere = taxeFonciere * t;
         const cumulFraisCoproriete = fraisCoproriete * t;
@@ -164,11 +164,11 @@ function trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, appo
     return duree; // Pas de croisement des pertes
 }
 
-function calculerPertesAchat(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, cumulLoyers, fraisCoproriete) {
+function calculerPertesAchat(price, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, cumulLoyers, fraisCoproriete) {
     const pertesAchat = [];
-    const coutInitial = prix + fraisNotaire + fraisCommission - apport;
+    const coutInitial = price + fraisNotaire + fraisCommission - apport;
     for (let t = 1; t <= duree; t++) {
-        const valeurRevente = prix * Math.pow(1 + tauxAppreciation, t);
+        const valeurRevente = price * Math.pow(1 + tauxAppreciation, t);
         const cumulMensualites = t <= dureePret ? mensualite * 12 * t : mensualite * 12 * dureePret;
         const cumulTaxeFonciere = taxeFonciere * t;
         const cumulFraisCoproriete = fraisCoproriete * t;

@@ -2,7 +2,7 @@ let myChart = null; // Déclarer une variable pour contenir l'instance du graphi
 
 function genererRapport() {
     // Récupérer les valeurs du formulaire
-    const prix = parseFloat(document.getElementById('prix').value);
+    const price = parseFloat(document.getElementById('price').value);
     const notaire = parseFloat(document.getElementById('notaire').value) / 100;
     const tauxAppreciation = parseFloat(document.getElementById('taux-appreciation').value) / 100;
     const commission = parseFloat(document.getElementById('commission').value) / 100;
@@ -17,9 +17,9 @@ function genererRapport() {
     const fraisCopropriete = parseFloat(document.getElementById('copropriete').value);
     const dureeMax = 500;
 
-    const fraisNotaire = prix * notaire;
-    const fraisCommission = prix * commission;
-    const totalAchat = prix + fraisNotaire + fraisCommission;
+    const fraisNotaire = price * notaire;
+    const fraisCommission = price * commission;
+    const totalAchat = price + fraisNotaire + fraisCommission;
     const montantEmprunte = totalAchat - apport;
     const mensualite = calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance);
     const coutTotalEmprunt = mensualite * dureePret * 12;
@@ -28,10 +28,10 @@ function genererRapport() {
     const cumulMensuelLoyers = cumulLoyers / 12;
     const TAEG = calculateTAEG();
 
-    const anneeRemboursement = trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
+    const anneeRemboursement = trouverAnneePertesInferieures(price, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
     const maxDuree = Math.max(dureePret, anneeRemboursement) + 1; // 1 more year to see after meeting year
     const cumulLocation = calculerPertesLocation(loyerFictif, maxDuree, tauxLoyerFictif);
-    const cumulAchat = calculerPertesAchat(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, maxDuree, dureePret, cumulLoyers, fraisCopropriete);
+    const cumulAchat = calculerPertesAchat(price, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, maxDuree, dureePret, cumulLoyers, fraisCopropriete);
 
     // Concaténer les résultats et le graphique
     let resultat = `
@@ -41,8 +41,8 @@ function genererRapport() {
             <h3>${translations.reportAchat}</h3>
             <table>
                 <tr>
-                    <td>${translations.reportPrix}:</td>
-                    <td style="text-align: right;">${prix.toFixed(2)} €</td>
+                    <td>${translations.reportPrice}:</td>
+                    <td style="text-align: right;">${price.toFixed(2)} €</td>
                 </tr>
                 <tr>
                     <td>${translations.reportFraisNotaire}:</td>
@@ -233,7 +233,7 @@ async function telechargerPDF() {
     doc.text(margin, margin, `${translations.reportTitle}`);
     var finalY = doc.lastAutoTable.finalY || tableSpacing
 
-    const prix = parseFloat(document.getElementById('prix').value);
+    const price = parseFloat(document.getElementById('price').value);
     const notaire = parseFloat(document.getElementById('notaire').value) / 100;
     const copropriete = parseFloat(document.getElementById('copropriete').value);
     const tauxAppreciation = parseFloat(document.getElementById('taux-appreciation').value) / 100;
@@ -248,9 +248,9 @@ async function telechargerPDF() {
     const taxeFonciere = parseFloat(document.getElementById('taxe-fonciere').value);
     const TAEG = calculateTAEG();
 
-    const fraisNotaire = prix * notaire;
-    const fraisCommission = prix * commission;
-    const totalAchat = prix + fraisNotaire + fraisCommission;
+    const fraisNotaire = price * notaire;
+    const fraisCommission = price * commission;
+    const totalAchat = price + fraisNotaire + fraisCommission;
     const montantEmprunte = totalAchat - apport;
     const mensualite = tauxInteret === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * tauxInteret / 12) / (1 - Math.pow(1 + tauxInteret / 12, -dureePret * 12));
     const coutTotalEmprunt = mensualite * dureePret * 12;
@@ -259,13 +259,13 @@ async function telechargerPDF() {
     const dureeMax = 500;
     const fraisCopropriete = parseFloat(document.getElementById('copropriete').value);
     const cumulLoyers = extraireLoyers();
-    const anneeRemboursement = trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
+    const anneeRemboursement = trouverAnneePertesInferieures(price, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
     // Tableau Achat
     doc.autoTable({
         startY: finalY + margin,
-        head: [[`${translations.reportAchat}`, `${translations.reportPrix}`]],
+        head: [[`${translations.reportAchat}`, `${translations.reportPrice}`]],
         body: [
-            [`${translations.reportPrix}`, `${prix.toFixed(2)} €`],
+            [`${translations.reportPrice}`, `${pripricex.toFixed(2)} €`],
             [`${translations.reportFraisNotaire}`, `${fraisNotaire.toFixed(2)} €`],
             [`${translations.reportTauxAppreciation}`, `${(tauxAppreciation * 100).toFixed(2)} %`],
             [`${translations.reportCommission}`, `${fraisCommission.toFixed(2)} €`],
@@ -277,7 +277,7 @@ async function telechargerPDF() {
     // Tableau Emprunt
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
-        head: [[`${translations.reportEmprunt}`, `${translations.reportPrix}`]],
+        head: [[`${translations.reportEmprunt}`, `${translations.reportPrice}`]],
         body: [
             [`${translations.apport}`, `${apport.toFixed(0)} €`],
             [`${translations.reportMontantEmprunte}`, `${montantEmprunte.toFixed(0)} €`],
@@ -293,7 +293,7 @@ async function telechargerPDF() {
     // Tableau Financement
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
-        head: [[`${translations.reportFinancement}`, `${translations.reportPrix}`]],
+        head: [[`${translations.reportFinancement}`, `${translations.reportPrice}`]],
         body: [
             [`${translations.reportLoyerFictifMensuel}`, `${loyerFictif.toFixed(0)} €`],
             [`${translations.reportTauxEvolutionLoyerFictif}`, `${(tauxLoyerFictif * 100).toFixed(2)} %`],
