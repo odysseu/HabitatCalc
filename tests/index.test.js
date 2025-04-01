@@ -47,8 +47,8 @@ test('vérifie que les identifiants utilisés dans les .js existent', () => {
   const myChart = htmlBody.querySelector('#myChart');
   const loyersContainer = htmlBody.querySelector('#loyers-container');
   const priceInput = htmlBody.querySelector('#price');
-  const notaireInput = htmlBody.querySelector('#notaire');
-  const coproprieteInput = htmlBody.querySelector('#notaire');
+  const notaryInput = htmlBody.querySelector('#notary');
+  const coproprieteInput = htmlBody.querySelector('#copropriete');
   const tauxAppreciationInput = htmlBody.querySelector('#taux-appreciation');
   const tauxLoyerFictifInput = htmlBody.querySelector('#taux-loyer-fictif');
   const commissionInput = htmlBody.querySelector('#commission');
@@ -67,7 +67,7 @@ test('vérifie que les identifiants utilisés dans les .js existent', () => {
   expect(myChart).toBeInTheDocument();
   expect(loyersContainer).toBeInTheDocument();
   expect(priceInput).toBeInTheDocument();
-  expect(notaireInput).toBeInTheDocument();
+  expect(notaryInput).toBeInTheDocument();
   expect(coproprieteInput).toBeInTheDocument();
   expect(tauxAppreciationInput).toBeInTheDocument();
   expect(tauxLoyerFictifInput).toBeInTheDocument();

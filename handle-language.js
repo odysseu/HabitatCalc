@@ -56,7 +56,7 @@ function updateContent(translations) {
         const logoHelp = document.querySelector('.logo-help');
         const loyer0 = document.getElementById('loyer-0');
         const loyerFictifLabel = document.querySelector('label[for="loyer-fictif"]');
-        const notaireLabel = document.querySelector('label[for="notaire"]');
+        const notaryLabel = document.querySelector('label[for="notary"]');
         const pdfFileNameLabel = document.querySelector('label[for="pdf-filename"]');
         const pdfFileNamePlaceHolder = document.getElementById('placerholder["pdf-filename"]');
         const priceLabel = document.querySelector('label[for="price"]');
@@ -86,7 +86,7 @@ function updateContent(translations) {
         if (logoHelp) logoHelp.textContent = translations.resetFormHelp;
         if (loyer0) loyer0.placeholder = translations.helpLoyerMensuel;
         if (loyerFictifLabel) loyerFictifLabel.innerHTML = `${translations.loyerFictif} <span class="help-icon">? <span class="help-text">${translations.helpLoyerFictif}</span></span>`;
-        if (notaireLabel) notaireLabel.innerHTML = `${translations.notaire} <span class="help-icon">? <span class="help-text">${translations.helpNotaire}</span></span>`;
+        if (notaryLabel) notaryLabel.innerHTML = `${translations.notary} <span class="help-icon">? <span class="help-text">${translations.helpNotary}</span></span>`;
         if (pdfFileNameLabel) pdfFileNameLabel.textContent = translations.pdfFileName;
         if (pdfFileNamePlaceHolder) pdfFileNamePlaceHolder.placeholder = translations.pdfFileNamePlaceHolder;
         if (priceLabel) priceLabel.innerHTML = `${translations.price} <span class="help-icon">? <span class="help-text">${translations.helpPrice}</span></span>`;
