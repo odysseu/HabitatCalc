@@ -45,9 +45,9 @@ test('vérifie que les identifiants utilisés dans form-handler.js existent', ()
   const priceInput = htmlBody.querySelector('#price');
   const notaryInput = htmlBody.querySelector('#notary');
   const coproprieteInput = htmlBody.querySelector('#copropriete');
-  const tauxAppreciationInput = htmlBody.querySelector('#taux-appreciation');
+  const tauxAppreciationInput = htmlBody.querySelector('#appreciation-rate');
   const tauxLoyerFictifInput = htmlBody.querySelector('#taux-loyer-fictif');
-  const commissionInput = htmlBody.querySelector('#commission');
+  const commissionInput = htmlBody.querySelector('#agency-commission');
   const apportInput = htmlBody.querySelector('#apport');
   const tauxInteretInput = htmlBody.querySelector('#taux-interet');
   const dureePretInput = htmlBody.querySelector('#duree-pret');

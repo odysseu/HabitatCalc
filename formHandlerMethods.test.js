@@ -70,7 +70,7 @@ test('vérifie que les éléments du DOM sont utilisés correctement', () => {
   expect(cumulLoyers).toBeCloseTo(1200 * (75 / 100) * 12);
 
   // Test trouverAnneePertesInferieures function
-  // trouverAnneePertesInferieures(price, notaryFees, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers)
+  // trouverAnneePertesInferieures(price, notaryFees, agencyCommissionFees, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers)
   const anneePertes = dom.window.trouverAnneePertesInferieures(
     200000,                 // price
     (8/100) * 200000,       // notaryFees

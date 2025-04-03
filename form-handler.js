@@ -14,7 +14,7 @@ document.getElementById('taux-interet').addEventListener('input', calculateTAEG)
 document.getElementById('frais-dossier').addEventListener('input', calculateTAEG);
 document.getElementById('price').addEventListener('input', calculateTAEG);
 document.getElementById('notary').addEventListener('input', calculateTAEG);
-document.getElementById('commission').addEventListener('input', calculateTAEG);
+document.getElementById('agency-commission').addEventListener('input', calculateTAEG);
 document.getElementById('apport').addEventListener('input', calculateTAEG);
 document.getElementById('duree-pret').addEventListener('input', calculateTAEG);
 
@@ -25,13 +25,13 @@ function calculateTAEG() {
     const fraisDossier = parseFloat(document.getElementById('frais-dossier').value) || 0;
     const price = parseFloat(document.getElementById('price').value) || 0;
     const notary = parseFloat(document.getElementById('notary').value) / 100 || 0;
-    const commission = parseFloat(document.getElementById('commission').value) / 100 || 0;
+    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100 || 0;
     const apport = parseFloat(document.getElementById('apport').value) || 0;
     const dureePret = parseFloat(document.getElementById('duree-pret').value) || 0;
     // Calcul des frais et du montant emprunté
     const notaryFees = price * notary;
-    const fraisCommission = price * commission;
-    const montantEmprunte = price + notaryFees + fraisCommission + fraisDossier - apport;
+    const agencyCommissionFees = price * agencyCommission;
+    const montantEmprunte = price + notaryFees + agencyCommissionFees + fraisDossier - apport;
     // Initialisation du TAEG
     let taeg = 0;
     // Calcul du TAEG si le montant emprunté est valide
@@ -145,8 +145,8 @@ function calculerMensualite(montantEmprunte, dureePret, tauxInteretAnnuel, tauxA
     return mensualiteEmprunt + mensualiteAssurance;
 }
 
-function trouverAnneePertesInferieures(price, notaryFees, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {
-    const coutInitial = price + notaryFees + fraisCommission - apport;
+function trouverAnneePertesInferieures(price, notaryFees, agencyCommissionFees, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCoproriete) {
+    const coutInitial = price + notaryFees + agencyCommissionFees - apport;
     for (let t = 1; t <= duree; t++) {
         // achat
         const valeurRevente = price * Math.pow(1 + tauxAppreciation, t);
@@ -164,9 +164,9 @@ function trouverAnneePertesInferieures(price, notaryFees, fraisCommission, appor
     return duree; // Pas de croisement des pertes
 }
 
-function calculerPertesAchat(price, notaryFees, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, cumulLoyers, fraisCoproriete) {
+function calculerPertesAchat(price, notaryFees, agencyCommissionFees, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, cumulLoyers, fraisCoproriete) {
     const pertesAchat = [];
-    const coutInitial = price + notaryFees + fraisCommission - apport;
+    const coutInitial = price + notaryFees + agencyCommissionFees - apport;
     for (let t = 1; t <= duree; t++) {
         const valeurRevente = price * Math.pow(1 + tauxAppreciation, t);
         const cumulMensualites = t <= dureePret ? mensualite * 12 * t : mensualite * 12 * dureePret;

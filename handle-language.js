@@ -48,7 +48,7 @@ function updateContent(translations) {
         const apportLabel = document.querySelector('label[for="apport"]');
         const calculerButton = document.getElementById('calculer-button');
         const closeButton = document.getElementById('close-welcome');
-        const commissionLabel = document.querySelector('label[for="commission"]');
+        const agencyCommissionLabel = document.querySelector('label[for="agency-commission"]');
         const coproprieteLabel = document.querySelector('label[for="copropriete"]');
         const dureeLocation0 = document.getElementById('duree-location-0');
         const dureePretLabel = document.querySelector('label[for="duree-pret"]');
@@ -69,7 +69,7 @@ function updateContent(translations) {
         const taxeHabitationLabel = document.querySelector('label[for="taxe-habitation"]');
         const telechargerButton = document.querySelector('#telecharger-button button');
         const title = document.getElementById('titre');
-        const tauxAppreciationLabel = document.querySelector('label[for="taux-appreciation"]');
+        const tauxAppreciationLabel = document.querySelector('label[for="appreciation-rate"]');
         const tauxAssuranceLabel = document.querySelector('label[for="taux-assurance"]');
         const tauxInteretLabel = document.querySelector('label[for="taux-interet"]');
         const tauxLoyerFictifLabel = document.querySelector('label[for="taux-loyer-fictif"]');
@@ -78,7 +78,7 @@ function updateContent(translations) {
         if (apportLabel) apportLabel.innerHTML = `${translations.apport} <span class="help-icon">? <span class="help-text">${translations.helpApport}</span></span>`;
         if (calculerButton) calculerButton.textContent = translations.generateReport;
         if (closeButton) closeButton.textContent = translations.closeButton;
-        if (commissionLabel) commissionLabel.innerHTML = `${translations.commission} <span class="help-icon">? <span class="help-text">${translations.helpCommission}</span></span>`;
+        if (agencyCommissionLabel) agencyCommissionLabel.innerHTML = `${translations.agency-commission} <span class="help-icon">? <span class="help-text">${translations.helpAgencyCommission}</span></span>`;
         if (coproprieteLabel) coproprieteLabel.innerHTML = `${translations.copropriete} <span class="help-icon">? <span class="help-text">${translations.helpCopropriete}</span></span>`;
         if (dureeLocation0) dureeLocation0.placeholder = translations.helpDureeLocation;
         if (dureePretLabel) dureePretLabel.innerHTML = `${translations.dureePret} <span class="help-icon">? <span class="help-text">${translations.helpDureePret}</span></span>`;
