@@ -26,6 +26,8 @@ body.dark-mode {
 
 /* Header styles */
 .sticky-header {
+    background-color: var(--light-bg-color); /* Darker background for header */
+    color: var(--light-text-color); /* Soft white text for header */
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -229,17 +231,17 @@ body.dark-mode .help-text {
     flex: 0 0 48%;
 }
 
-.loyer-container {
+.income-container {
     display: flex;
     align-items: center;
 }
 
-.loyer-container input {
+.income-container input {
     flex: 1;
     margin-right: 10px;
 }
 
-.loyer-container button {
+.income-container button {
     width: auto;
     padding: 10px;
 }

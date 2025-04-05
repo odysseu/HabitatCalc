@@ -32,8 +32,8 @@
                 <span class="slider round"></span>
             </label>
             <select id="language-select">
-                <option value="fr">Français 🇫🇷</option>
-                <option value="en">English 🇬🇧</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="en">🇬🇧 English</option>
             </select>
         </div>
     </header>
@@ -54,52 +54,52 @@
                     <label for="agency-commission">Commission agence (%): <span class="help-icon">? <span class="help-text">Pourcentage des frais d'agence.</span></span></label>
                     <input type="number" step="0.01" id="agency-commission" name="agency-commission" value="0" required>
 
-                    <label for="copropriete">Frais de copropriété: <span class="help-icon">? <span class="help-text">Frais de copropriété annuels.</span></span></label>
-                    <input type="number" step="0.01" id="copropriete" name="copropriete" value="0" required>
+                    <label for="coOwnership">Frais de copropriété: <span class="help-icon">? <span class="help-text">Frais de copropriété annuels.</span></span></label>
+                    <input type="number" step="0.01" id="coOwnership" name="coOwnership" value="0" required>
                 </div>
                 <div>
                     <h2 id="loan-section">Emprunt</h2>
-                    <label for="frais-dossier">Frais de dossier (€): <span class="help-icon">? <span class="help-text">Montant des frais de dossier, frais d'entrée, frais de courtage.</span></span></label>
-                    <input type="number" step="1" id="frais-dossier" name="frais-dossier" value="0" required>
+                    <label for="file-fees">Frais de dossier (€): <span class="help-icon">? <span class="help-text">Montant des frais de dossier, frais d'entrée, frais de courtage.</span></span></label>
+                    <input type="number" step="1" id="file-fees" name="file-fees" value="0" required>
 
-                    <label for="apport">Apport personnel (€): <span class="help-icon">? <span class="help-text">Montant de l'apport personnel.</span></span></label>
-                    <input type="number" step="0.01" id="apport" name="apport" value="0" required>
+                    <label for="contribution">Apport personnel (€): <span class="help-icon">? <span class="help-text">Montant de l'contribution personnel.</span></span></label>
+                    <input type="number" step="0.01" id="contribution" name="contribution" value="0" required>
 
                     <div class="input-container">
-                        <label for="taux-interet">Taux d'intérêt (%): <span class="help-icon">? <span class="help-text">Taux d'intérêt annuel du prêt immobilier.</span></span></label>
-                        <input type="number" step="0.01" id="taux-interet" name="taux-interet" value="1" required>
+                        <label for="interest-rate">Taux d'intérêt (%): <span class="help-icon">? <span class="help-text">Taux d'intérêt annuel du prêt immobilier.</span></span></label>
+                        <input type="number" step="0.01" id="interest-rate" name="interest-rate" value="1" required>
                         <div class="input-overlay" id="taeg-overlay">TAEG: 0.00%</div>
                     </div>
 
-                    <label for="taux-assurance">Taux de l'assurance emprunteur (%): <span class="help-icon">? <span class="help-text">Pourcentage du prêt pour l'assurance emprunteur.</span></span></label>
-                    <input type="number" step="0.01" id="taux-assurance" name="taux-assurance" value="0" required>
+                    <label for="insuranceRate">Taux de l'assurance emprunteur (%): <span class="help-icon">? <span class="help-text">Pourcentage du prêt pour l'assurance emprunteur.</span></span></label>
+                    <input type="number" step="0.01" id="insuranceRate" name="insuranceRate" value="0" required>
 
-                    <label for="duree-pret">Durée du prêt (années): <span class="help-icon">? <span class="help-text">Durée totale du prêt en années.</span></span></label>
-                    <input type="number" step="1" id="duree-pret" name="duree-pret" value="20" required>
+                    <label for="laonDuration">Durée du prêt (années): <span class="help-icon">? <span class="help-text">Durée totale du prêt en années.</span></span></label>
+                    <input type="number" step="1" id="laonDuration" name="laonDuration" value="20" required>
                 </div>
             </div>
             <h2 id="financing-section">Financement</h2>
-            <label for="loyer-fictif">Loyer fictif mensuel (€): <span class="help-icon">? <span class="help-text">Loyer mensuel que vous paieriez si vous louiez au lieu d'acheter.</span></span></label>
-            <input type="number" id="loyer-fictif" name="loyer-fictif" value="1000" required>
+            <label for="fictitiousRent">Loyer fictif mensuel (€): <span class="help-icon">? <span class="help-text">Loyer mensuel que vous paieriez si vous louiez au lieu d'acheter.</span></span></label>
+            <input type="number" id="fictitiousRent" name="fictitiousRent" value="1000" required>
 
-            <label for="taux-loyer-fictif">Taux évolution loyer fictif annuel (%): <span class="help-icon">? <span class="help-text">Taux d'évolution du loyer fictif annuel si vous louiez au lieu d'acheter (%).</span></span></label>
-            <input type="number" step="0.01" id="taux-loyer-fictif" name="taux-loyer-fictif" value="1" required>
+            <label for="fictitiousRentRate">Taux évolution income fictif annuel (%): <span class="help-icon">? <span class="help-text">Taux d'évolution du income fictif annuel si vous louiez au lieu d'acheter (%).</span></span></label>
+            <input type="number" step="0.01" id="fictitiousRentRate" name="fictitiousRentRate" value="1" required>
 
-            <label for="taxe-habitation">Taxe d'habitation (€): <span class="help-icon">? <span class="help-text">Montant annuel de la taxe d'habitation.</span></span></label>
-            <input type="number" id="taxe-habitation" name="taxe-habitation" value="0" required>
+            <label for="HousingTax">Taxe d'habitation (€): <span class="help-icon">? <span class="help-text">Montant annuel de la taxe d'habitation.</span></span></label>
+            <input type="number" id="HousingTax" name="HousingTax" value="0" required>
 
-            <label for="taxe-fonciere">Taxe foncière (€): <span class="help-icon">? <span class="help-text">Montant annuel de la taxe foncière.</span></span></label>
-            <input type="number" id="taxe-fonciere" name="taxe-fonciere" value="1000" required>
+            <label for="propertyTax">Taxe foncière (€): <span class="help-icon">? <span class="help-text">Montant annuel de la taxe foncière.</span></span></label>
+            <input type="number" id="propertyTax" name="propertyTax" value="1000" required>
 
-            <div id="loyers-container">
-                <div class="loyer-container">
-                    <input type="number" id="loyer-0" name="loyer-0" placeholder="Loyer mensuel (€)" required>
-                    <input type="number" step="0.01" id="duree-location-0" name="duree-location-0" placeholder="Durée (% de l'année)" required>
-                    <button type="button" onclick="ajouterLoyer()">+</button>
+            <div id="incomes-container">
+                <div class="income-container">
+                    <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required>
+                    <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l'année)" required>
+                    <button type="button" onclick="addIncome()">+</button>
                 </div>
             </div>
 
-            <button type="button" id="calculer-button" onclick="genererRapport()">Calculer</button>
+            <button type="button" id="calculate-button" onclick="generateReport()">Calculer</button>
         </form>
         <div id="resultat"></div>
         <div id="myChart-container">

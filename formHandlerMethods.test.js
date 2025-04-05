@@ -23,9 +23,9 @@ beforeEach(() => {
 test('vérifie que les fonctions existent', () => {
   expect(typeof dom.window.resetForm).toBe('function');
   expect(typeof dom.window.calculateTAEG).toBe('function');
-  expect(typeof dom.window.ajouterLoyer).toBe('function');
-  expect(typeof dom.window.supprimerLoyer).toBe('function');
-  expect(typeof dom.window.extraireLoyers).toBe('function');
+  expect(typeof dom.window.addIncome).toBe('function');
+  expect(typeof dom.window.deleteIncome).toBe('function');
+  expect(typeof dom.window.extractIncomes).toBe('function');
   expect(typeof dom.window.isValidNumber).toBe('function');
   expect(typeof dom.window.calculerMensualite).toBe('function');
   expect(typeof dom.window.trouverAnneePertesInferieures).toBe('function');
@@ -46,45 +46,45 @@ test('vérifie que les éléments du DOM sont utilisés correctement', () => {
 //   const context = canvas.getContext('2d');
 //   expect(context.getImageData(0, 0, canvas.width, canvas.height).data.some(channel => channel !== 0)).toBe(false);
 
-  // Test ajouterLoyer function
-  const loyerInput = container.querySelector('input[name="loyer-0"]');
-  const dureeLocationInput = container.querySelector('input[name="duree-location-0"]');
-  loyerInput.value = '1000';
-  dureeLocationInput.value = '50';
-  dom.window.ajouterLoyer();
-  expect(container.querySelectorAll('.loyer-container').length).toBe(2);
-  expect(loyerInput.value).toBe('');
-  expect(dureeLocationInput.value).toBe('');
+  // Test addIncome function
+  const incomeInput = container.querySelector('input[name="income-0"]');
+  const incomeShareInput = container.querySelector('input[name="income-share-0"]');
+  incomeInput.value = '1000';
+  incomeShareInput.value = '50';
+  dom.window.addIncome();
+  expect(container.querySelectorAll('.income-container').length).toBe(2);
+  expect(incomeInput.value).toBe('');
+  expect(incomeShareInput.value).toBe('');
 
-  // Test supprimerLoyer function
-  const loyerContainers = container.querySelectorAll('.loyer-container');
-  const removeButton = loyerContainers[1].querySelector('button');
-  dom.window.supprimerLoyer(removeButton);
-  expect(container.querySelectorAll('.loyer-container').length).toBe(1);
+  // Test deleteIncome function
+  const incomeContainers = container.querySelectorAll('.income-container');
+  const removeButton = incomeContainers[1].querySelector('button');
+  dom.window.deleteIncome(removeButton);
+  expect(container.querySelectorAll('.income-container').length).toBe(1);
 
-  // Test extraireLoyers function
-  loyerInput.value = '1200';
-  dureeLocationInput.value = '75';
-  dom.window.ajouterLoyer();
-  const cumulLoyers = dom.window.extraireLoyers();
-  expect(cumulLoyers).toBeCloseTo(1200 * (75 / 100) * 12);
+  // Test extractIncomes function
+  incomeInput.value = '1200';
+  incomeShareInput.value = '75';
+  dom.window.addIncome();
+  const cumulIncomes = dom.window.extractIncomes();
+  expect(cumulIncomes).toBeCloseTo(1200 * (75 / 100) * 12);
 
   // Test trouverAnneePertesInferieures function
-  // trouverAnneePertesInferieures(price, notaryFees, agencyCommissionFees, apport, mensualite, taxeFonciere, tauxAppreciation, duree, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers)
+  // trouverAnneePertesInferieures(price, notaryFees, commisionFees, contribution, mensualite, propertyTax, appreciationRate, duree, laonDuration, fictitiousRent, fictitiousRentRate, cumulIncomes)
   const anneePertes = dom.window.trouverAnneePertesInferieures(
     200000,                 // price
     (8/100) * 200000,       // notaryFees
     0,                      // fraisCommision
-    5000,                   // apport
+    5000,                   // contribution
     1000,                   // mensualite
-    1000,                   // taxeFonciere
-    0.02,                   // tauxAppreciation
+    1000,                   // propertyTax
+    0.02,                   // appreciationRate
     30,                     // duree
-    20,                     // dureePret
-    1100,                   // loyerFictif
-    0.01,                   // tauxLoyerFictif
-    0,                      // cumulLoyers
-    0                       // fraisCopropriete
+    20,                     // laonDuration
+    1100,                   // fictitiousRent
+    0.01,                   // fictitiousRentRate
+    0,                      // cumulIncomes
+    0                       // coOwnershipFees
   );
   expect(anneePertes).toEqual(2);
 
@@ -102,7 +102,7 @@ test('vérifie que les éléments du DOM sont utilisés correctement', () => {
   
 
   // Test calculerPertesAchat function
-  const pertesAchat = dom.window.calculerPertesAchat(200000, 10000, 5000, 50000, 1000, 1000, 0.02, 30, 20, cumulLoyers, 0);
+  const pertesAchat = dom.window.calculerPertesAchat(200000, 10000, 5000, 50000, 1000, 1000, 0.02, 30, 20, cumulIncomes, 0);
   expect(pertesAchat.length).toEqual(30);
 
   // Test calculerPertesAchat function
