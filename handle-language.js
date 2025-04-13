@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const defaultLanguage = languageSelect.value;
     console.log('Detected language :', defaultLanguage);
     loadTranslations(defaultLanguage);
-    calculateTAEG();
+    calculateAPR();
 
     document.getElementById('calculate-button').addEventListener('click', generateReport);
 });
@@ -48,10 +48,10 @@ function updateContent(translations) {
         const contributionLabel = document.querySelector('label[for="contribution"]');
         const calculerButton = document.getElementById('calculate-button');
         const closeButton = document.getElementById('close-welcome');
-        const commissionLabel = document.querySelector('label[for="commission"]');
+        const agencyCommisionFeesLabel = document.querySelector('label[for="agency-commission"]');
         const coOwnershipLabel = document.querySelector('label[for="coOwnership"]');
         const incomeShare0 = document.getElementById('income-share-0');
-        const laonDurationLabel = document.querySelector('label[for="laonDuration"]');
+        const loanDurationLabel = document.querySelector('label[for="loanDuration"]');
         const fileFeesLabel = document.querySelector('label[for="file-fees"]');
         const logoHelp = document.querySelector('.logo-help');
         const income0 = document.getElementById('income-0');
@@ -60,14 +60,14 @@ function updateContent(translations) {
         const pdfFileNameLabel = document.querySelector('label[for="pdf-filename"]');
         const pdfFileNamePlaceHolder = document.getElementById('placerholder["pdf-filename"]');
         const priceLabel = document.querySelector('label[for="price"]');
-        const sectionAchat = document.getElementById('buy-section');
+        const purchaseSection = document.getElementById('purchase-section');
         const sectionEmprunt = document.getElementById('loan-section');
         const sectionFinancement = document.getElementById('financing-section');
         const sectionTitre = document.getElementById('title-section');
-        const taeg = document.getElementById('taeg-overlay');
+        const apr = document.getElementById('apr-overlay');
         const propertyTaxLabel = document.querySelector('label[for="propertyTax"]');
         const HousingTaxLabel = document.querySelector('label[for="HousingTax"]');
-        const telechargerButton = document.querySelector('#telecharger-button button');
+        const telechargerButton = document.querySelector('#download-button button');
         const title = document.getElementById('titre');
         const appreciationRateLabel = document.querySelector('label[for="appreciation-rate"]');
         const insuranceRateLabel = document.querySelector('label[for="insuranceRate"]');
@@ -78,10 +78,10 @@ function updateContent(translations) {
         if (contributionLabel) contributionLabel.innerHTML = `${translations.contribution} <span class="help-icon">? <span class="help-text">${translations.helpContribution}</span></span>`;
         if (calculerButton) calculerButton.textContent = translations.generateReport;
         if (closeButton) closeButton.textContent = translations.closeButton;
-        if (commissionLabel) commissionLabel.innerHTML = `${translations.commission} <span class="help-icon">? <span class="help-text">${translations.helpCommission}</span></span>`;
+        if (agencyCommisionFeesLabel) agencyCommisionFeesLabel.innerHTML = `${translations.agencyCommission} <span class="help-icon">? <span class="help-text">${translations.helpAgencyCommission}</span></span>`;
         if (coOwnershipLabel) coOwnershipLabel.innerHTML = `${translations.coOwnership} <span class="help-icon">? <span class="help-text">${translations.helpCoOwnership}</span></span>`;
         if (incomeShare0) incomeShare0.placeholder = translations.helpIncomeShare;
-        if (laonDurationLabel) laonDurationLabel.innerHTML = `${translations.laonDuration} <span class="help-icon">? <span class="help-text">${translations.helpDureePret}</span></span>`;
+        if (loanDurationLabel) loanDurationLabel.innerHTML = `${translations.loanDuration} <span class="help-icon">? <span class="help-text">${translations.helpLoanDuration}</span></span>`;
         if (fileFeesLabel) fileFeesLabel.innerHTML = `${translations.fileFees} <span class="help-icon">? <span class="help-text">${translations.helpFileFees}</span></span>`;
         if (logoHelp) logoHelp.textContent = translations.resetFormHelp;
         if (income0) income0.placeholder = translations.helpMonthlyIncome;
@@ -90,11 +90,11 @@ function updateContent(translations) {
         if (pdfFileNameLabel) pdfFileNameLabel.textContent = translations.pdfFileName;
         if (pdfFileNamePlaceHolder) pdfFileNamePlaceHolder.placeholder = translations.pdfFileNamePlaceHolder;
         if (priceLabel) priceLabel.innerHTML = `${translations.price} <span class="help-icon">? <span class="help-text">${translations.helpPrice}</span></span>`;
-        if (sectionAchat) sectionAchat.textContent = translations.sectionAchat;
+        if (purchaseSection) purchaseSection.textContent = translations.purchaseSection;
         if (sectionEmprunt) sectionEmprunt.textContent = translations.sectionEmprunt;
         if (sectionFinancement) sectionFinancement.textContent = translations.sectionFinancement;
         if (sectionTitre) sectionTitre.textContent = translations.sectionTitle;
-        if (taeg) calculateTAEG(); //taeg.textContent = `${translations.reportTAEG}: `;
+        if (apr) calculateAPR(); //apr.textContent = `${translations.reportAPR}: `;
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
         if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;
         if (interestRateLabel) interestRateLabel.innerHTML = `${translations.interestRate} <span class="help-icon">? <span class="help-text">${translations.helpInterestRate}</span></span>`;

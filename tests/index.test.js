@@ -42,8 +42,8 @@ test('vérifie que les identifiants utilisés dans dark-mode.js existent', () =>
 
 // Tests que les identifiants utilisés dans event-handler.js existent dans le .html
 test('vérifie que les identifiants utilisés dans les .js existent', () => {
-  const form = htmlBody.querySelector('#calculette-form');
-  const resultat = htmlBody.querySelector('#resultat');
+  const form = htmlBody.querySelector('#form-calculator');
+  const simulation = htmlBody.querySelector('#simulation');
   const myChart = htmlBody.querySelector('#myChart');
   const incomesContainer = htmlBody.querySelector('#incomes-container');
   const priceInput = htmlBody.querySelector('#price');
@@ -51,19 +51,19 @@ test('vérifie que les identifiants utilisés dans les .js existent', () => {
   const coOwnershipInput = htmlBody.querySelector('#coOwnership');
   const appreciationRateInput = htmlBody.querySelector('#appreciation-rate');
   const fictitiousRentRateInput = htmlBody.querySelector('#fictitiousRentRate');
-  const commissionInput = htmlBody.querySelector('#commission');
+  const agencyCommissionInput = htmlBody.querySelector('#agency-commission');
   const contributionInput = htmlBody.querySelector('#contribution');
   const interestRateInput = htmlBody.querySelector('#interest-rate');
-  const laonDurationInput = htmlBody.querySelector('#laonDuration');
+  const loanDurationInput = htmlBody.querySelector('#loanDuration');
   const insuranceRateInput = htmlBody.querySelector('#insuranceRate');
   const fictitiousRentInput = htmlBody.querySelector('#fictitiousRent');
   const HousingTaxInput = htmlBody.querySelector('#HousingTax');
   const propertyTaxInput = htmlBody.querySelector('#propertyTax');
   const calculerButton = htmlBody.querySelector('#calculate-button');
-  const rapportBouton = htmlBody.querySelector('#rapport-bouton');
+  const rapportBouton = htmlBody.querySelector('#report-button');
 
   expect(form).toBeInTheDocument();
-  expect(resultat).toBeInTheDocument();
+  expect(simulation).toBeInTheDocument();
   expect(myChart).toBeInTheDocument();
   expect(incomesContainer).toBeInTheDocument();
   expect(priceInput).toBeInTheDocument();
@@ -71,10 +71,10 @@ test('vérifie que les identifiants utilisés dans les .js existent', () => {
   expect(coOwnershipInput).toBeInTheDocument();
   expect(appreciationRateInput).toBeInTheDocument();
   expect(fictitiousRentRateInput).toBeInTheDocument();
-  expect(commissionInput).toBeInTheDocument();
+  expect(agencyCommissionInput).toBeInTheDocument();
   expect(contributionInput).toBeInTheDocument();
   expect(interestRateInput).toBeInTheDocument();
-  expect(laonDurationInput).toBeInTheDocument();
+  expect(loanDurationInput).toBeInTheDocument();
   expect(insuranceRateInput).toBeInTheDocument();
   expect(fictitiousRentInput).toBeInTheDocument();
   expect(HousingTaxInput).toBeInTheDocument();

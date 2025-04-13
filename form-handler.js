@@ -1,7 +1,7 @@
-// description: This script handles the form submission, validation, and calculation of TAEG and other financial metrics.
+// description: This script handles the form submission, validation, and calculation of APR and other financial metrics.
 function resetForm() {
-    document.getElementById('calculette-form').reset();
-    document.getElementById('resultat').innerHTML = '';
+    document.getElementById('form-calculator').reset();
+    document.getElementById('simulation').innerHTML = '';
     const canvas = document.getElementById('myChart');
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -9,45 +9,45 @@ function resetForm() {
     loadTranslations(languageSelect.value);
 }
 
-document.getElementById('insuranceRate').addEventListener('input', calculateTAEG);
-document.getElementById('interest-rate').addEventListener('input', calculateTAEG);
-document.getElementById('file-fees').addEventListener('input', calculateTAEG);
-document.getElementById('price').addEventListener('input', calculateTAEG);
-document.getElementById('notary').addEventListener('input', calculateTAEG);
-document.getElementById('commission').addEventListener('input', calculateTAEG);
-document.getElementById('contribution').addEventListener('input', calculateTAEG);
-document.getElementById('laonDuration').addEventListener('input', calculateTAEG);
+document.getElementById('insuranceRate').addEventListener('input', calculateAPR);
+document.getElementById('interest-rate').addEventListener('input', calculateAPR);
+document.getElementById('file-fees').addEventListener('input', calculateAPR);
+document.getElementById('price').addEventListener('input', calculateAPR);
+document.getElementById('notary').addEventListener('input', calculateAPR);
+document.getElementById('agency-commission').addEventListener('input', calculateAPR);
+document.getElementById('contribution').addEventListener('input', calculateAPR);
+document.getElementById('loanDuration').addEventListener('input', calculateAPR);
 
-function calculateTAEG() {
-    // Récupération des valeurs du formulaire
+function calculateAPR() {
+    // form values
     const insuranceRate = parseFloat(document.getElementById('insuranceRate').value) / 100 || 0;
     const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 || 0;
     const fileFees = parseFloat(document.getElementById('file-fees').value) || 0;
     const price = parseFloat(document.getElementById('price').value) || 0;
     const notary = parseFloat(document.getElementById('notary').value) / 100 || 0;
-    const commission = parseFloat(document.getElementById('commission').value) / 100 || 0;
+    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100 || 0;
     const contribution = parseFloat(document.getElementById('contribution').value) || 0;
-    const laonDuration = parseFloat(document.getElementById('laonDuration').value) || 0;
-    // Calcul des frais et du montant emprunté
+    const loanDuration = parseFloat(document.getElementById('loanDuration').value) || 0;
+    // Calculate monthly payments
     const notaryFees = price * notary;
-    const commisionFees = price * commission;
+    const commisionFees = price * agencyCommission;
     const borrowedAmount = price + notaryFees + commisionFees + fileFees - contribution;
-    // Initialisation du TAEG
-    let taeg = 0;
-    // Calcul du TAEG si le montant emprunté est valide
+    // Initialisation of APR
+    let apr = 0;
+    // Calculating APR if borrowed amount is positive
     if (borrowedAmount > 0) {
-        const mensualitePretAssurance = calculerMensualite(borrowedAmount, laonDuration, interestRate, insuranceRate);
-        const coutEmprunt = (mensualitePretAssurance * laonDuration * 12) - borrowedAmount;
-        taeg = coutEmprunt / borrowedAmount * 100;
+        const monthlyLoanInsurancePayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
+        const coutEmprunt = (monthlyLoanInsurancePayment * loanDuration * 12) - borrowedAmount;
+        apr = coutEmprunt / borrowedAmount * 100 / loanDuration ;
     } else if (borrowedAmount < 0) {
         console.error('Montant emprunté négatif:', borrowedAmount);
     }
-    // Mise à jour de l'affichage avec les traductions
-    const taegElement = document.getElementById('taeg-overlay');
-    if (taegElement && typeof translations !== 'undefined' && translations && translations.reportTAEG) {
-        taegElement.textContent = `${translations.TAEG}: ${taeg.toFixed(2)}%`;
+    // update APR display
+    const aprElement = document.getElementById('apr-overlay');
+    if (aprElement && typeof translations !== 'undefined' && translations && translations.reportAPR) {
+        aprElement.textContent = `${translations.APR}: ${apr.toFixed(2)}%`;
     }
-    return taeg;
+    return apr;
 }
 
 function addIncome() {
@@ -71,14 +71,14 @@ function addIncome() {
             inputIncome.placeholder = 'Revenu mensuel (€)';
             inputIncome.required = true;
 
-            const inputDuree = document.createElement('input');
-            inputDuree.type = 'number';
-            inputDuree.step = '0.01';
-            inputDuree.id = `income-share-${incomeCount}`;
-            inputDuree.name = `income-share-${incomeCount}`;
-            inputDuree.value = currentDurationValue;
-            inputDuree.placeholder = 'Durée (% de l\'année)';
-            inputDuree.required = true;
+            const inputDuration = document.createElement('input');
+            inputDuration.type = 'number';
+            inputDuration.step = '0.01';
+            inputDuration.id = `income-share-${incomeCount}`;
+            inputDuration.name = `income-share-${incomeCount}`;
+            inputDuration.value = currentDurationValue;
+            inputDuration.placeholder = 'Durée (% de l\'année)';
+            inputDuration.required = true;
 
             const deleteButton = document.createElement('button');
             deleteButton.type = 'button';
@@ -86,7 +86,7 @@ function addIncome() {
             deleteButton.onclick = function() { deleteIncome(this); };
 
             newIncome.appendChild(inputIncome);
-            newIncome.appendChild(inputDuree);
+            newIncome.appendChild(inputDuration);
             newIncome.appendChild(deleteButton);
             container.appendChild(newIncome);
             incomeCount++;
@@ -138,50 +138,52 @@ function extractIncomes() {
     return cumulIncomes;
 }
 
-function calculerMensualite(borrowedAmount, laonDuration, interestRateAnnuel, insuranceRate) {
-    const nombreMois = laonDuration * 12;
-    const mensualiteEmprunt = interestRateAnnuel === 0 ? borrowedAmount / nombreMois : (borrowedAmount * (interestRateAnnuel / 12)) / (1 - Math.pow(1 + (interestRateAnnuel / 12), -(laonDuration * 12)));
+function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnuel, insuranceRate) {
+    const nombreMois = loanDuration * 12;
+    const mensualiteEmprunt = interestRateAnnuel === 0 ? borrowedAmount / nombreMois : (borrowedAmount * (interestRateAnnuel / 12)) / (1 - Math.pow(1 + (interestRateAnnuel / 12), -(loanDuration * 12)));
     const mensualiteAssurance = borrowedAmount * insuranceRate / nombreMois;
     return mensualiteEmprunt + mensualiteAssurance;
 }
 
-function trouverAnneePertesInferieures(price, notaryFees, commisionFees, contribution, mensualite, propertyTax, appreciationRate, duree, laonDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, fraisCoproriete) {
-    const coutInitial = price + notaryFees + commisionFees - contribution;
-    for (let t = 1; t <= duree; t++) {
-        // achat
+function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, contribution, mensualite, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees) {
+    const coutInitial = price + notaryFees + agencyCommisionFees - contribution;
+    for (let t = 1; t <= maxDuration; t++) {
+        // Purchase
         const valeurRevente = price * Math.pow(1 + appreciationRate, t);
-        const cumulMensualites = t <= laonDuration ? mensualite * 12 * t : mensualite * 12 * laonDuration;
+        const cumulMensualites = t <= loanDuration ? mensualite * 12 * t : mensualite * 12 * loanDuration;
         const cumulPropertyTax = propertyTax * t;
-        const cumulFraisCoproriete = fraisCoproriete * t;
-        const pertesNettesAchat = coutInitial + cumulMensualites + cumulPropertyTax + cumulFraisCoproriete - valeurRevente - cumulIncomes;
+        const cumulativeCoOwnershipFees = coOwnershipFees * t;
+        const netPurchaseLosses = coutInitial + cumulMensualites + cumulPropertyTax + cumulativeCoOwnershipFees - valeurRevente - cumulIncomes;
         // location
         const pertesNettesLocation = (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
-        if (pertesNettesLocation > pertesNettesAchat) {
+        if (pertesNettesLocation > netPurchaseLosses) {
             return t - 1; // Croisement des pertes
         }
     }
-    console.log('Pas de croisement des pertes avant ', duree, ' ans');
-    return duree; // Pas de croisement des pertes
+    console.log('Pas de croisement des pertes avant ', maxDuration, ' ans');
+    return maxDuration; // Pas de croisement des pertes
 }
 
-function calculerPertesAchat(price, notaryFees, commisionFees, contribution, mensualite, propertyTax, appreciationRate, duree, laonDuration, cumulIncomes, fraisCoproriete) {
-    const pertesAchat = [];
-    const coutInitial = price + notaryFees + commisionFees - contribution;
-    for (let t = 1; t <= duree; t++) {
+function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, mensualite, propertyTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees) {
+    const purchaseLosses = [];
+    const coutInitial = price + notaryFees + agencyCommisionFees - contribution;
+    for (let t = 1; t <= maxDuration; t++) {
         const valeurRevente = price * Math.pow(1 + appreciationRate, t);
-        const cumulMensualites = t <= laonDuration ? mensualite * 12 * t : mensualite * 12 * laonDuration;
+        const cumulMensualites = t <= loanDuration ? mensualite * 12 * t : mensualite * 12 * loanDuration;
         const cumulPropertyTax = propertyTax * t;
-        const cumulFraisCoproriete = fraisCoproriete * t;
-        const pertesNettesAchat = coutInitial + cumulMensualites + cumulPropertyTax + cumulFraisCoproriete - valeurRevente - cumulIncomes;
-        pertesAchat.push(pertesNettesAchat);
+        const cumulativeCoOwnershipFees = coOwnershipFees * t;
+        let netPurchaseLosses = coutInitial + cumulMensualites + cumulPropertyTax + cumulativeCoOwnershipFees - valeurRevente - cumulIncomes;
+        netPurchaseLosses = Math.round(netPurchaseLosses, 0);
+        purchaseLosses.push(netPurchaseLosses);
     }
-    return pertesAchat;
+    return purchaseLosses;
 }
 
-function calculerPertesLocation(income, duree, fictitiousRentRate) {
+function calculerPertesLocation(income, rentDuration, fictitiousRentRate) {
     const pertesLocation = [];
-    for (let t = 1; t <= duree; t++) {
-        const cumulIncome = (income * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
+    for (let t = 1; t <= rentDuration; t++) {
+        let cumulIncome = (income * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
+        cumulIncome = Math.round(cumulIncome, 0);
         pertesLocation.push(cumulIncome);
     }
     return pertesLocation;
