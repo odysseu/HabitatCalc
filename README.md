@@ -32,9 +32,17 @@
 
 This simple app accessible [> on github-pages <](https://odysseu.github.io/HabitatCalc/)
 
-## Deploy locally 💻
+## Deploy and try the simulator locally 💻
 
 This is a static website merely using local files and javascript packages downloaded from the [jsdeliver **C**ontent **D**elivery **N**etwork](https://cdn.jsdelivr.net).
+
+
+### Prerequisites
+
+- **git**: Ensure you have git (version 2 or higher) installed. Download it from [git-scm.com](https://git-scm.com/downloads
+- **python**: Ensure you have python (version 3.5 or higher) installed. Download it from [python.org](https://www.python.org/downloads/).
+
+### Deploy
 
 If you wish to deploy the app localy and visualise it in your browser :
 
@@ -54,13 +62,13 @@ If you wish to deploy the app localy and visualise it in your browser :
 
 ### Hint if developing in codespace
 
-If you're using codespace, say `https://fictional-something-...-end.github.dev`, you'll be able to see the app at `https://fictional-something-...-end-8000.app.github.dev`
+If you're using codespace, for exemple in `https://fictional-something-...-end.github.dev`, then you can add in the URL `-8000.app` and will be able to see the app at `https://fictional-something-...-end-8000.app.github.dev`
 
 ## Testing 🧪
 
 ### Prerequisites
 
-- **Node.js**: Ensure you have Node.js (version 14 or higher) installed. Download it from [nodejs.org](https://nodejs.org).
+- **Node.js**: Ensure you have Node.js (version 16 or higher) installed. Download it from [nodejs.org](https://nodejs.org).
 - **npm**: npm is included with Node.js. Ensure it's up-to-date.
 
 ### Setup

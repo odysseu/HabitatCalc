@@ -19,7 +19,7 @@ concurrency:
 
 jobs:
   analyze:
-    name: Analyze ${{matrix.language}} code for ${{matrix.os}}
+    name: Analyze for ${{matrix.os}}
     # Will analyse code for each language x os
     runs-on: ${{matrix.os}}
     permissions:
@@ -45,6 +45,7 @@ jobs:
         uses: github/codeql-action/autobuild@v3
 
   test:
+    name: Test with ${{matrix.node-versions}}
     strategy:
       matrix:
         node-versions: ['16', 'latest']
