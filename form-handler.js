@@ -101,8 +101,8 @@ function addIncome() {
     }
     
     // Reset the fields to ensure next inputs will be added in the form
-    container.querySelector('input[name="income-0"]').value = "";
-    container.querySelector('input[name="income-share-0"]').value = "";
+    container.querySelector('input[name="income-0"]').value = undefined;
+    container.querySelector('input[name="income-share-0"]').value = undefined;
     
 }
 
