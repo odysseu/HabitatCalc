@@ -18,21 +18,18 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # analyse code for security
   analyze:
     name: Analyze for ${{matrix.os}}
-    # Will analyse code for each language x os
     runs-on: ${{matrix.os}}
     permissions:
       actions: read
       contents: read
       security-events: write
-
     strategy:
-      fail-fast: false
-      # If `fail-fast: true`, GitHub will cancel all in-progress and queued jobs in the matrix if any job in the matrix fails
+      fail-fast: false # If `fail-fast: true`, GitHub will cancel in-progress and queued jobs in the matrix if any fails
       matrix:
         os: [ubuntu-latest]
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,46 +40,39 @@ jobs:
           queries: security-extended
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
-
+  # test with npm the /tests/**.test.js files
   test:
-    name: Test with ${{matrix.node-versions}}
+    needs: analyse
+    name: Test with node-${{matrix.node-versions}}
     strategy:
       matrix:
         node-versions: ['16', 'latest']
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-versions }}
-
       - name: Install dependencies
         run: npm install
-
       - name: Run tests
         run: npm test
-
+  # build and deploy site to github-pages
   deploy:
     runs-on: ubuntu-latest
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Setup Pages
         uses: actions/configure-pages@v5
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
-
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
