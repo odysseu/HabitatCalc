@@ -37,7 +37,7 @@ test('vérifie que les identifiants utilisés dans dark-mode.js existent', () =>
   expect(githubLogo).toBeInTheDocument();
 });
 
-test('vérifie que les identifiants utilisés dans form-handler.js existent', () => {
+test('checks that the elements used in form-handler.js exist', () => {
   const form = htmlBody.querySelector('#form-calculator');
   const simulation = htmlBody.querySelector('#simulation');
   const myChart = htmlBody.querySelector('#myChart');
@@ -55,8 +55,8 @@ test('vérifie que les identifiants utilisés dans form-handler.js existent', ()
   const fictitiousRentInput = htmlBody.querySelector('#fictitiousRent');
   const HousingTaxInput = htmlBody.querySelector('#HousingTax');
   const propertyTaxInput = htmlBody.querySelector('#propertyTax');
-  const calculerButton = htmlBody.querySelector('#calculate-button');
-  const rapportBouton = htmlBody.querySelector('#report-button');
+  const calculateButton = htmlBody.querySelector('#calculate-button');
+  const reportButton = htmlBody.querySelector('#report-button');
 
   expect(form).toBeInTheDocument();
   expect(simulation).toBeInTheDocument();
@@ -75,6 +75,6 @@ test('vérifie que les identifiants utilisés dans form-handler.js existent', ()
   expect(fictitiousRentInput).toBeInTheDocument();
   expect(HousingTaxInput).toBeInTheDocument();
   expect(propertyTaxInput).toBeInTheDocument();
-  expect(calculerButton).toBeInTheDocument();
-  expect(rapportBouton).toBeInTheDocument();
+  expect(calculateButton).toBeInTheDocument();
+  expect(reportButton).toBeInTheDocument();
 });

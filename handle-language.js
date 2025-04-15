@@ -46,7 +46,7 @@ function loadTranslations(language) {
 function updateContent(translations) {
     if (translations) {
         const contributionLabel = document.querySelector('label[for="contribution"]');
-        const calculerButton = document.getElementById('calculate-button');
+        const calculateButton = document.getElementById('calculate-button');
         const closeButton = document.getElementById('close-welcome');
         const agencyCommisionFeesLabel = document.querySelector('label[for="agency-commission"]');
         const coOwnershipLabel = document.querySelector('label[for="coOwnership"]');
@@ -61,13 +61,13 @@ function updateContent(translations) {
         const pdfFileNamePlaceHolder = document.getElementById('placerholder["pdf-filename"]');
         const priceLabel = document.querySelector('label[for="price"]');
         const purchaseSection = document.getElementById('purchase-section');
-        const sectionEmprunt = document.getElementById('loan-section');
-        const sectionFinancement = document.getElementById('financing-section');
-        const sectionTitre = document.getElementById('title-section');
+        const sectionRent = document.getElementById('loan-section');
+        const sectionFinancing = document.getElementById('financing-section');
+        const sectionTitle = document.getElementById('title-section');
         const apr = document.getElementById('apr-overlay');
         const propertyTaxLabel = document.querySelector('label[for="propertyTax"]');
         const HousingTaxLabel = document.querySelector('label[for="HousingTax"]');
-        const telechargerButton = document.querySelector('#download-button button');
+        const downloadButton = document.querySelector('#download-button button');
         const title = document.getElementById('titre');
         const appreciationRateLabel = document.querySelector('label[for="appreciation-rate"]');
         const insuranceRateLabel = document.querySelector('label[for="insuranceRate"]');
@@ -76,7 +76,7 @@ function updateContent(translations) {
         const welcomeMessage = document.getElementById('welcome-message');
 
         if (contributionLabel) contributionLabel.innerHTML = `${translations.contribution} <span class="help-icon">? <span class="help-text">${translations.helpContribution}</span></span>`;
-        if (calculerButton) calculerButton.textContent = translations.generateReport;
+        if (calculateButton) calculateButton.textContent = translations.generateReport;
         if (closeButton) closeButton.textContent = translations.closeButton;
         if (agencyCommisionFeesLabel) agencyCommisionFeesLabel.innerHTML = `${translations.agencyCommission} <span class="help-icon">? <span class="help-text">${translations.helpAgencyCommission}</span></span>`;
         if (coOwnershipLabel) coOwnershipLabel.innerHTML = `${translations.coOwnership} <span class="help-icon">? <span class="help-text">${translations.helpCoOwnership}</span></span>`;
@@ -91,9 +91,9 @@ function updateContent(translations) {
         if (pdfFileNamePlaceHolder) pdfFileNamePlaceHolder.placeholder = translations.pdfFileNamePlaceHolder;
         if (priceLabel) priceLabel.innerHTML = `${translations.price} <span class="help-icon">? <span class="help-text">${translations.helpPrice}</span></span>`;
         if (purchaseSection) purchaseSection.textContent = translations.purchaseSection;
-        if (sectionEmprunt) sectionEmprunt.textContent = translations.sectionEmprunt;
-        if (sectionFinancement) sectionFinancement.textContent = translations.sectionFinancement;
-        if (sectionTitre) sectionTitre.textContent = translations.sectionTitle;
+        if (sectionRent) sectionRent.textContent = translations.sectionRent;
+        if (sectionFinancing) sectionFinancing.textContent = translations.sectionFinancing;
+        if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
         if (apr) calculateAPR(); //apr.textContent = `${translations.reportAPR}: `;
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
         if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;
@@ -101,7 +101,7 @@ function updateContent(translations) {
         if (fictitiousRentRateLabel) fictitiousRentRateLabel.innerHTML = `${translations.fictitiousRentRate} <span class="help-icon">? <span class="help-text">${translations.helpFictitiousRentRate}</span></span>`;
         if (propertyTaxLabel) propertyTaxLabel.innerHTML = `${translations.propertyTax} <span class="help-icon">? <span class="help-text">${translations.helpPropertyTax}</span></span>`;
         if (HousingTaxLabel) HousingTaxLabel.innerHTML = `${translations.HousingTax} <span class="help-icon">? <span class="help-text">${translations.helpHousingTax}</span></span>`;
-        if (telechargerButton) telechargerButton.textContent = translations.downloadPDF;
+        if (downloadButton) downloadButton.textContent = translations.downloadPDF;
         if (title) title.textContent = translations.title;
         if (welcomeMessage) welcomeMessage.querySelector('p').innerHTML = translations.welcomeMessage;
     }

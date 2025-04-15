@@ -54,7 +54,7 @@ test('vérifie que les identifiants utilisés dans dark-mode.js existent', () =>
 });
 
 // Tests que les identifiants utilisés dans form-handler.js existent dans le .html
-test('vérifie que les identifiants utilisés dans form-handler.js existent', () => {
+test('checks that the elements used in form-handler.js exist', () => {
   const form = htmlBody.querySelector('#form-calculator');
   const simulation = htmlBody.querySelector('#simulation');
   const myChart = htmlBody.querySelector('#myChart');
@@ -72,8 +72,8 @@ test('vérifie que les identifiants utilisés dans form-handler.js existent', ()
   const fictitiousRentInput = htmlBody.querySelector('#fictitiousRent');
   const HousingTaxInput = htmlBody.querySelector('#HousingTax');
   const propertyTaxInput = htmlBody.querySelector('#propertyTax');
-  const calculerButton = htmlBody.querySelector('#calculate-button');
-  const rapportBouton = htmlBody.querySelector('#report-button');
+  const calculateButton = htmlBody.querySelector('#calculate-button');
+  const reportButton = htmlBody.querySelector('#report-button');
 
   expect(form).toBeInTheDocument();
   expect(simulation).toBeInTheDocument();
@@ -92,11 +92,11 @@ test('vérifie que les identifiants utilisés dans form-handler.js existent', ()
   expect(fictitiousRentInput).toBeInTheDocument();
   expect(HousingTaxInput).toBeInTheDocument();
   expect(propertyTaxInput).toBeInTheDocument();
-  expect(calculerButton).toBeInTheDocument();
-  expect(rapportBouton).toBeInTheDocument();
+  expect(calculateButton).toBeInTheDocument();
+  expect(reportButton).toBeInTheDocument();
 });
 
-// Tests que les fonctions utilisées dans form-handler.js existent
+// Tests that the function used in fom-handler.js exist
 test('vérifie que les fonctions utilisées dans form-handler.js existent', () => {
   expect(typeof dom.window.resetForm).toBe('function');
   expect(typeof dom.window.addIncome).toBe('function');
@@ -105,7 +105,7 @@ test('vérifie que les fonctions utilisées dans form-handler.js existent', () =
   expect(typeof dom.window.calculateMonthlyPayment).toBe('function');
   expect(typeof dom.window.trouverAnneePertesInferieures).toBe('function');
   expect(typeof dom.window.calculatePurchaseLosses).toBe('function');
-  expect(typeof dom.window.calculerPertesLocation).toBe('function');
+  expect(typeof dom.window.calculateRentLosses).toBe('function');
 });
 
 // Tests que les fonctions utilisées dans dark-mode.js existent

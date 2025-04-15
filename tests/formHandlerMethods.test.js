@@ -30,7 +30,7 @@ test('vérifie que les fonctions existent', () => {
   expect(typeof dom.window.calculateMonthlyPayment).toBe('function');
   expect(typeof dom.window.trouverAnneePertesInferieures).toBe('function');
   expect(typeof dom.window.calculatePurchaseLosses).toBe('function');
-  expect(typeof dom.window.calculerPertesLocation).toBe('function');
+  expect(typeof dom.window.calculateRentLosses).toBe('function');
 });
 
 test('vérifie que les éléments du DOM sont utilisés correctement', () => {
@@ -82,13 +82,13 @@ test('vérifie que les éléments du DOM sont utilisés correctement', () => {
   expect(cumulIncomes).toBeCloseTo(1200 * (75 / 100) * 12);
 
   // Test trouverAnneePertesInferieures function
-  // trouverAnneePertesInferieures(price, notaryFees, commisionFees, contribution, mensualite, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes)
+  // trouverAnneePertesInferieures(price, notaryFees, commisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes)
   const lossesYear = dom.window.trouverAnneePertesInferieures(
     200000,                 // price
     (8/100) * 200000,       // notaryFees
-    0,                      // fraisCommision
+    0,                      // commissionFees
     5000,                   // contribution
-    1000,                   // mensualite
+    1000,                   // monthlyPayment
     1000,                   // propertyTax
     0.02,                   // appreciationRate
     30,                     // maxDuration
@@ -100,17 +100,17 @@ test('vérifie que les éléments du DOM sont utilisés correctement', () => {
   );
   expect(lossesYear).toEqual(2);
 
-  // Test calculateMonthlyPayment function avec zéro emprunt
-  const mensualite0 = dom.window.calculateMonthlyPayment(0, 20, 1/100, 0);
-  expect(mensualite0).toEqual(0);
+  // Test calculateMonthlyPayment function with zero loan
+  const monthlyPayment0 = dom.window.calculateMonthlyPayment(0, 20, 1/100, 0);
+  expect(monthlyPayment0).toEqual(0);
 
-  // Test calculateMonthlyPayment function avec zéro emprunt
+  // Test calculateMonthlyPayment function with zero loan
   const aprDefault = dom.window.calculateAPR();
   expect(aprDefault).toBeCloseTo(10, 0);
   
-  // Test calculateMonthlyPayment function avec un emprunt de 324000 sur 20 ans à 1% d'intérêt
-  const mensualite324000 = dom.window.calculateMonthlyPayment(324000, 20, 1/100, 0);
-  expect(mensualite324000).toBeCloseTo(1490, 0);
+  // Test calculateMonthlyPayment function with a 324000 loan on 20 years at 1% interest rate
+  const monthlyPayment324000 = dom.window.calculateMonthlyPayment(324000, 20, 1/100, 0);
+  expect(monthlyPayment324000).toBeCloseTo(1490, 0);
   
 
   // Test calculatePurchaseLosses function
@@ -121,8 +121,8 @@ test('vérifie que les éléments du DOM sont utilisés correctement', () => {
   const purchaseLossesOneYear = dom.window.calculatePurchaseLosses(300000, 17000, 6000, 50000, 0, 0, 0, 1, 1, 0, 0);
   expect(purchaseLossesOneYear).toEqual([17000 + 6000 - 50000]);
 
-  // Test calculerPertesLocation function
-  const pertesLocation = dom.window.calculerPertesLocation(1500, 30, 0.03);
-  console.log("pertesLocation: ", pertesLocation);
-  expect(pertesLocation.length).toEqual(30);
+  // Test calculateRentLosses function
+  const rentLosses = dom.window.calculateRentLosses(1500, 30, 0.03);
+  console.log("rentLosses: ", rentLosses);
+  expect(rentLosses.length).toEqual(30);
 });

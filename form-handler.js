@@ -55,11 +55,11 @@ function addIncome() {
     const container = document.getElementById('incomes-container');
     // Get values from the first fields
     const currentIncomeValue = container.querySelector('input[name="income-0"]').value.trim();
-    const currentDurationValue = container.querySelector('input[name="income-share-0"]').value.trim();
+    const currentTimeShareValue = container.querySelector('input[name="income-share-0"]').value.trim();
 
     let newIncome;
     try {
-        if (isValidNumber(currentIncomeValue) && isValidNumber(currentDurationValue)) {
+        if (isValidNumber(currentIncomeValue) && isValidNumber(currentTimeShareValue)) {
             // If both are valid numbers, create the new inputs
             newIncome = document.createElement('div');
             newIncome.className = 'income-container';
@@ -76,7 +76,7 @@ function addIncome() {
             inputDuration.step = '0.01';
             inputDuration.id = `income-share-${incomeCount}`;
             inputDuration.name = `income-share-${incomeCount}`;
-            inputDuration.value = currentDurationValue;
+            inputDuration.value = currentTimeShareValue;
             inputDuration.placeholder = 'Durée (% de l\'année)';
             inputDuration.required = true;
 
@@ -93,7 +93,7 @@ function addIncome() {
         } else {
             console.log("Invalid input detected:", {
                 income: currentIncomeValue,
-                duration: currentDurationValue
+                duration: currentTimeShareValue
             });
         }
     } catch (error) {
@@ -139,24 +139,24 @@ function extractIncomes() {
 }
 
 function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnuel, insuranceRate) {
-    const nombreMois = loanDuration * 12;
-    const mensualiteEmprunt = interestRateAnnuel === 0 ? borrowedAmount / nombreMois : (borrowedAmount * (interestRateAnnuel / 12)) / (1 - Math.pow(1 + (interestRateAnnuel / 12), -(loanDuration * 12)));
-    const mensualiteAssurance = borrowedAmount * insuranceRate / nombreMois;
-    return mensualiteEmprunt + mensualiteAssurance;
+    const numberMonths = loanDuration * 12;
+    const loanMonthlyPayment = interestRateAnnuel === 0 ? borrowedAmount / numberMonths : (borrowedAmount * (interestRateAnnuel / 12)) / (1 - Math.pow(1 + (interestRateAnnuel / 12), -(loanDuration * 12)));
+    const assuranceMonthlyPayment = borrowedAmount * insuranceRate / numberMonths;
+    return loanMonthlyPayment + assuranceMonthlyPayment;
 }
 
-function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, contribution, mensualite, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees) {
-    const coutInitial = price + notaryFees + agencyCommisionFees - contribution;
+function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees) {
+    const initialCost = price + notaryFees + agencyCommisionFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         // Purchase
-        const valeurRevente = price * Math.pow(1 + appreciationRate, t);
-        const cumulMensualites = t <= loanDuration ? mensualite * 12 * t : mensualite * 12 * loanDuration;
+        const resaleValue = price * Math.pow(1 + appreciationRate, t);
+        const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
         const cumulPropertyTax = propertyTax * t;
         const cumulativeCoOwnershipFees = coOwnershipFees * t;
-        const netPurchaseLosses = coutInitial + cumulMensualites + cumulPropertyTax + cumulativeCoOwnershipFees - valeurRevente - cumulIncomes;
+        const netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
         // location
-        const pertesNettesLocation = (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
-        if (pertesNettesLocation > netPurchaseLosses) {
+        const rentNetLosses = (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
+        if (rentNetLosses > netPurchaseLosses) {
             return t - 1; // Croisement des pertes
         }
     }
@@ -164,27 +164,27 @@ function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, c
     return maxDuration; // Pas de croisement des pertes
 }
 
-function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, mensualite, propertyTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees) {
+function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees) {
     const purchaseLosses = [];
-    const coutInitial = price + notaryFees + agencyCommisionFees - contribution;
+    const initialCost = price + notaryFees + agencyCommisionFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
-        const valeurRevente = price * Math.pow(1 + appreciationRate, t);
-        const cumulMensualites = t <= loanDuration ? mensualite * 12 * t : mensualite * 12 * loanDuration;
+        const resaleValue = price * Math.pow(1 + appreciationRate, t);
+        const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
         const cumulPropertyTax = propertyTax * t;
         const cumulativeCoOwnershipFees = coOwnershipFees * t;
-        let netPurchaseLosses = coutInitial + cumulMensualites + cumulPropertyTax + cumulativeCoOwnershipFees - valeurRevente - cumulIncomes;
+        let netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
         netPurchaseLosses = Math.round(netPurchaseLosses, 0);
         purchaseLosses.push(netPurchaseLosses);
     }
     return purchaseLosses;
 }
 
-function calculerPertesLocation(income, rentDuration, fictitiousRentRate) {
-    const pertesLocation = [];
+function calculateRentLosses(income, rentDuration, fictitiousRentRate) {
+    const rentLosses = [];
     for (let t = 1; t <= rentDuration; t++) {
         let cumulIncome = (income * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
         cumulIncome = Math.round(cumulIncome, 0);
-        pertesLocation.push(cumulIncome);
+        rentLosses.push(cumulIncome);
     }
-    return pertesLocation;
+    return rentLosses;
 }
