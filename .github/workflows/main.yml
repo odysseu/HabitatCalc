@@ -18,10 +18,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # analyse code for security
+  # Analyze code for security
   analyze:
-    name: Analyze for ${{matrix.os}}
-    runs-on: ${{matrix.os}}
+    name: Analyze for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     permissions:
       actions: read
       contents: read
@@ -40,26 +40,27 @@ jobs:
           queries: security-extended
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
-  # test with npm the /tests/**.test.js files
+  # Test with npm the /tests/**.test.js files
   test:
-    needs: analyse
-    name: Test with node-${{matrix.node-versions}}
+    needs: analyze
+    name: Test with node-${{matrix.node-version}}
     strategy:
       matrix:
-        node-versions: ['16', 'latest']
+        node-version: ['16', 'latest']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-versions }}
+          node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: npm install
       - name: Run tests
         run: npm test
-  # build and deploy site to github-pages
+  # Build and deploy site to GitHub Pages
   deploy:
     runs-on: ubuntu-latest
     needs: test
