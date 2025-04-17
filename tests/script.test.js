@@ -54,58 +54,58 @@ test('vérifie que les identifiants utilisés dans dark-mode.js existent', () =>
 });
 
 // Tests que les identifiants utilisés dans form-handler.js existent dans le .html
-test('vérifie que les identifiants utilisés dans form-handler.js existent', () => {
-  const form = htmlBody.querySelector('#calculette-form');
-  const resultat = htmlBody.querySelector('#resultat');
+test('checks that the elements used in form-handler.js exist', () => {
+  const form = htmlBody.querySelector('#form-calculator');
+  const simulation = htmlBody.querySelector('#simulation');
   const myChart = htmlBody.querySelector('#myChart');
-  const loyersContainer = htmlBody.querySelector('#loyers-container');
-  const prixInput = htmlBody.querySelector('#prix');
-  const notaireInput = htmlBody.querySelector('#notaire');
-  const coproprieteInput = htmlBody.querySelector('#copropriete');
-  const tauxAppreciationInput = htmlBody.querySelector('#taux-appreciation');
-  const tauxLoyerFictifInput = htmlBody.querySelector('#taux-loyer-fictif');
-  const commissionInput = htmlBody.querySelector('#commission');
-  const apportInput = htmlBody.querySelector('#apport');
-  const tauxInteretInput = htmlBody.querySelector('#taux-interet');
-  const dureePretInput = htmlBody.querySelector('#duree-pret');
-  const tauxAssuranceInput = htmlBody.querySelector('#taux-assurance');
-  const loyerFictifInput = htmlBody.querySelector('#loyer-fictif');
-  const taxeHabitationInput = htmlBody.querySelector('#taxe-habitation');
-  const taxeFonciereInput = htmlBody.querySelector('#taxe-fonciere');
-  const calculerButton = htmlBody.querySelector('#calculer-button');
-  const rapportBouton = htmlBody.querySelector('#rapport-bouton');
+  const incomesContainer = htmlBody.querySelector('#incomes-container');
+  const priceInput = htmlBody.querySelector('#price');
+  const notaryInput = htmlBody.querySelector('#notary');
+  const coOwnershipInput = htmlBody.querySelector('#coOwnership');
+  const appreciationRateInput = htmlBody.querySelector('#appreciation-rate');
+  const fictitiousRentRateInput = htmlBody.querySelector('#fictitiousRentRate');
+  const agencyCommissionInput = htmlBody.querySelector('#agency-commission');
+  const contributionInput = htmlBody.querySelector('#contribution');
+  const interestRateInput = htmlBody.querySelector('#interest-rate');
+  const loanDurationInput = htmlBody.querySelector('#loanDuration');
+  const insuranceRateInput = htmlBody.querySelector('#insuranceRate');
+  const fictitiousRentInput = htmlBody.querySelector('#fictitiousRent');
+  const HousingTaxInput = htmlBody.querySelector('#HousingTax');
+  const propertyTaxInput = htmlBody.querySelector('#propertyTax');
+  const calculateButton = htmlBody.querySelector('#calculate-button');
+  const reportButton = htmlBody.querySelector('#report-button');
 
   expect(form).toBeInTheDocument();
-  expect(resultat).toBeInTheDocument();
+  expect(simulation).toBeInTheDocument();
   expect(myChart).toBeInTheDocument();
-  expect(loyersContainer).toBeInTheDocument();
-  expect(prixInput).toBeInTheDocument();
-  expect(notaireInput).toBeInTheDocument();
-  expect(coproprieteInput).toBeInTheDocument();
-  expect(tauxAppreciationInput).toBeInTheDocument();
-  expect(tauxAssuranceInput).toBeInTheDocument();
-  expect(tauxLoyerFictifInput).toBeInTheDocument();
-  expect(commissionInput).toBeInTheDocument();
-  expect(apportInput).toBeInTheDocument();
-  expect(tauxInteretInput).toBeInTheDocument();
-  expect(dureePretInput).toBeInTheDocument();
-  expect(loyerFictifInput).toBeInTheDocument();
-  expect(taxeHabitationInput).toBeInTheDocument();
-  expect(taxeFonciereInput).toBeInTheDocument();
-  expect(calculerButton).toBeInTheDocument();
-  expect(rapportBouton).toBeInTheDocument();
+  expect(incomesContainer).toBeInTheDocument();
+  expect(priceInput).toBeInTheDocument();
+  expect(notaryInput).toBeInTheDocument();
+  expect(coOwnershipInput).toBeInTheDocument();
+  expect(appreciationRateInput).toBeInTheDocument();
+  expect(insuranceRateInput).toBeInTheDocument();
+  expect(fictitiousRentRateInput).toBeInTheDocument();
+  expect(agencyCommissionInput).toBeInTheDocument();
+  expect(contributionInput).toBeInTheDocument();
+  expect(interestRateInput).toBeInTheDocument();
+  expect(loanDurationInput).toBeInTheDocument();
+  expect(fictitiousRentInput).toBeInTheDocument();
+  expect(HousingTaxInput).toBeInTheDocument();
+  expect(propertyTaxInput).toBeInTheDocument();
+  expect(calculateButton).toBeInTheDocument();
+  expect(reportButton).toBeInTheDocument();
 });
 
-// Tests que les fonctions utilisées dans form-handler.js existent
+// Tests that the function used in fom-handler.js exist
 test('vérifie que les fonctions utilisées dans form-handler.js existent', () => {
   expect(typeof dom.window.resetForm).toBe('function');
-  expect(typeof dom.window.ajouterLoyer).toBe('function');
-  expect(typeof dom.window.supprimerLoyer).toBe('function');
-  expect(typeof dom.window.extraireLoyers).toBe('function');
-  expect(typeof dom.window.calculerMensualite).toBe('function');
+  expect(typeof dom.window.addIncome).toBe('function');
+  expect(typeof dom.window.deleteIncome).toBe('function');
+  expect(typeof dom.window.extractIncomes).toBe('function');
+  expect(typeof dom.window.calculateMonthlyPayment).toBe('function');
   expect(typeof dom.window.trouverAnneePertesInferieures).toBe('function');
-  expect(typeof dom.window.calculerPertesAchat).toBe('function');
-  expect(typeof dom.window.calculerPertesLocation).toBe('function');
+  expect(typeof dom.window.calculatePurchaseLosses).toBe('function');
+  expect(typeof dom.window.calculateRentLosses).toBe('function');
 });
 
 // Tests que les fonctions utilisées dans dark-mode.js existent
