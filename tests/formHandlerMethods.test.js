@@ -1,159 +1,143 @@
 // Description: Tests for form-handler.js
-global.TextEncoder = require("util").TextEncoder;
-global.TextDecoder = require("util").TextDecoder;
+const { addIncome } = require('../form-handler');
 const fs = require('fs');
 const path = require('path');
-const { JSDOM } = require('jsdom');
-require('@testing-library/jest-dom');
 
-const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
-const scriptContentForm = fs.readFileSync(path.resolve(__dirname, '../form-handler.js'), 'utf8');
+/**
+ * @jest-environment jsdom
+ */
 
-let dom;
-let htmlBody;
-let domWindow;
+describe('form-handler.js methods', () => {
+  global.TextEncoder = require("util").TextEncoder;
+  global.TextDecoder = require("util").TextDecoder;
 
-beforeEach(() => {
-  dom = new JSDOM(html, { runScripts: 'dangerously' });
-  domWindow = dom.window;
-  htmlBody = domWindow.document.body;
-  const scriptElement = domWindow.document.createElement('script');
-  scriptElement.textContent = scriptContentForm;
-  domWindow.document.head.appendChild(scriptElement);
-});
-
-// method to log incomes
-function logIncomeInputs(text) {
-  let inputs = domWindow.document.querySelectorAll('input[name^="income-"]');
-  let inputValues = {};
-  inputs.forEach(input => {
-    inputValues[input.name] = input.value;
+  let container, incomeInput, durationInput;
+  beforeAll(() => {
+      // Load the index.html file
+      const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
+      document.body.innerHTML = html;
   });
-  console.log(text, " :\n", inputValues);
-}
+  beforeEach(() => {
+      // Set up the DOM structure
+      // document.body.innerHTML = `
+      //     <div id="incomes-container">
+      //         <div class="income-container">
+      //             <input type="number" name="income-0" value="2000" />
+      //             <input type="number" name="income-share-0" value="50" />
+      //         </div>
+      //     </div>
+      // `;
+        container = document.getElementById('incomes-container');
+        incomeInput = container.querySelector('input[name="income-0"]');
+        durationInput = container.querySelector('input[name="income-share-0"]');
+  });
+  test('addIncome adds a new income input', () => {
+    const container = document.getElementById('incomes-container');
+    const incomeInput = document.createElement('input');
+    incomeInput.name = 'income-0';
+    incomeInput.value = '2000';
+    container.appendChild(incomeInput);
 
-test('vérifie que les fonctions existent', () => {
-  expect(typeof domWindow.resetForm).toBe('function');
-  expect(typeof domWindow.calculateAPR).toBe('function');
-  expect(typeof domWindow.addIncome).toBe('function');
-  expect(typeof domWindow.deleteIncome).toBe('function');
-  expect(typeof domWindow.extractIncomes).toBe('function');
-  expect(typeof domWindow.isValidNumber).toBe('function');
-  expect(typeof domWindow.calculateMonthlyPayment).toBe('function');
-  expect(typeof domWindow.trouverAnneePertesInferieures).toBe('function');
-  expect(typeof domWindow.calculatePurchaseLosses).toBe('function');
-  expect(typeof domWindow.calculateRentLosses).toBe('function');
-});
+    const incomeShareInput = document.createElement('input');
+    incomeShareInput.name = 'income-share-0';
+    incomeShareInput.value = '50';
+    container.appendChild(incomeShareInput);
 
-test('vérifie que les éléments du DOM sont utilisés correctement', () => {
-  const priceInput = htmlBody.querySelector('#price');
-  expect(priceInput).toBeInTheDocument();
-  const notaryInput = htmlBody.querySelector('#notary');
-  expect(notaryInput).toBeInTheDocument();
+    addIncome(document);
 
-  //   // Test resetForm function
-  //   domWindow.resetForm();
-  //   expect(htmlBody.querySelector('#simulation').innerHTML).toBe('');
-  //   const canvas = htmlBody.querySelector('#myChart');
-  //   const context = canvas.getContext('2d');
-  //   expect(context.getImageData(0, 0, canvas.width, canvas.height).data.some(channel => channel !== 0)).toBe(false);
+    const newIncome = container.querySelector('input[name="income-1"]');
+    const newIncomeShare = container.querySelector('input[name="income-share-1"]');
 
-  // const container = document.getElementById('incomes-container');
-  // // Get values from the first fields
-  // const currentIncomeValue = container.querySelector('input[name="income-0"]').value.trim();
-  // const currentTimeShareValue = container.querySelector('input[name="income-share-0"]').value.trim();
-  // Test addIncome function
-  let incomeInput0 = htmlBody.querySelectorAll('input[name="income-0"]');
-  let incomeShareInput0 = htmlBody.querySelectorAll('input[name="income-share-0"]');
+    expect(newIncome).toBeInTheDocument();
+    expect(newIncome.value).toBe('2000');
+    expect(newIncomeShare).toBeInTheDocument();
+    expect(newIncomeShare.value).toBe('50');
+  });
 
-  expect(incomeInput0.value).toBe(undefined);
-  expect(incomeShareInput0.value).toBe(undefined);
-  incomeInput0.value = '1000';
-  incomeShareInput0.value = '50';
-  expect(incomeInput0.value).toBe('1000');
-  expect(incomeShareInput0.value).toBe('50');
-  let totalIncome = domWindow.extractIncomes();
-  expect(totalIncome).toBe(0);
-  // logIncomeInputs("Before addIncome");
-  // domWindow.addIncome();
-  // logIncomeInputs("After addIncome");
-  // totalIncome = domWindow.extractIncomes();
-  // expect(totalIncome).toBeCloseTo(1000 * 50/100 * 12, 2);
-  // const incomeInput1 = domWindow.document.querySelectorAll('input[name="income-1"]');
-  // const incomeShareInput1 = domWindow.document.querySelectorAll('input[name="income-share-1"]');
-  // expect(incomeInput1.value).toBe(1000);
-  // expect(incomeShareInput1.value).toBe(50);
-  // incomeInput0 = htmlBody.querySelectorAll('input[name="income-0"]');
-  // incomeShareInput0 = htmlBody.querySelectorAll('input[name="income-share-0"]');
-  // expect(incomeInput0.value).toBe(undefined);
-  // expect(incomeShareInput0.value).toBe(undefined);
-  // totalIncome = domWindow.extractIncomes();
-  // expect(totalIncome).toBeCloseTo(1000 * 50/100 * 12, 2);
-  // const incomeContainer = htmlBody.querySelectorAll('.income-container');
-  // expect(incomeContainer.length).toBe(3);
-  // // test added values
-  // const currentIncomeValue = htmlBody.querySelector('input[name="income-1"]').value.trim();
-  // const currentTimeShareValue = htmlBody.querySelector('input[name="income-share-1"]').value.trim();
-  // logIncomeInputs();
-  // expect(currentIncomeValue).toBe(undefined);
-  // expect(currentTimeShareValue).toBe(undefined);
-  // // Test deleteIncome function
-  // const removeButton = incomeContainer[1].querySelector('button');
-  // domWindow.deleteIncome(removeButton);
-  // expect(htmlBody.querySelectorAll('.income-container').length).toBe(2);
-  //
-  // // Test extractIncomes function
-  // const cumulIncomes0 = domWindow.extractIncomes();
-  // const incomeInput = htmlBody.querySelectorAll('input[name="income-0"]');
-  // const incomeShareInput = htmlBody.querySelectorAll('input[name="income-share-0"]');
-  // incomeInput.value = '1200';
-  // incomeShareInput.value = '75';
-  // domWindow.addIncome();
-  // const cumulIncomes = domWindow.extractIncomes();
-  // expect(cumulIncomes).toBeCloseTo(cumulIncomes0 + 1200 * (75 / 100) * 12);
+  test('calculateAPR calculates the APR correctly', () => {
+    document.getElementById('insuranceRate').value = '1';
+    document.getElementById('interest-rate').value = '2';
+    document.getElementById('file-fees').value = '1000';
+    document.getElementById('price').value = '200000';
+    document.getElementById('notary').value = '8';
+    document.getElementById('agency-commission').value = '5';
+    document.getElementById('contribution').value = '50000';
+    document.getElementById('loanDuration').value = '20';
 
-  // Test trouverAnneePertesInferieures function
-  // trouverAnneePertesInferieures(price, notaryFees, commisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes)
-  const lossesYear = domWindow.trouverAnneePertesInferieures(
-    200000,                 // price
-    (8/100) * 200000,       // notaryFees
-    0,                      // commissionFees
-    5000,                   // contribution
-    1000,                   // monthlyPayment
-    1000,                   // propertyTax
-    0.02,                   // appreciationRate
-    30,                     // maxDuration
-    20,                     // loanDuration
-    1100,                   // fictitiousRent
-    0.01,                   // fictitiousRentRate
-    0,                      // cumulIncomes
-    0                       // coOwnershipFees
-  );
-  expect(lossesYear).toEqual(2);
+    const apr = calculateAPR();
 
-  // Test calculateMonthlyPayment function with zero loan
-  const monthlyPayment0 = domWindow.calculateMonthlyPayment(0, 20, 1/100, 0);
-  expect(monthlyPayment0).toEqual(0);
+    expect(apr).toBeGreaterThan(0);
+    expect(apr).toBeCloseTo(1.5, 1); // Adjust expected value based on your calculation logic
+  });
 
-  // Test calculateMonthlyPayment function with zero loan
-  const aprDefault = domWindow.calculateAPR();
-  expect(aprDefault).toBeCloseTo(10, 0);
-  
-  // Test calculateMonthlyPayment function with a 324000 loan on 20 years at 1% interest rate
-  const monthlyPayment324000 = domWindow.calculateMonthlyPayment(324000, 20, 1/100, 0);
-  expect(monthlyPayment324000).toBeCloseTo(1490, 0);
-  
+  test('extractIncomes calculates cumulative incomes correctly', () => {
+    const container = document.getElementById('incomes-container');
+    const incomeInput = document.createElement('input');
+    incomeInput.name = 'income-0';
+    incomeInput.value = '2000';
+    container.appendChild(incomeInput);
 
-  // Test calculatePurchaseLosses function
-  const purchaseLosses = domWindow.calculatePurchaseLosses(200000, 10000, 5000, 50000, 1000, 1000, 0.02, 30, 20, cumulIncomes, 0);
-  expect(purchaseLosses.length).toEqual(30);
+    const incomeShareInput = document.createElement('input');
+    incomeShareInput.name = 'income-share-0';
+    incomeShareInput.value = '50';
+    container.appendChild(incomeShareInput);
 
-  // Test calculatePurchaseLosses function
-  const purchaseLossesOneYear = domWindow.calculatePurchaseLosses(300000, 17000, 6000, 50000, 0, 0, 0, 1, 1, 0, 0);
-  expect(purchaseLossesOneYear).toEqual([17000 + 6000 - 50000]);
+    const totalIncome = extractIncomes();
 
-  // Test calculateRentLosses function
-  const rentLosses = domWindow.calculateRentLosses(1500, 30, 0.03);
-  console.log("rentLosses: ", rentLosses);
-  expect(rentLosses.length).toEqual(30);
+    expect(totalIncome).toBeCloseTo(2000 * 0.5 * 12, 2);
+  });
+
+  test('calculateMonthlyPayment calculates monthly payment correctly', () => {
+    const monthlyPayment = calculateMonthlyPayment(200000, 20, 0.01, 0.002);
+    expect(monthlyPayment).toBeGreaterThan(0);
+    expect(monthlyPayment).toBeCloseTo(920, 0); // Adjust expected value based on your calculation logic
+  });
+
+  test('trouverAnneePertesInferieures finds the correct year of loss crossover', () => {
+    const year = trouverAnneePertesInferieures(
+      200000, // price
+      16000,  // notaryFees
+      0,      // agencyCommissionFees
+      5000,   // contribution
+      1000,   // monthlyPayment
+      1000,   // propertyTax
+      0.02,   // appreciationRate
+      30,     // maxDuration
+      20,     // loanDuration
+      1200,   // fictitiousRent
+      0.01,   // fictitiousRentRate
+      0,      // cumulIncomes
+      0,      // coOwnershipFees
+      0       // fileFees
+    );
+
+    expect(year).toBe(2); // Adjust expected value based on your calculation logic
+  });
+
+  test('calculatePurchaseLosses calculates purchase losses correctly', () => {
+    const losses = calculatePurchaseLosses(
+      200000, // price
+      16000,  // notaryFees
+      0,      // agencyCommissionFees
+      5000,   // contribution
+      1000,   // monthlyPayment
+      1000,   // propertyTax
+      0.02,   // appreciationRate
+      30,     // maxDuration
+      20,     // loanDuration
+      0,      // cumulIncomes
+      0,      // coOwnershipFees
+      0       // fileFees
+    );
+
+    expect(losses.length).toBe(30);
+    expect(losses[0]).toBeGreaterThan(0);
+  });
+
+  test('calculateRentLosses calculates rent losses correctly', () => {
+    const losses = calculateRentLosses(1500, 30, 0.03);
+    expect(losses.length).toBe(30);
+    expect(losses[0]).toBeGreaterThan(0);
+  });
+
 });

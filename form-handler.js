@@ -9,15 +9,6 @@ function resetForm() {
     loadTranslations(languageSelect.value);
 }
 
-document.getElementById('insuranceRate').addEventListener('input', calculateAPR);
-document.getElementById('interest-rate').addEventListener('input', calculateAPR);
-document.getElementById('file-fees').addEventListener('input', calculateAPR);
-document.getElementById('price').addEventListener('input', calculateAPR);
-document.getElementById('notary').addEventListener('input', calculateAPR);
-document.getElementById('agency-commission').addEventListener('input', calculateAPR);
-document.getElementById('contribution').addEventListener('input', calculateAPR);
-document.getElementById('loanDuration').addEventListener('input', calculateAPR);
-
 function calculateAPR() {
     // form values
     const insuranceRate = parseFloat(document.getElementById('insuranceRate').value) / 100 || 0;
@@ -50,9 +41,9 @@ function calculateAPR() {
     return apr;
 }
 
-function addIncome() {
-    let incomeCount = document.querySelectorAll('.income-container').length;
-    const container = document.getElementById('incomes-container');
+function addIncome(doc = document) {
+    let incomeCount = doc.querySelectorAll('.income-container').length;
+    const container = doc.getElementById('incomes-container');
     // Get values from the first fields
     const currentIncomeValue = container.querySelector('input[name="income-0"]').value.trim();
     const currentTimeShareValue = container.querySelector('input[name="income-share-0"]').value.trim();
@@ -61,9 +52,9 @@ function addIncome() {
     try {
         if (isValidNumber(currentIncomeValue) && isValidNumber(currentTimeShareValue)) {
             // If both are valid numbers, create the new inputs
-            newIncome = document.createElement('div');
+            newIncome = doc.createElement('div');
             newIncome.className = 'income-container';
-            const inputIncome = document.createElement('input');
+            const inputIncome = doc.createElement('input');
             inputIncome.type = 'number';
             inputIncome.id = `income-${incomeCount}`;
             inputIncome.name = `income-${incomeCount}`;
@@ -71,7 +62,7 @@ function addIncome() {
             inputIncome.placeholder = 'Revenu mensuel (€)';
             inputIncome.required = true;
 
-            const inputDuration = document.createElement('input');
+            const inputDuration = doc.createElement('input');
             inputDuration.type = 'number';
             inputDuration.step = '0.01';
             inputDuration.id = `income-share-${incomeCount}`;
@@ -80,7 +71,7 @@ function addIncome() {
             inputDuration.placeholder = 'Durée (% de l\'année)';
             inputDuration.required = true;
 
-            const deleteButton = document.createElement('button');
+            const deleteButton = doc.createElement('button');
             deleteButton.type = 'button';
             deleteButton.textContent = '-';
             deleteButton.onclick = function() { deleteIncome(this); };
@@ -145,8 +136,8 @@ function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnue
     return loanMonthlyPayment + assuranceMonthlyPayment;
 }
 
-function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees) {
-    const initialCost = price + notaryFees + agencyCommisionFees - contribution;
+function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
+    const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         // Purchase
         const resaleValue = price * Math.pow(1 + appreciationRate, t);
@@ -157,16 +148,16 @@ function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, c
         // location
         const rentNetLosses = (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
         if (rentNetLosses > netPurchaseLosses) {
-            return t - 1; // Croisement des pertes
+            return t - 1; // crossing of losses
         }
     }
     console.log('Pas de croisement des pertes avant ', maxDuration, ' ans');
-    return maxDuration; // Pas de croisement des pertes
+    return maxDuration; // no crossing of losses
 }
 
-function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees) {
+function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees) {
     const purchaseLosses = [];
-    const initialCost = price + notaryFees + agencyCommisionFees - contribution;
+    const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         const resaleValue = price * Math.pow(1 + appreciationRate, t);
         const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
@@ -188,3 +179,5 @@ function calculateRentLosses(income, rentDuration, fictitiousRentRate) {
     }
     return rentLosses;
 }
+
+module.exports = { resetForm, calculateAPR, addIncome, deleteIncome, extractIncomes, calculateMonthlyPayment, trouverAnneePertesInferieures, calculatePurchaseLosses, calculateRentLosses };
