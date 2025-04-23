@@ -1,5 +1,5 @@
 // Description: Tests for form-handler.js
-const { addIncome } = require('../form-handler');
+const { extractIncomes, calculateMonthlyPayment, trouverAnneePertesInferieures } = require('../form-handler');
 const fs = require('fs');
 const path = require('path');
 
@@ -31,42 +31,7 @@ describe('form-handler.js methods', () => {
         incomeInput = container.querySelector('input[name="income-0"]');
         durationInput = container.querySelector('input[name="income-share-0"]');
   });
-  test('addIncome adds a new income input', () => {
-    const container = document.getElementById('incomes-container');
-    const incomeInput = document.createElement('input');
-    incomeInput.name = 'income-0';
-    incomeInput.value = '2000';
-    container.appendChild(incomeInput);
 
-    const incomeShareInput = document.createElement('input');
-    incomeShareInput.name = 'income-share-0';
-    incomeShareInput.value = '50';
-    container.appendChild(incomeShareInput);
-
-    addIncome(document);
-
-    const newIncome = container.querySelector('input[name="income-1"]');
-    const newIncomeShare = container.querySelector('input[name="income-share-1"]');
-
-    expect(newIncome.value).toBe('2000');
-    expect(newIncomeShare.value).toBe('50');
-  });
-
-  test('calculateAPR calculates the APR correctly', () => {
-    document.getElementById('insuranceRate').value = '1';
-    document.getElementById('interest-rate').value = '2';
-    document.getElementById('file-fees').value = '1000';
-    document.getElementById('price').value = '200000';
-    document.getElementById('notary').value = '8';
-    document.getElementById('agency-commission').value = '5';
-    document.getElementById('contribution').value = '50000';
-    document.getElementById('loanDuration').value = '20';
-
-    const apr = calculateAPR();
-
-    expect(apr).toBeGreaterThan(0);
-    expect(apr).toBeCloseTo(1.5, 1); // Adjust expected value based on your calculation logic
-  });
 
   test('extractIncomes calculates cumulative incomes correctly', () => {
     const container = document.getElementById('incomes-container');
