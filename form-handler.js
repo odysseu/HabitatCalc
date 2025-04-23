@@ -1,24 +1,24 @@
 // description: This script handles the form submission, validation, and calculation of APR and other financial metrics.
-function resetForm() {
-    document.getElementById('form-calculator').reset();
-    document.getElementById('simulation').innerHTML = '';
-    const canvas = document.getElementById('myChart');
+function resetForm(doc = document) {
+    doc.getElementById('form-calculator').reset();
+    doc.getElementById('simulation').innerHTML = '';
+    const canvas = doc.getElementById('myChart');
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
-    const languageSelect = document.getElementById('language-select');
+    const languageSelect = doc.getElementById('language-select');
     loadTranslations(languageSelect.value);
 }
 
-function calculateAPR() {
+function calculateAPR(doc = document) {
     // form values
-    const insuranceRate = parseFloat(document.getElementById('insuranceRate').value) / 100 || 0;
-    const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 || 0;
-    const fileFees = parseFloat(document.getElementById('file-fees').value) || 0;
-    const price = parseFloat(document.getElementById('price').value) || 0;
-    const notary = parseFloat(document.getElementById('notary').value) / 100 || 0;
-    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100 || 0;
-    const contribution = parseFloat(document.getElementById('contribution').value) || 0;
-    const loanDuration = parseFloat(document.getElementById('loanDuration').value) || 0;
+    const insuranceRate = parseFloat(doc.getElementById('insuranceRate').value) / 100 || 0;
+    const interestRate = parseFloat(doc.getElementById('interest-rate').value) / 100 || 0;
+    const fileFees = parseFloat(doc.getElementById('file-fees').value) || 0;
+    const price = parseFloat(doc.getElementById('price').value) || 0;
+    const notary = parseFloat(doc.getElementById('notary').value) / 100 || 0;
+    const agencyCommission = parseFloat(doc.getElementById('agency-commission').value) / 100 || 0;
+    const contribution = parseFloat(doc.getElementById('contribution').value) || 0;
+    const loanDuration = parseFloat(doc.getElementById('loanDuration').value) || 0;
     // Calculate monthly payments
     const notaryFees = price * notary;
     const commisionFees = price * agencyCommission;
@@ -34,7 +34,7 @@ function calculateAPR() {
         console.error('Montant emprunté négatif:', borrowedAmount);
     }
     // update APR display
-    const aprElement = document.getElementById('apr-overlay');
+    const aprElement = doc.getElementById('apr-overlay');
     if (aprElement && typeof translations !== 'undefined' && translations && translations.reportAPR) {
         aprElement.textContent = `${translations.APR}: ${apr.toFixed(2)}%`;
     }
@@ -111,9 +111,9 @@ function deleteIncome(button) {
     container.removeChild(button.parentElement);
 }
 
-function extractIncomes() {
+function extractIncomes(doc = document) {
     let cumulIncomes = 0;
-    const incomesContainer = document.getElementById('incomes-container');
+    const incomesContainer = doc.getElementById('incomes-container');
     const incomeContainers = incomesContainer.querySelectorAll('.income-container');
 
     if (incomeContainers.length === 0) {

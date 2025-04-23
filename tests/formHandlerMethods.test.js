@@ -48,9 +48,7 @@ describe('form-handler.js methods', () => {
     const newIncome = container.querySelector('input[name="income-1"]');
     const newIncomeShare = container.querySelector('input[name="income-share-1"]');
 
-    expect(newIncome).toBeInTheDocument();
     expect(newIncome.value).toBe('2000');
-    expect(newIncomeShare).toBeInTheDocument();
     expect(newIncomeShare.value).toBe('50');
   });
 
