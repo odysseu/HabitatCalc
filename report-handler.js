@@ -97,7 +97,7 @@ export function generateReport() {
                 </tr>
                 <tr>
                     <td>${translations.reportAPR}:</td>
-                    <td style="text-align: right;">${(APR).toFixed(2)} %</td>
+                    <td style="text-align: right;">${APR.toFixed(2)} %</td>
                 </tr>
                 <tr>
                     <td>${translations.reportMonthlyPayment}:</td>

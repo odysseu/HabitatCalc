@@ -5,11 +5,28 @@
 
 import { calculateAPR } from './form-handler.js';
 
+export function initiateLanguageSelection() {
+    const languageSelect = document.getElementById('language-select');
+    // Detect browser language
+    const browserLanguage = (navigator.language || navigator.userLanguage).slice(0, 2);
+    console.log('Browser language detected:', browserLanguage);
+    // Match browser language with available options in the select element
+    const availableLanguages = Array.from(languageSelect.options).map(option => option.value);
+    const defaultLanguage = availableLanguages.includes(browserLanguage) ? browserLanguage : 'fr'; // Fallback to 'fr' if not found
+    // Set the languageSelect value to the detected language
+    languageSelect.value = defaultLanguage;
+    // Load translations for the detected language
+    const translations = loadTranslations(defaultLanguage);
+    updateContent(translations);
+    console.log('Language used :', defaultLanguage);
+}
+
 export async function loadTranslations(language) {
     try {
         const response = await fetch(`translations/${language}.json`);
         const translations = await response.json();
-        updateContent(translations);
+        // updateContent(translations);
+        console.log('Translations loaded:', translations);
         return translations;
     } catch (error) {
         console.error('Error loading translations:', error);
@@ -17,8 +34,22 @@ export async function loadTranslations(language) {
     }
 }
 
-export function updateContent(translations) {
+
+export function updateAPRLabel(APR, translations) {
+    // update APR display
+    const aprElement = document.getElementById('apr-overlay');
+    // const language = document.getElementById('language-select').value;
+    // const response = fetch(`translations/${language}.json`);
+    // const translations = response.json();
+    if (aprElement && typeof translations !== 'undefined' && translations && translations.reportAPR) {
+        console.log('APR:', apr);
+        aprElement.textContent = `${translations.APR}: ${apr.toFixed(2)}%`;
+    }
+}
+
+export async function updateContent(translations) {
     if (translations) {
+        console.log('Updating content with translations:', translations);
         const contributionLabel = document.querySelector('label[for="contribution"]');
         const calculateButton = document.getElementById('calculate-button');
         const closeButton = document.getElementById('close-welcome');
@@ -68,7 +99,7 @@ export function updateContent(translations) {
         if (sectionRent) sectionRent.textContent = translations.sectionRent;
         if (sectionFinancing) sectionFinancing.textContent = translations.sectionFinancing;
         if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
-        if (apr) calculateAPR(document); //apr.textContent = `${translations.reportAPR}: `;
+        // if (apr) calculateAPR(document); //apr.textContent = `${translations.reportAPR}: `;
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
         if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;
         if (interestRateLabel) interestRateLabel.innerHTML = `${translations.interestRate} <span class="help-icon">? <span class="help-text">${translations.helpInterestRate}</span></span>`;

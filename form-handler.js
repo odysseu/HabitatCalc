@@ -1,5 +1,5 @@
 // description: This script handles the form submission, validation, and calculation of APR and other financial metrics.
-import { loadTranslations } from './handle-language.js';
+import { loadTranslations, updateContent } from './handle-language.js';
 export function resetForm() {
     // Properly reset the incomes-container by setting its innerHTML
     document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> <button type="button" id="add-income-button">+</button> </div>';
@@ -19,12 +19,14 @@ export function resetForm() {
     } else {
         console.error('clearRect method is not available on the canvas context.');
     }
-    const languageSelect = document.getElementById('language-select');
-    loadTranslations(languageSelect.value);
+    const languageSelect = document.getElementById('language-select').value;
+    const translation = loadTranslations(languageSelect);
+    updateContent(translation);
 }
 
 export function calculateAPR() {
     // form values
+    console.log('Calculating APR...');
     const insuranceRate = parseFloat(document.getElementById('insuranceRate').value) / 100 || 0;
     const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 || 0;
     const fileFees = parseFloat(document.getElementById('file-fees').value) || 0;
@@ -46,11 +48,6 @@ export function calculateAPR() {
         apr = coutEmprunt / borrowedAmount * 100 / loanDuration ;
     } else if (borrowedAmount < 0) {
         console.error('Montant emprunté négatif:', borrowedAmount);
-    }
-    // update APR display
-    const aprElement = document.getElementById('apr-overlay');
-    if (aprElement && typeof translations !== 'undefined' && translations && translations.reportAPR) {
-        aprElement.textContent = `${translations.APR}: ${apr.toFixed(2)}%`;
     }
     return apr;
 }
@@ -106,8 +103,8 @@ export function addIncome() {
     }
     
     // Reset the fields to ensure next inputs will be added in the form
-    container.querySelector('input[name="income-0"]').value = undefined;
-    container.querySelector('input[name="income-share-0"]').value = undefined;
+    container.querySelector('input[name="income-0"]').value = "";
+    container.querySelector('input[name="income-share-0"]').value = "";
     
 }
 
