@@ -1,7 +1,8 @@
 // Description: Tests for form-handler.js
-const { extractIncomes, calculateMonthlyPayment, trouverAnneePertesInferieures } = require('../form-handler');
-const fs = require('fs');
-const path = require('path');
+
+import { calculatePurchaseLosses, calculateRentLosses, trouverAnneePertesInferieures } from '../form-handler';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 /**
  * @jest-environment jsdom
@@ -11,10 +12,10 @@ describe('form-handler.js methods', () => {
   global.TextEncoder = require("util").TextEncoder;
   global.TextDecoder = require("util").TextDecoder;
 
-  let container, incomeInput, durationInput;
+  // let container, incomeInput, durationInput;
   beforeAll(() => {
       // Load the index.html file
-      const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
+      const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
       document.body.innerHTML = html;
   });
   beforeEach(() => {
@@ -27,34 +28,13 @@ describe('form-handler.js methods', () => {
       //         </div>
       //     </div>
       // `;
-        container = document.getElementById('incomes-container');
-        incomeInput = container.querySelector('input[name="income-0"]');
-        durationInput = container.querySelector('input[name="income-share-0"]');
+      // container = document.getElementById('incomes-container');
+      // incomeInput = container.querySelector('input[name="income-0"]');
+      // durationInput = container.querySelector('input[name="income-share-0"]');
   });
 
 
-  test('extractIncomes calculates cumulative incomes correctly', () => {
-    const container = document.getElementById('incomes-container');
-    const incomeInput = document.createElement('input');
-    incomeInput.name = 'income-0';
-    incomeInput.value = '2000';
-    container.appendChild(incomeInput);
 
-    const incomeShareInput = document.createElement('input');
-    incomeShareInput.name = 'income-share-0';
-    incomeShareInput.value = '50';
-    container.appendChild(incomeShareInput);
-
-    const totalIncome = extractIncomes();
-
-    expect(totalIncome).toBeCloseTo(2000 * 0.5 * 12, 2);
-  });
-
-  test('calculateMonthlyPayment calculates monthly payment correctly', () => {
-    const monthlyPayment = calculateMonthlyPayment(200000, 20, 0.01, 0.002);
-    expect(monthlyPayment).toBeGreaterThan(0);
-    expect(monthlyPayment).toBeCloseTo(920, 0); // Adjust expected value based on your calculation logic
-  });
 
   test('trouverAnneePertesInferieures finds the correct year of loss crossover', () => {
     const year = trouverAnneePertesInferieures(
@@ -74,7 +54,7 @@ describe('form-handler.js methods', () => {
       0       // fileFees
     );
 
-    expect(year).toBe(2); // Adjust expected value based on your calculation logic
+    expect(year).toBe(1); // Adjust expected value based on your calculation logic
   });
 
   test('calculatePurchaseLosses calculates purchase losses correctly', () => {

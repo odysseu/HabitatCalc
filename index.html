@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="titre">Calculette Projet Immobilier</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="/logos/home-logo-light.png">
-    <link rel="manifest" href="/webmanifest.json">
+    <title id="title">Calculette Projet Immobilier</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="logos/home-logo-light.png">
+    <link rel="manifest" href="HabitatCalc/webmanifest.json">
     <link rel="stylesheet" href="styles.css">
     <link id="favicon" rel="icon" href="logos/favicon-light.ico" type="image/x-icon">
 </head>
@@ -17,7 +17,7 @@
     <header class="sticky-header">
         <div class="header-left">
             <div class="logo-container">
-                <img src="logos/home-logo-light.png" alt="Home Logo" class="header-logo" id="home-logo" onclick="resetForm()">
+                <img src="logos/home-logo-light.png" alt="Home Logo" class="header-logo" id="home-logo">
                 <span class="logo-help">Réinitialiser le formulaire</span>
             </div>
         </div>
@@ -65,7 +65,7 @@
                     <label for="contribution">Apport personnel (€): <span class="help-icon">? <span class="help-text">Montant de l'contribution personnel.</span></span></label>
                     <input type="number" step="0.01" id="contribution" name="contribution" value="0" required>
 
-                    <div class="income-container">
+                    <div class="interest-rate-container">
                         <label for="interest-rate">Taux d'intérêt (%): <span class="help-icon">? <span class="help-text">Taux d'intérêt annuel du prêt immobilier.</span></span></label>
                         <input type="number" step="0.01" id="interest-rate" name="interest-rate" value="1" required>
                         <div class="input-overlay" id="apr-overlay">TAEG: 0.00%</div>
@@ -95,11 +95,11 @@
                 <div class="income-container">
                     <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required>
                     <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l'année)" required>
-                    <button type="button" onclick="addIncome()">+</button>
+                    <button type="button" id="add-income-button">+</button>
                 </div>
             </div>
 
-            <button type="button" id="calculate-button" onclick="generateReport()">Calculer</button>
+            <button type="button" id="calculate-button">Calculer</button>
         </form>
         <div id="simulation"></div>
         <div id="myChart-container">
@@ -111,10 +111,10 @@
     <script src="https://cdn.jsdelivr.net/npm/jspdf@3.0.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@5.0.2/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.js"></script>
-    <script src="form-handler.js"></script>
-    <script src="report-handler.js"></script>
-    <script src="dark-mode.js"></script>
-    <script src="handle-language.js"></script>
-    <script src="event-listeners.js"></script>
+    <script type="module" src="form-handler.js"></script>
+    <script type="module" src="report-handler.js"></script>
+    <script type="module" src="dark-mode.js"></script>
+    <script type="module" src="handle-language.js"></script>
+    <script type="module" src="event-listeners.js"></script>
 </body>
 </html>

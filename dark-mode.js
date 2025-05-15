@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-function forcerModeClair() {
+export function forcerModeClair() {
     const body = document.body;
     const wasDarkMode = body.classList.contains('dark-mode');
     if (wasDarkMode) {
@@ -46,7 +46,7 @@ function forcerModeClair() {
     return wasDarkMode;
 }
 
-function restaurerMode(wasDarkMode) {
+export function restaurerMode(wasDarkMode) {
     if (wasDarkMode) {
         document.body.classList.add('dark-mode');
     }

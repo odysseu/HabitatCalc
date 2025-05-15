@@ -2,60 +2,22 @@
 // It loads the appropriate translation file based on the selected language and updates the content accordingly.
 // It also manages the welcome message display and the close button functionality.
 // It uses the Fetch API to load translation files in JSON format and updates the DOM elements with the translated text.
-let translations = {};
 
-document.addEventListener('DOMContentLoaded', function() {
-    const welcomeMessage = document.getElementById('welcome-message');
-    const closeButton = document.getElementById('close-welcome');
-    const languageSelect = document.getElementById('language-select');
+import { calculateAPR } from './form-handler.js';
 
-    // Detect browser language
-    const browserLanguage = (navigator.language || navigator.userLanguage).slice(0, 2);
-    console.log('Browser language detected:', browserLanguage);
-
-    // Match browser language with available options in the select element
-    const availableLanguages = Array.from(languageSelect.options).map(option => option.value);
-    const defaultLanguage = availableLanguages.includes(browserLanguage) ? browserLanguage : 'fr'; // Fallback to 'fr' if not found
-
-    // Set the languageSelect value to the detected language
-    languageSelect.value = defaultLanguage;
-
-    // Load translations for the detected language
-    loadTranslations(defaultLanguage);
-
-    closeButton.addEventListener('click', function() {
-        welcomeMessage.style.display = 'none';
-    });
-
-    document.addEventListener('click', function(event) {
-        if (!welcomeMessage.contains(event.target) && event.target !== closeButton) {
-            welcomeMessage.style.display = 'none';
-        }
-    });
-
-    languageSelect.addEventListener('change', function() {
-        const selectedLanguage = languageSelect.value;
-        loadTranslations(selectedLanguage);
-    });
-
-    // Initial call to set the language based on the default selection
-    console.log('Language used :', defaultLanguage);
-    calculateAPR();
-
-    document.getElementById('calculate-button').addEventListener('click', generateReport);
-});
-
-function loadTranslations(language) {
-    fetch(`translations/${language}.json`)
-        .then(response => response.json())
-        .then(data => {
-            translations = data;
-            updateContent(translations);
-        })
-        .catch(error => console.error('Error loading translations:', error));
+export async function loadTranslations(language) {
+    try {
+        const response = await fetch(`translations/${language}.json`);
+        const translations = await response.json();
+        updateContent(translations);
+        return translations;
+    } catch (error) {
+        console.error('Error loading translations:', error);
+        return null;
+    }
 }
 
-function updateContent(translations) {
+export function updateContent(translations) {
     if (translations) {
         const contributionLabel = document.querySelector('label[for="contribution"]');
         const calculateButton = document.getElementById('calculate-button');
@@ -80,7 +42,7 @@ function updateContent(translations) {
         const propertyTaxLabel = document.querySelector('label[for="propertyTax"]');
         const HousingTaxLabel = document.querySelector('label[for="HousingTax"]');
         const downloadButton = document.querySelector('#download-button button');
-        const title = document.getElementById('titre');
+        const title = document.getElementById('title');
         const appreciationRateLabel = document.querySelector('label[for="appreciation-rate"]');
         const insuranceRateLabel = document.querySelector('label[for="insuranceRate"]');
         const interestRateLabel = document.querySelector('label[for="interest-rate"]');
@@ -106,7 +68,7 @@ function updateContent(translations) {
         if (sectionRent) sectionRent.textContent = translations.sectionRent;
         if (sectionFinancing) sectionFinancing.textContent = translations.sectionFinancing;
         if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
-        if (apr) calculateAPR(); //apr.textContent = `${translations.reportAPR}: `;
+        if (apr) calculateAPR(document); //apr.textContent = `${translations.reportAPR}: `;
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
         if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;
         if (interestRateLabel) interestRateLabel.innerHTML = `${translations.interestRate} <span class="help-icon">? <span class="help-text">${translations.helpInterestRate}</span></span>`;

@@ -1,6 +1,10 @@
 let myChart = null; // graph variable to store the chart instance
 
-function generateReport() {
+import { calculateMonthlyPayment, extractIncomes, calculateAPR, trouverAnneePertesInferieures, calculateRentLosses, calculatePurchaseLosses } from './form-handler.js';
+import { loadTranslations } from './handle-language.js';
+// import { forcerModeClair, restaurerMode } from './dark-mode.js';
+
+export function generateReport() {
     // get the values from the form
     const price = parseFloat(document.getElementById('price').value);
     const notary = parseFloat(document.getElementById('notary').value) / 100;
@@ -35,6 +39,11 @@ function generateReport() {
     const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
 
     // generate the simulation report board
+    let translations;
+    const language = document.getElementById('language-select').value;
+    translations = loadTranslations(language);
+    // const translations = window.translations; // Assuming translations are loaded globally
+
     let simulation = `
         <h2>${translations.reportTitle}</h2>
 
@@ -160,7 +169,7 @@ function generateReport() {
     document.getElementById('download-button').addEventListener('click', downloadPDF);
 }
 
-function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
+export function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
     // 1. Destroy the cart if it exists
     if (myChart) {
         myChart.destroy();
@@ -175,6 +184,11 @@ function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
     // Adjust the size of the canvas for all displays
     canvas.width = parentWidth;
     canvas.height = parentHeight;
+    // Load translations for the chart
+    let translations;
+    const language = document.getElementById('language-select').value;
+    translations = loadTranslations(language);
+
     const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
     // 3. Créer le nouveau graphique avec des options de responsivité
     myChart = new Chart(ctx, {
@@ -220,7 +234,7 @@ function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
     document.getElementById('myChart').innerHTML = myChart;
 }
 
-async function downloadPDF() {
+export async function downloadPDF() {
     const wasDarkMode = forcerModeClair();
 
     const { jsPDF } = window.jspdf;
@@ -228,11 +242,11 @@ async function downloadPDF() {
     // Configuration des marges et positions
     const margin = 20;
     const tableSpacing = 10;
-    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageWidth = document.internal.pageSize.getWidth();
     const availableWidth = pageWidth - 2 * margin;
 
-    doc.text(margin, margin, `${translations.reportTitle}`);
-    var finalY = doc.lastAutoTable.finalY || tableSpacing
+    document.text(margin, margin, `${translations.reportTitle}`);
+    var finalY = document.lastAutoTable.finalY || tableSpacing
 
     const price = parseFloat(document.getElementById('price').value);
     const notary = parseFloat(document.getElementById('notary').value) / 100;
@@ -263,7 +277,7 @@ async function downloadPDF() {
     const cumulIncomes = extractIncomes();
     const repaymentYear = trouverAnneePertesInferieures(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
     // Purchase Board
-    doc.autoTable({
+    document.autoTable({
         startY: finalY + margin,
         head: [[`${translations.reportPurchase}`, `${translations.reportPrice}`]],
         body: [
@@ -278,8 +292,8 @@ async function downloadPDF() {
     });
 
     // Tableau Emprunt
-    doc.autoTable({
-        startY: doc.lastAutoTable.finalY + tableSpacing,
+    document.autoTable({
+        startY: document.lastAutoTable.finalY + tableSpacing,
         head: [[`${translations.reportLoan}`, `${translations.reportPrice}`]],
         body: [
             [`${translations.contribution}`, `${contribution.toFixed(0)} €`],
@@ -294,8 +308,8 @@ async function downloadPDF() {
     });
 
     // Tableau Financement
-    doc.autoTable({
-        startY: doc.lastAutoTable.finalY + tableSpacing,
+    document.autoTable({
+        startY: document.lastAutoTable.finalY + tableSpacing,
         head: [[`${translations.reportFinancing}`, `${translations.reportPrice}`]],
         body: [
             [`${translations.reportFictitiousMonthlyRent}`, `${fictitiousRent.toFixed(0)} €`],
@@ -306,9 +320,9 @@ async function downloadPDF() {
     });
 
     // Ajouter la phrase de rappel
-    doc.text(`${translations.reportRepaymentYear}: ${repaymentYear}`, margin, doc.lastAutoTable.finalY + tableSpacing);
-    doc.text(`${translations.reportRappelRentabilite}: ${repaymentYear}`, margin, doc.lastAutoTable.finalY + tableSpacing * 2);
-    doc.addPage();
+    document.text(`${translations.reportRepaymentYear}: ${repaymentYear}`, margin, document.lastAutoTable.finalY + tableSpacing);
+    document.text(`${translations.reportRappelRentabilite}: ${repaymentYear}`, margin, document.lastAutoTable.finalY + tableSpacing * 2);
+    document.addPage();
 
     // Ajouter le graphique au PDF
     const chart = document.getElementById('myChart');
@@ -318,15 +332,14 @@ async function downloadPDF() {
     const imageWidth = availableWidth;
     const imageHeight = (chart.height * imageWidth) / chart.width;
 
-    doc.addImage(
+    // help : addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+    document.addImage(
         chartImageData, 'PNG', margin, margin, imageWidth, imageHeight
     );
-    // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
 
     const filename = document.getElementById('pdf-filename').placeholder || translations.pdfFilenamePlaceHolder;
-    // console.log('pdf-filename : ', document.getElementById('pdf-filename').placeholder);
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
-    doc.save(pdfFilename);
+    document.save(pdfFilename);
 
     restaurerMode(wasDarkMode);
 }

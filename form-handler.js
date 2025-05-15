@@ -1,24 +1,38 @@
 // description: This script handles the form submission, validation, and calculation of APR and other financial metrics.
-function resetForm(doc = document) {
-    doc.getElementById('form-calculator').reset();
-    doc.getElementById('simulation').innerHTML = '';
-    const canvas = doc.getElementById('myChart');
+import { loadTranslations } from './handle-language.js';
+export function resetForm() {
+    // Properly reset the incomes-container by setting its innerHTML
+    document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> <button type="button" id="add-income-button">+</button> </div>';
+    document.getElementById('form-calculator').reset();
+    document.getElementById('simulation').innerHTML = '';
+    let canvas = document.getElementById('myChart');
+    if (!(canvas instanceof HTMLCanvasElement)) {
+        console.warn('The element with id "myChart" is not a valid canvas. Creating a new canvas.');
+        const newCanvas = document.createElement('canvas');
+        newCanvas.id = 'myChart';
+        document.getElementById('myChart-container').appendChild(newCanvas);
+        canvas = newCanvas;
+    }
     const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    const languageSelect = doc.getElementById('language-select');
+    if (context && typeof context.clearRect === 'function') {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    } else {
+        console.error('clearRect method is not available on the canvas context.');
+    }
+    const languageSelect = document.getElementById('language-select');
     loadTranslations(languageSelect.value);
 }
 
-function calculateAPR(doc = document) {
+export function calculateAPR() {
     // form values
-    const insuranceRate = parseFloat(doc.getElementById('insuranceRate').value) / 100 || 0;
-    const interestRate = parseFloat(doc.getElementById('interest-rate').value) / 100 || 0;
-    const fileFees = parseFloat(doc.getElementById('file-fees').value) || 0;
-    const price = parseFloat(doc.getElementById('price').value) || 0;
-    const notary = parseFloat(doc.getElementById('notary').value) / 100 || 0;
-    const agencyCommission = parseFloat(doc.getElementById('agency-commission').value) / 100 || 0;
-    const contribution = parseFloat(doc.getElementById('contribution').value) || 0;
-    const loanDuration = parseFloat(doc.getElementById('loanDuration').value) || 0;
+    const insuranceRate = parseFloat(document.getElementById('insuranceRate').value) / 100 || 0;
+    const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 || 0;
+    const fileFees = parseFloat(document.getElementById('file-fees').value) || 0;
+    const price = parseFloat(document.getElementById('price').value) || 0;
+    const notary = parseFloat(document.getElementById('notary').value) / 100 || 0;
+    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100 || 0;
+    const contribution = parseFloat(document.getElementById('contribution').value) || 0;
+    const loanDuration = parseFloat(document.getElementById('loanDuration').value) || 0;
     // Calculate monthly payments
     const notaryFees = price * notary;
     const commisionFees = price * agencyCommission;
@@ -34,16 +48,16 @@ function calculateAPR(doc = document) {
         console.error('Montant emprunté négatif:', borrowedAmount);
     }
     // update APR display
-    const aprElement = doc.getElementById('apr-overlay');
+    const aprElement = document.getElementById('apr-overlay');
     if (aprElement && typeof translations !== 'undefined' && translations && translations.reportAPR) {
         aprElement.textContent = `${translations.APR}: ${apr.toFixed(2)}%`;
     }
     return apr;
 }
 
-function addIncome(doc = document) {
-    let incomeCount = doc.querySelectorAll('.income-container').length;
-    const container = doc.getElementById('incomes-container');
+export function addIncome() {
+    let incomeCount = document.querySelectorAll('.income-container').length;
+    const container = document.getElementById('incomes-container');
     // Get values from the first fields
     const currentIncomeValue = container.querySelector('input[name="income-0"]').value.trim();
     const currentTimeShareValue = container.querySelector('input[name="income-share-0"]').value.trim();
@@ -52,9 +66,9 @@ function addIncome(doc = document) {
     try {
         if (isValidNumber(currentIncomeValue) && isValidNumber(currentTimeShareValue)) {
             // If both are valid numbers, create the new inputs
-            newIncome = doc.createElement('div');
+            newIncome = document.createElement('div');
             newIncome.className = 'income-container';
-            const inputIncome = doc.createElement('input');
+            const inputIncome = document.createElement('input');
             inputIncome.type = 'number';
             inputIncome.id = `income-${incomeCount}`;
             inputIncome.name = `income-${incomeCount}`;
@@ -62,7 +76,7 @@ function addIncome(doc = document) {
             inputIncome.placeholder = 'Revenu mensuel (€)';
             inputIncome.required = true;
 
-            const inputDuration = doc.createElement('input');
+            const inputDuration = document.createElement('input');
             inputDuration.type = 'number';
             inputDuration.step = '0.01';
             inputDuration.id = `income-share-${incomeCount}`;
@@ -71,7 +85,7 @@ function addIncome(doc = document) {
             inputDuration.placeholder = 'Durée (% de l\'année)';
             inputDuration.required = true;
 
-            const deleteButton = doc.createElement('button');
+            const deleteButton = document.createElement('button');
             deleteButton.type = 'button';
             deleteButton.textContent = '-';
             deleteButton.onclick = function() { deleteIncome(this); };
@@ -106,18 +120,18 @@ function isValidNumber(value) {
     }
 }
 
-function deleteIncome(button) {
+export function deleteIncome(button) {
     const container = document.getElementById('incomes-container');
     container.removeChild(button.parentElement);
 }
 
-function extractIncomes(doc = document) {
+export function extractIncomes() {
     let cumulIncomes = 0;
-    const incomesContainer = doc.getElementById('incomes-container');
+    const incomesContainer = document.getElementById('incomes-container');
     const incomeContainers = incomesContainer.querySelectorAll('.income-container');
 
     if (incomeContainers.length === 0) {
-        console.log('Il n\'y a pas de incomes.');
+        console.log('There are no incomes.');
         return cumulIncomes;
     }
 
@@ -129,14 +143,14 @@ function extractIncomes(doc = document) {
     return cumulIncomes;
 }
 
-function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnuel, insuranceRate) {
+export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnuel, insuranceRate) {
     const numberMonths = loanDuration * 12;
     const loanMonthlyPayment = interestRateAnnuel === 0 ? borrowedAmount / numberMonths : (borrowedAmount * (interestRateAnnuel / 12)) / (1 - Math.pow(1 + (interestRateAnnuel / 12), -(loanDuration * 12)));
     const assuranceMonthlyPayment = borrowedAmount * insuranceRate / numberMonths;
     return loanMonthlyPayment + assuranceMonthlyPayment;
 }
 
-function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
+export function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
     const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         // Purchase
@@ -155,7 +169,7 @@ function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, c
     return maxDuration; // no crossing of losses
 }
 
-function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees) {
+export function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees) {
     const purchaseLosses = [];
     const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
@@ -170,7 +184,7 @@ function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contrib
     return purchaseLosses;
 }
 
-function calculateRentLosses(income, rentDuration, fictitiousRentRate) {
+export function calculateRentLosses(income, rentDuration, fictitiousRentRate) {
     const rentLosses = [];
     for (let t = 1; t <= rentDuration; t++) {
         let cumulIncome = (income * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
@@ -179,5 +193,3 @@ function calculateRentLosses(income, rentDuration, fictitiousRentRate) {
     }
     return rentLosses;
 }
-
-module.exports = { resetForm, calculateAPR, addIncome, deleteIncome, extractIncomes, calculateMonthlyPayment, trouverAnneePertesInferieures, calculatePurchaseLosses, calculateRentLosses };
