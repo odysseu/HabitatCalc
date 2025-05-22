@@ -1,6 +1,6 @@
 // Description: Tests for form-handler.js
 
-import { calculatePurchaseLosses, calculateRentLosses, trouverAnneePertesInferieures } from '../form-handler';
+import { calculatePurchaseLosses, calculateRentLosses, findPivotYear } from '../form-handler';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
@@ -36,8 +36,8 @@ describe('form-handler.js methods', () => {
 
 
 
-  test('trouverAnneePertesInferieures finds the correct year of loss crossover', () => {
-    const year = trouverAnneePertesInferieures(
+  test('findPivotYear finds the correct year of loss crossover', () => {
+    const year = findPivotYear(
       200000, // price
       16000,  // notaryFees
       0,      // agencyCommissionFees

@@ -3,19 +3,36 @@
 // Import functions from form-handler.js if using modules
 import { addIncome, calculateAPR, resetForm } from './form-handler.js';
 import { generateReport } from './report-handler.js';
-import { loadTranslations, updateContent, updateAPRLabel } from './handle-language.js';
+import { loadTranslations, updateContent } from './handle-language.js';
 
-document.addEventListener('DOMContentLoaded', function () {
-    const selectedLanguage = document.getElementById('language-select').value;
-    const translations = loadTranslations(selectedLanguage);
-    document.getElementById('insuranceRate').addEventListener('input', updateAPRLabel(calculateAPR, translations));
-    document.getElementById('interest-rate').addEventListener('input', updateAPRLabel(calculateAPR, translations));
-    document.getElementById('file-fees').addEventListener('input', updateAPRLabel(calculateAPR, translations));
-    document.getElementById('price').addEventListener('input', updateAPRLabel(calculateAPR, translations));
-    document.getElementById('notary').addEventListener('input', updateAPRLabel(calculateAPR, translations));
-    document.getElementById('agency-commission').addEventListener('input', updateAPRLabel(calculateAPR, translations));
-    document.getElementById('contribution').addEventListener('input', updateAPRLabel(calculateAPR, translations));
-    document.getElementById('loanDuration').addEventListener('input', updateAPRLabel(calculateAPR, translations));
+document.addEventListener('DOMContentLoaded', async function () {
+    const selectedLanguage = document.getElementById('language-select');
+    const translations = await loadTranslations(selectedLanguage.value);
+
+    document.getElementById('insuranceRate').addEventListener('input', function() {
+        updateContent(translations);
+    });
+    document.getElementById('interest-rate').addEventListener('input', function() {
+        updateContent(translations);
+    });
+    document.getElementById('file-fees').addEventListener('input', function() {
+        updateContent(translations);
+    });
+    document.getElementById('price').addEventListener('input', function() {
+        updateContent(translations);
+    });
+    document.getElementById('notary').addEventListener('input', function() {
+        updateContent(translations);
+    });
+    document.getElementById('agency-commission').addEventListener('input', function() {
+        updateContent(translations);
+    });
+    document.getElementById('contribution').addEventListener('input', function() {
+        updateContent(translations);
+    });
+    document.getElementById('loanDuration').addEventListener('input', function() {
+        updateContent(translations);
+    });
     document.getElementById('home-logo').addEventListener('click', resetForm);
     document.getElementById('calculate-button').addEventListener('click', generateReport);
     document.getElementById('add-income-button').addEventListener('click', addIncome);
@@ -25,23 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
         welcomeMessage.style.display = 'none';
     });
 
-    const languageSelect = document.getElementById('language-select');
-    // // Detect browser language
-    // const browserLanguage = (navigator.language || navigator.userLanguage).slice(0, 2);
-    // console.log('Browser language detected:', browserLanguage);
-    // // Match browser language with available options in the select element
-    // const availableLanguages = Array.from(languageSelect.options).map(option => option.value);
-    // const defaultLanguage = availableLanguages.includes(browserLanguage) ? browserLanguage : 'fr'; // Fallback to 'fr' if not found
-    // // Set the languageSelect value to the detected language
-    // languageSelect.value = defaultLanguage;
-    // // Load translations for the detected language
-    // // window.translations = loadTranslations(defaultLanguage);
-
-    languageSelect.addEventListener('change', function() {
+    selectedLanguage.addEventListener('change', async function() {
         const selectedLanguage = document.getElementById('language-select').value;
-        const translations = loadTranslations(selectedLanguage);
+        const translations = await loadTranslations(selectedLanguage);
         updateContent(translations);
-        updateAPRLabel(APR, translations);
     });
 
     // Initial call to set the language based on the default selection

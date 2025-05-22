@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-export function forcerModeClair() {
+export function forceLightMode() {
+    // useful for pdf generation, otherwise the pdf will be generated in current mode, which can be dark
     const body = document.body;
     const wasDarkMode = body.classList.contains('dark-mode');
     if (wasDarkMode) {
@@ -46,7 +47,7 @@ export function forcerModeClair() {
     return wasDarkMode;
 }
 
-export function restaurerMode(wasDarkMode) {
+export function restoreMode(wasDarkMode) {
     if (wasDarkMode) {
         document.body.classList.add('dark-mode');
     }

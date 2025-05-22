@@ -54,6 +54,7 @@ describe('resetForm', () => {
         expect(document.getElementById('income-0').innerHTML).toBe(``);
         expect(document.getElementById('income-share-0').innerHTML).toBe(``);
         initial_incomes = document.getElementById('incomes-container').innerHTML;
+        // console.log('Initial incomes:', initial_incomes);
         // make mock values for every field of the form:
         // insuranceRate, interest-rate, file-fees, price, notary, agency-commission, contribution, loanDuration
         document.getElementById('price').value = '200000';

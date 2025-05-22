@@ -1,9 +1,11 @@
 // description: This script handles the form submission, validation, and calculation of APR and other financial metrics.
 import { loadTranslations, updateContent } from './handle-language.js';
-export function resetForm() {
+export async function resetForm() {
     // Properly reset the incomes-container by setting its innerHTML
     document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> <button type="button" id="add-income-button">+</button> </div>';
+    // console.log("First incomes-container:", document.getElementById('incomes-container').innerHTML);
     document.getElementById('form-calculator').reset();
+    // console.log("Second incomes-container:", document.getElementById('incomes-container').innerHTML);
     document.getElementById('simulation').innerHTML = '';
     let canvas = document.getElementById('myChart');
     if (!(canvas instanceof HTMLCanvasElement)) {
@@ -20,13 +22,15 @@ export function resetForm() {
         console.error('clearRect method is not available on the canvas context.');
     }
     const languageSelect = document.getElementById('language-select').value;
-    const translation = loadTranslations(languageSelect);
+    const translation = await loadTranslations(languageSelect);
+    // console.log("third incomes-container:", document.getElementById('incomes-container').innerHTML);
     updateContent(translation);
+    // console.log("Final incomes-container:", document.getElementById('incomes-container').innerHTML);
 }
 
 export function calculateAPR() {
     // form values
-    console.log('Calculating APR...');
+    // console.log('Calculating APR...');
     const insuranceRate = parseFloat(document.getElementById('insuranceRate').value) / 100 || 0;
     const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 || 0;
     const fileFees = parseFloat(document.getElementById('file-fees').value) || 0;
@@ -49,6 +53,7 @@ export function calculateAPR() {
     } else if (borrowedAmount < 0) {
         console.error('Montant emprunté négatif:', borrowedAmount);
     }
+    // console.log('Calculated APR:', apr);
     return apr;
 }
 
@@ -147,7 +152,7 @@ export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRa
     return loanMonthlyPayment + assuranceMonthlyPayment;
 }
 
-export function trouverAnneePertesInferieures(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
+export function findPivotYear(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
     const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         // Purchase
@@ -156,13 +161,13 @@ export function trouverAnneePertesInferieures(price, notaryFees, agencyCommision
         const cumulPropertyTax = propertyTax * t;
         const cumulativeCoOwnershipFees = coOwnershipFees * t;
         const netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
-        // location
+        // rent
         const rentNetLosses = (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
         if (rentNetLosses > netPurchaseLosses) {
             return t - 1; // crossing of losses
         }
     }
-    console.log('Pas de croisement des pertes avant ', maxDuration, ' ans');
+    console.log('No crossing before ', maxDuration, ' years');
     return maxDuration; // no crossing of losses
 }
 

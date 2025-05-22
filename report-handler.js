@@ -1,10 +1,10 @@
 let myChart = null; // graph variable to store the chart instance
 
-import { calculateMonthlyPayment, extractIncomes, calculateAPR, trouverAnneePertesInferieures, calculateRentLosses, calculatePurchaseLosses } from './form-handler.js';
+import { calculateMonthlyPayment, extractIncomes, calculateAPR, findPivotYear, calculateRentLosses, calculatePurchaseLosses } from './form-handler.js';
 import { loadTranslations } from './handle-language.js';
-// import { forcerModeClair, restaurerMode } from './dark-mode.js';
+import { forceLightMode, restoreMode } from './dark-mode.js';
 
-export function generateReport() {
+export async function generateReport() {
     // get the values from the form
     const price = parseFloat(document.getElementById('price').value);
     const notary = parseFloat(document.getElementById('notary').value) / 100;
@@ -33,7 +33,7 @@ export function generateReport() {
     const cumulMonthlyIncomes = cumulIncomes / 12;
     const APR = calculateAPR();
 
-    const repaymentYear = trouverAnneePertesInferieures(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
+    const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
     const maxCalculatedDuration = Math.min(loanDuration, repaymentYear + 4); // 1 more year to see after meeting year
     const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate);
     const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
@@ -41,7 +41,7 @@ export function generateReport() {
     // generate the simulation report board
     let translations;
     const language = document.getElementById('language-select').value;
-    translations = loadTranslations(language);
+    translations = await loadTranslations(language);
     // const translations = window.translations; // Assuming translations are loaded globally
 
     let simulation = `
@@ -169,7 +169,7 @@ export function generateReport() {
     document.getElementById('download-button').addEventListener('click', downloadPDF);
 }
 
-export function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
+export async function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
     // 1. Destroy the cart if it exists
     if (myChart) {
         myChart.destroy();
@@ -187,7 +187,7 @@ export function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
     // Load translations for the chart
     let translations;
     const language = document.getElementById('language-select').value;
-    translations = loadTranslations(language);
+    translations = await loadTranslations(language);
 
     const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
     // 3. Créer le nouveau graphique avec des options de responsivité
@@ -235,18 +235,20 @@ export function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
 }
 
 export async function downloadPDF() {
-    const wasDarkMode = forcerModeClair();
+    const wasDarkMode = forceLightMode();
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     // Configuration des marges et positions
     const margin = 20;
     const tableSpacing = 10;
-    const pageWidth = document.internal.pageSize.getWidth();
+    const pageWidth = doc.internal.pageSize.getWidth();
     const availableWidth = pageWidth - 2 * margin;
-
-    document.text(margin, margin, `${translations.reportTitle}`);
-    var finalY = document.lastAutoTable.finalY || tableSpacing
+    
+    const language = document.getElementById('language-select').value;
+    const translations = await loadTranslations(language);
+    doc.text(margin, margin, `${translations.reportTitle}`);
+    var finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : tableSpacing;
 
     const price = parseFloat(document.getElementById('price').value);
     const notary = parseFloat(document.getElementById('notary').value) / 100;
@@ -275,9 +277,9 @@ export async function downloadPDF() {
     const maxDuration = 100;
     const coOwnershipFees = parseFloat(document.getElementById('coOwnership').value);
     const cumulIncomes = extractIncomes();
-    const repaymentYear = trouverAnneePertesInferieures(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
+    const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
     // Purchase Board
-    document.autoTable({
+    doc.autoTable({
         startY: finalY + margin,
         head: [[`${translations.reportPurchase}`, `${translations.reportPrice}`]],
         body: [
@@ -292,8 +294,8 @@ export async function downloadPDF() {
     });
 
     // Tableau Emprunt
-    document.autoTable({
-        startY: document.lastAutoTable.finalY + tableSpacing,
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + tableSpacing,
         head: [[`${translations.reportLoan}`, `${translations.reportPrice}`]],
         body: [
             [`${translations.contribution}`, `${contribution.toFixed(0)} €`],
@@ -308,8 +310,8 @@ export async function downloadPDF() {
     });
 
     // Tableau Financement
-    document.autoTable({
-        startY: document.lastAutoTable.finalY + tableSpacing,
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + tableSpacing,
         head: [[`${translations.reportFinancing}`, `${translations.reportPrice}`]],
         body: [
             [`${translations.reportFictitiousMonthlyRent}`, `${fictitiousRent.toFixed(0)} €`],
@@ -319,8 +321,8 @@ export async function downloadPDF() {
         ]
     });
 
-    // Ajouter la phrase de rappel
-    doc.text(`${translations.reportAnneeRemboursement}: ${anneeRemboursement}`, margin, doc.lastAutoTable.finalY + tableSpacing);
+    // Add the year at which the rent crosses the purchase
+    doc.text(`${translations.reportRepaymentYear}: ${repaymentYear}`, margin, doc.lastAutoTable.finalY + tableSpacing);
 
     // Ajouter le graphique au PDF
     const chart = document.getElementById('myChart');
@@ -331,13 +333,19 @@ export async function downloadPDF() {
     const imageHeight = (chart.height * imageWidth) / chart.width;
 
     // help : addImage(imageData, format, x, y, width, height, alias, compression, rotation)
-    document.addImage(
-        chartImageData, 'PNG', margin, margin, imageWidth, imageHeight
+    let imageY = doc.lastAutoTable.finalY + tableSpacing;
+    // Si l'image dépasse la page, on la met sur la page suivante
+    if (imageY + imageHeight > doc.internal.pageSize.getHeight() - margin) {
+        doc.addPage();
+        imageY = margin;
+    }
+    doc.addImage(
+        chartImageData, 'PNG', margin, margin, imageWidth, imageHeight //, margin, doc.lastAutoTable.finalY + tableSpacing
     );
 
     const filename = document.getElementById('pdf-filename').placeholder || translations.pdfFilenamePlaceHolder;
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
-    document.save(pdfFilename);
+    doc.save(pdfFilename);
 
-    restaurerMode(wasDarkMode);
+    restoreMode(wasDarkMode);
 }

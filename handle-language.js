@@ -5,20 +5,20 @@
 
 import { calculateAPR } from './form-handler.js';
 
-export function initiateLanguageSelection() {
+export async function initiateLanguageSelection() {
     const languageSelect = document.getElementById('language-select');
     // Detect browser language
     const browserLanguage = (navigator.language || navigator.userLanguage).slice(0, 2);
-    console.log('Browser language detected:', browserLanguage);
+    // console.log('Browser language detected:', browserLanguage);
     // Match browser language with available options in the select element
     const availableLanguages = Array.from(languageSelect.options).map(option => option.value);
     const defaultLanguage = availableLanguages.includes(browserLanguage) ? browserLanguage : 'fr'; // Fallback to 'fr' if not found
     // Set the languageSelect value to the detected language
     languageSelect.value = defaultLanguage;
     // Load translations for the detected language
-    const translations = loadTranslations(defaultLanguage);
+    const translations = await loadTranslations(defaultLanguage);
     updateContent(translations);
-    console.log('Language used :', defaultLanguage);
+    // console.log('Language used :', defaultLanguage);
 }
 
 export async function loadTranslations(language) {
@@ -26,7 +26,7 @@ export async function loadTranslations(language) {
         const response = await fetch(`translations/${language}.json`);
         const translations = await response.json();
         // updateContent(translations);
-        console.log('Translations loaded:', translations);
+        // console.log('Translations loaded:', translations);
         return translations;
     } catch (error) {
         console.error('Error loading translations:', error);
@@ -35,21 +35,23 @@ export async function loadTranslations(language) {
 }
 
 
-export function updateAPRLabel(APR, translations) {
+export async function updateAPRLabel(apr, translations) {
     // update APR display
     const aprElement = document.getElementById('apr-overlay');
     // const language = document.getElementById('language-select').value;
     // const response = fetch(`translations/${language}.json`);
     // const translations = response.json();
     if (aprElement && typeof translations !== 'undefined' && translations && translations.reportAPR) {
-        console.log('APR:', apr);
+        console.log('Updating APR label with value:', `${translations.APR}: ${apr.toFixed(2)}%`);
         aprElement.textContent = `${translations.APR}: ${apr.toFixed(2)}%`;
+    } else {
+        console.error('APR element not found or translations are not available.');
     }
 }
 
 export async function updateContent(translations) {
     if (translations) {
-        console.log('Updating content with translations:', translations);
+        // console.log('Updating content with translations:', translations);
         const contributionLabel = document.querySelector('label[for="contribution"]');
         const calculateButton = document.getElementById('calculate-button');
         const closeButton = document.getElementById('close-welcome');
@@ -99,7 +101,11 @@ export async function updateContent(translations) {
         if (sectionRent) sectionRent.textContent = translations.sectionRent;
         if (sectionFinancing) sectionFinancing.textContent = translations.sectionFinancing;
         if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
-        // if (apr) calculateAPR(document); //apr.textContent = `${translations.reportAPR}: `;
+        if (apr) {
+            console.log("calculating APR inside updateContent");
+            const aprValue = calculateAPR(document); //apr.textContent = `${translations.reportAPR}: `;
+            updateAPRLabel(aprValue, translations);
+        }
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
         if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;
         if (interestRateLabel) interestRateLabel.innerHTML = `${translations.interestRate} <span class="help-icon">? <span class="help-text">${translations.helpInterestRate}</span></span>`;
@@ -109,5 +115,8 @@ export async function updateContent(translations) {
         if (downloadButton) downloadButton.textContent = translations.downloadPDF;
         if (title) title.textContent = translations.title;
         if (welcomeMessage) welcomeMessage.querySelector('p').innerHTML = translations.welcomeMessage;
+    }
+    else  {
+        console.error('Translations are not available or invalid.');
     }
 }
