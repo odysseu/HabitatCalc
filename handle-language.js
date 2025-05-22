@@ -68,7 +68,7 @@ function updateContent(translations) {
         const taxeFonciereLabel = document.querySelector('label[for="taxe-fonciere"]');
         const taxeHabitationLabel = document.querySelector('label[for="taxe-habitation"]');
         const telechargerButton = document.querySelector('#telecharger-button button');
-        const title = document.getElementById('titre');
+        const title = document.getElementById('title');
         const tauxAppreciationLabel = document.querySelector('label[for="taux-appreciation"]');
         const tauxAssuranceLabel = document.querySelector('label[for="taux-assurance"]');
         const tauxInteretLabel = document.querySelector('label[for="taux-interet"]');

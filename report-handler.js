@@ -149,7 +149,7 @@ function genererRapport() {
 
     const rapportBouton = `
         <label for="pdf-filename">${translations.pdfFileName}</label>
-        <input type="text" id="pdf-filename" name="pdf-filename" placeholder="rapport-immobilier.pdf" required>
+        <input type="text" id="pdf-filename" name="pdf-filename" placeholder=${translations.pdfFileNamePlaceHolder} required>
         <button id="telecharger-button">${translations.downloadPDF}</button>
     `;
 
@@ -305,7 +305,6 @@ async function telechargerPDF() {
 
     // Ajouter la phrase de rappel
     doc.text(`${translations.reportAnneeRemboursement}: ${anneeRemboursement}`, margin, doc.lastAutoTable.finalY + tableSpacing);
-    doc.text(`${translations.reportRappelRentabilite}: ${anneeRemboursement}`, margin, doc.lastAutoTable.finalY + tableSpacing * 2);
 
     // Ajouter le graphique au PDF
     const chart = document.getElementById('myChart');
