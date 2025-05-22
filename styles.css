@@ -20,8 +20,12 @@ body {
 }
 
 body.dark-mode {
+    font-family: Arial, sans-serif;
     background-color: var(--dark-bg-color);
     color: var(--dark-text-color);
+    overflow-x: hidden;
+    width: calc(100% - 10px);
+    margin: 5px;
 }
 
 /* Header styles */
@@ -231,17 +235,17 @@ body.dark-mode .help-text {
     flex: 0 0 48%;
 }
 
-.loyer-container {
+.income-container {
     display: flex;
     align-items: center;
 }
 
-.loyer-container input {
+.income-container input {
     flex: 1;
     margin-right: 10px;
 }
 
-.loyer-container button {
+.income-container button {
     width: auto;
     padding: 10px;
 }

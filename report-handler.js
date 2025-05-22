@@ -1,180 +1,195 @@
-let myChart = null; // Déclarer une variable pour contenir l'instance du graphique globalement ou dans la portée appropriée
+let myChart = null; // graph variable to store the chart instance
 
-function genererRapport() {
-    // Récupérer les valeurs du formulaire
-    const prix = parseFloat(document.getElementById('prix').value);
-    const notaire = parseFloat(document.getElementById('notaire').value) / 100;
-    const tauxAppreciation = parseFloat(document.getElementById('taux-appreciation').value) / 100;
-    const commission = parseFloat(document.getElementById('commission').value) / 100;
-    const apport = parseFloat(document.getElementById('apport').value);
-    const tauxInteret = parseFloat(document.getElementById('taux-interet').value) / 100;
-    const dureePret = parseInt(document.getElementById('duree-pret').value);
-    const tauxAssurance = parseInt(document.getElementById('taux-assurance').value);
-    const loyerFictif = parseFloat(document.getElementById('loyer-fictif').value);
-    const taxeHabitation = parseFloat(document.getElementById('taxe-habitation').value);
-    const taxeFonciere = parseFloat(document.getElementById('taxe-fonciere').value);
-    const tauxLoyerFictif = parseFloat(document.getElementById('taux-loyer-fictif').value) / 100;
-    const fraisCopropriete = parseFloat(document.getElementById('copropriete').value);
-    const dureeMax = 500;
+import { calculateMonthlyPayment, extractIncomes, calculateAPR, findPivotYear, calculateRentLosses, calculatePurchaseLosses } from './form-handler.js';
+import { loadTranslations } from './handle-language.js';
+import { forceLightMode, restoreMode } from './dark-mode.js';
 
-    const fraisNotaire = prix * notaire;
-    const fraisCommission = prix * commission;
-    const totalAchat = prix + fraisNotaire + fraisCommission;
-    const montantEmprunte = totalAchat - apport;
-    const mensualite = calculerMensualite(montantEmprunte, dureePret, tauxInteret, tauxAssurance);
-    const coutTotalEmprunt = mensualite * dureePret * 12;
-    const coutTotalInterets = coutTotalEmprunt - montantEmprunte;
-    const cumulLoyers = extraireLoyers();
-    const cumulMensuelLoyers = cumulLoyers / 12;
-    const TAEG = calculateTAEG();
+export async function generateReport() {
+    // get the values from the form
+    const price = parseFloat(document.getElementById('price').value);
+    const notary = parseFloat(document.getElementById('notary').value) / 100;
+    const appreciationRate = parseFloat(document.getElementById('appreciation-rate').value) / 100;
+    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100;
+    const contribution = parseFloat(document.getElementById('contribution').value);
+    const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100;
+    const loanDuration = parseInt(document.getElementById('loanDuration').value);
+    const insuranceRate = parseInt(document.getElementById('insuranceRate').value);
+    const fictitiousRent = parseFloat(document.getElementById('fictitiousRent').value);
+    const HousingTax = parseFloat(document.getElementById('HousingTax').value);
+    const propertyTax = parseFloat(document.getElementById('propertyTax').value);
+    const fictitiousRentRate = parseFloat(document.getElementById('fictitiousRentRate').value) / 100;
+    const coOwnershipFees = parseFloat(document.getElementById('coOwnership').value);
+    const maxDuration = 100;
+    const fileFees = parseFloat(document.getElementById('file-fees').value);
 
-    const anneeRemboursement = trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
-    const maxDuree = Math.max(dureePret, anneeRemboursement) + 1; // 1 more year to see after meeting year
-    const cumulLocation = calculerPertesLocation(loyerFictif, maxDuree, tauxLoyerFictif);
-    const cumulAchat = calculerPertesAchat(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, maxDuree, dureePret, cumulLoyers, fraisCopropriete);
+    const notaryFees = price * notary;
+    const agencyCommissionFees = price * agencyCommission;
+    const purchaseTotal = price + notaryFees + agencyCommissionFees + fileFees;
+    const borrowedAmount = purchaseTotal - contribution;
+    const monthlyPayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
+    const loanTotalCost = monthlyPayment * loanDuration * 12;
+    const totalInterestCost = loanTotalCost - borrowedAmount;
+    const cumulIncomes = extractIncomes();
+    const cumulMonthlyIncomes = cumulIncomes / 12;
+    const APR = calculateAPR();
 
-    // Concaténer les résultats et le graphique
-    let resultat = `
+    const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
+    const maxCalculatedDuration = Math.min(loanDuration, repaymentYear + 4); // 1 more year to see after meeting year
+    const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate);
+    const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
+
+    // generate the simulation report board
+    let translations;
+    const language = document.getElementById('language-select').value;
+    translations = await loadTranslations(language);
+    // const translations = window.translations; // Assuming translations are loaded globally
+
+    let simulation = `
         <h2>${translations.reportTitle}</h2>
 
         <div>
-            <h3>${translations.reportAchat}</h3>
+            <h3>${translations.reportPurchase}</h3>
             <table>
                 <tr>
-                    <td>${translations.reportPrix}:</td>
-                    <td style="text-align: right;">${prix.toFixed(2)} €</td>
+                    <td>${translations.reportPrice}:</td>
+                    <td style="text-align: right;">${price.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportFraisNotaire}:</td>
-                    <td style="text-align: right;">${fraisNotaire.toFixed(2)} €</td>
+                    <td>${translations.reportNotaryFees}:</td>
+                    <td style="text-align: right;">${notaryFees.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportTauxAppreciation}:</td>
-                    <td style="text-align: right;">${(tauxAppreciation * 100).toFixed(2)} %</td>
+                    <td>${translations.reportAppreciationRate}:</td>
+                    <td style="text-align: right;">${(appreciationRate * 100).toFixed(2)} %</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportCommission}:</td>
-                    <td style="text-align: right;">${fraisCommission.toFixed(2)} €</td>
+                    <td>${translations.reportAgencyCommission}:</td>
+                    <td style="text-align: right;">${agencyCommissionFees.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportTotalAchat}:</td>
-                    <td style="text-align: right;">${totalAchat.toFixed(2)} €</td>
+                    <td>${translations.reportPurchaseTotal}:</td>
+                    <td style="text-align: right;">${purchaseTotal.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportCopropriete}:</td>
-                    <td style="text-align: right;">${fraisCopropriete.toFixed(2)} €</td>
+                    <td>${translations.reportCoOwnership}:</td>
+                    <td style="text-align: right;">${coOwnershipFees.toFixed(2)} €</td>
                 </tr>
             </table>
         </div>
         <div>
-            <h3>${translations.reportEmprunt}</h3>
+            <h3>${translations.reportLoan}</h3>
             <table>
                 <tr>
-                    <td>${translations.apport}:</td>
-                    <td style="text-align: right;">${apport.toFixed(2)} €</td>
+                    <td>${translations.contribution}:</td>
+                    <td style="text-align: right;">${contribution.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportMontantEmprunte}:</td>
-                    <td style="text-align: right;">${montantEmprunte.toFixed(2)} €</td>
+                    <td>${translations.reportBorrowedAmount}:</td>
+                    <td style="text-align: right;">${borrowedAmount.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportTauxAssurance}:</td>
-                    <td style="text-align: right;">${(tauxAssurance * 100).toFixed(2)} %</td>
+                    <td>${translations.reportInsuranceRate}:</td>
+                    <td style="text-align: right;">${(insuranceRate * 100).toFixed(2)} %</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportTauxInteret}:</td>
-                    <td style="text-align: right;">${(tauxInteret * 100).toFixed(2)} %</td>
+                    <td>${translations.reportInterestRate}:</td>
+                    <td style="text-align: right;">${(interestRate * 100).toFixed(2)} %</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportTAEG}:</td>
-                    <td style="text-align: right;">${(TAEG).toFixed(2)} %</td>
+                    <td>${translations.reportAPR}:</td>
+                    <td style="text-align: right;">${APR.toFixed(2)} %</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportMensualite}:</td>
-                    <td style="text-align: right;">${mensualite.toFixed(2)} €</td>
+                    <td>${translations.reportMonthlyPayment}:</td>
+                    <td style="text-align: right;">${monthlyPayment.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportInteretsTotaux}:</td>
-                    <td style="text-align: right;">${coutTotalInterets.toFixed(2)} €</td>
+                    <td>${translations.reportTotalInterests}:</td>
+                    <td style="text-align: right;">${totalInterestCost.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportCoutTotalEmprunt}:</td>
-                    <td style="text-align: right;">${coutTotalEmprunt.toFixed(2)} €</td>
+                    <td>${translations.reportLoanTotalCost}:</td>
+                    <td style="text-align: right;">${loanTotalCost.toFixed(2)} €</td>
                 </tr>
             </table>
         </div>
         <div>
-            <h3>${translations.reportFinancement}</h3>
+            <h3>${translations.reportFinancing}</h3>
             <table>
                 <tr>
-                    <td>${translations.reportLoyerFictifMensuel}:</td>
-                    <td style="text-align: right;">${loyerFictif.toFixed(2)} €</td>
+                    <td>${translations.reportFictitiousMonthlyRent}:</td>
+                    <td style="text-align: right;">${fictitiousRent.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportTauxEvolutionLoyerFictif}:</td>
-                    <td style="text-align: right;">${(tauxLoyerFictif * 100).toFixed(2)} %</td>
+                    <td>${translations.reportFictitiousRentEvolutionRate}:</td>
+                    <td style="text-align: right;">${(fictitiousRentRate * 100).toFixed(2)} %</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportTaxeHabitationAnnuelle}:</td>
-                    <td style="text-align: right;">${taxeHabitation.toFixed(2)} €</td>
+                    <td>${translations.reportHousingTaxAnnuelle}:</td>
+                    <td style="text-align: right;">${HousingTax.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportTaxeFonciereAnnuelle}:</td>
-                    <td style="text-align: right;">${taxeFonciere.toFixed(2)} €</td>
+                    <td>${translations.reportPropertyTaxAnnuelle}:</td>
+                    <td style="text-align: right;">${propertyTax.toFixed(2)} €</td>
                 </tr>
     `;
 
-    // Ajouter les loyers au résultat
-    if (cumulMensuelLoyers > 0) {
-        resultat += `
+    // add monthly incomes if any
+    if (cumulMonthlyIncomes > 0) {
+        simulation += `
                 <tr>
-                    <td>${translations.reportLoyerMoyenTouche}:</td>
-                    <td style="text-align: right;">${cumulMensuelLoyers.toFixed(2)} €</td>
+                    <td>${translations.reportMonthlyAgregatedIncome}:</td>
+                    <td style="text-align: right;">${cumulMonthlyIncomes.toFixed(2)} €</td>
                 </tr>
         `;
     }
 
-    resultat += `
+    simulation += `
             </table>
         </div>
         <div>
-            <h3>${translations.reportAmortissement}</h3>
-            <p>${translations.reportAnneeRemboursement}: ${anneeRemboursement}</p>
+            <h3>${translations.reportAmortization}</h3>
+            <p>${translations.reportRepaymentYear}: ${repaymentYear}</p>
         </div>
     `;
 
-    document.getElementById('resultat').innerHTML = resultat;
+    document.getElementById('simulation').innerHTML = simulation;
     // Générer le graphique
-    genererGraphique(cumulLocation, cumulAchat, maxDuree);
+    genererGraphique(cumulRent, cumulativePurchase, maxCalculatedDuration);
 
-    const rapportBouton = `
+    const reportButton = `
         <label for="pdf-filename">${translations.pdfFileName}</label>
         <input type="text" id="pdf-filename" name="pdf-filename" placeholder=${translations.pdfFileNamePlaceHolder} required>
-        <button id="telecharger-button">${translations.downloadPDF}</button>
+        <button id="download-button">${translations.downloadPDF}</button>
     `;
 
-    document.getElementById('rapport-bouton').innerHTML = rapportBouton;
+    document.getElementById('report-button').innerHTML = reportButton;
 
     // Attacher l'événement de téléchargement au bouton
-    document.getElementById('telecharger-button').addEventListener('click', telechargerPDF);
+    document.getElementById('download-button').addEventListener('click', downloadPDF);
 }
 
-function genererGraphique(cumulLocation, cumulAchat, maxDuree) {
-    // 1. Détruire le graphique existant s'il existe
+export async function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
+    // 1. Destroy the cart if it exists
     if (myChart) {
         myChart.destroy();
     }
 
-    // 2. Obtenir l'élément canvas et ajuster sa taille
+    // 2. get the canvas element and adjust size
     const ctx = document.getElementById('myChart').getContext('2d');
     const canvas = ctx.canvas;
     const parent = canvas.parentNode;
     const parentWidth = parent.clientWidth;
     const parentHeight = parent.clientHeight;
-    // Ajuster la taille du canvas en fonction de la taille de l'écran
+    // Adjust the size of the canvas for all displays
     canvas.width = parentWidth;
     canvas.height = parentHeight;
-    const labels = Array.from({ length: maxDuree + 1 }, (_, i) => `${translations.annee} ${i}`);
+    // Load translations for the chart
+    let translations;
+    const language = document.getElementById('language-select').value;
+    translations = await loadTranslations(language);
+
+    const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
     // 3. Créer le nouveau graphique avec des options de responsivité
     myChart = new Chart(ctx, {
         type: 'line',
@@ -182,14 +197,14 @@ function genererGraphique(cumulLocation, cumulAchat, maxDuree) {
             labels: labels,
             datasets: [
                 {
-                    label: `${translations.reportCumulDepensesLocation}`,
-                    data: cumulLocation,
+                    label: `${translations.reportRentalCumulativeExpenses}`,
+                    data: cumulRent,
                     borderColor: 'rgb(255, 99, 132)',
                     fill: false
                 },
                 {
-                    label: `${translations.reportCumulDepensesAchat}`,
-                    data: cumulAchat,
+                    label: `${translations.reportCumulPurchaseLosses}`,
+                    data: cumulativePurchase,
                     borderColor: 'rgb(54, 162, 235)',
                     fill: false
                 }
@@ -219,8 +234,8 @@ function genererGraphique(cumulLocation, cumulAchat, maxDuree) {
     document.getElementById('myChart').innerHTML = myChart;
 }
 
-async function telechargerPDF() {
-    const wasDarkMode = forcerModeClair();
+export async function downloadPDF() {
+    const wasDarkMode = forceLightMode();
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -229,82 +244,85 @@ async function telechargerPDF() {
     const tableSpacing = 10;
     const pageWidth = doc.internal.pageSize.getWidth();
     const availableWidth = pageWidth - 2 * margin;
-
+    
+    const language = document.getElementById('language-select').value;
+    const translations = await loadTranslations(language);
     doc.text(margin, margin, `${translations.reportTitle}`);
-    var finalY = doc.lastAutoTable.finalY || tableSpacing
+    var finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : tableSpacing;
 
-    const prix = parseFloat(document.getElementById('prix').value);
-    const notaire = parseFloat(document.getElementById('notaire').value) / 100;
-    const copropriete = parseFloat(document.getElementById('copropriete').value);
-    const tauxAppreciation = parseFloat(document.getElementById('taux-appreciation').value) / 100;
-    const tauxLoyerFictif = parseFloat(document.getElementById('taux-loyer-fictif').value) / 100;
-    const commission = parseFloat(document.getElementById('commission').value) / 100;
-    const apport = parseFloat(document.getElementById('apport').value);
-    const tauxInteret = parseFloat(document.getElementById('taux-interet').value) / 100;
-    const dureePret = parseInt(document.getElementById('duree-pret').value);
-    const tauxAssurance = parseInt(document.getElementById('taux-assurance').value);
-    const loyerFictif = parseFloat(document.getElementById('loyer-fictif').value);
-    const taxeHabitation = parseFloat(document.getElementById('taxe-habitation').value);
-    const taxeFonciere = parseFloat(document.getElementById('taxe-fonciere').value);
-    const TAEG = calculateTAEG();
+    const price = parseFloat(document.getElementById('price').value);
+    const notary = parseFloat(document.getElementById('notary').value) / 100;
+    const coOwnership = parseFloat(document.getElementById('coOwnership').value);
+    const appreciationRate = parseFloat(document.getElementById('appreciation-rate').value) / 100;
+    const fictitiousRentRate = parseFloat(document.getElementById('fictitiousRentRate').value) / 100;
+    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100;
+    const contribution = parseFloat(document.getElementById('contribution').value);
+    const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100;
+    const loanDuration = parseInt(document.getElementById('loanDuration').value);
+    const insuranceRate = parseInt(document.getElementById('insuranceRate').value);
+    const fictitiousRent = parseFloat(document.getElementById('fictitiousRent').value);
+    const fileFees = parseFloat(document.getElementById('file-fees').value);
+    const HousingTax = parseFloat(document.getElementById('HousingTax').value);
+    const propertyTax = parseFloat(document.getElementById('propertyTax').value);
+    const APR = calculateAPR();
 
-    const fraisNotaire = prix * notaire;
-    const fraisCommission = prix * commission;
-    const totalAchat = prix + fraisNotaire + fraisCommission;
-    const montantEmprunte = totalAchat - apport;
-    const mensualite = tauxInteret === 0 ? montantEmprunte / (dureePret * 12) : (montantEmprunte * tauxInteret / 12) / (1 - Math.pow(1 + tauxInteret / 12, -dureePret * 12));
-    const coutTotalEmprunt = mensualite * dureePret * 12;
-    const coutTotalInterets = coutTotalEmprunt - montantEmprunte;
+    const notaryFees = price * notary;
+    const agencyCommissionFees = price * agencyCommission;
+    const purchaseTotal = price + notaryFees + agencyCommissionFees;
+    const borrowedAmount = purchaseTotal - contribution;
+    const monthlyPayment = interestRate === 0 ? borrowedAmount / (loanDuration * 12) : (borrowedAmount * interestRate / 12) / (1 - Math.pow(1 + interestRate / 12, -loanDuration * 12));
+    const loanTotalCost = monthlyPayment * loanDuration * 12;
+    const totalInterestCost = loanTotalCost - borrowedAmount;
 
-    const dureeMax = 500;
-    const fraisCopropriete = parseFloat(document.getElementById('copropriete').value);
-    const cumulLoyers = extraireLoyers();
-    const anneeRemboursement = trouverAnneePertesInferieures(prix, fraisNotaire, fraisCommission, apport, mensualite, taxeFonciere, tauxAppreciation, dureeMax, dureePret, loyerFictif, tauxLoyerFictif, cumulLoyers, fraisCopropriete);
-    // Tableau Achat
+    const maxDuration = 100;
+    const coOwnershipFees = parseFloat(document.getElementById('coOwnership').value);
+    const cumulIncomes = extractIncomes();
+    const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
+    // Purchase Board
     doc.autoTable({
         startY: finalY + margin,
-        head: [[`${translations.reportAchat}`, `${translations.reportPrix}`]],
+        head: [[`${translations.reportPurchase}`, `${translations.reportPrice}`]],
         body: [
-            [`${translations.reportPrix}`, `${prix.toFixed(2)} €`],
-            [`${translations.reportFraisNotaire}`, `${fraisNotaire.toFixed(2)} €`],
-            [`${translations.reportTauxAppreciation}`, `${(tauxAppreciation * 100).toFixed(2)} %`],
-            [`${translations.reportCommission}`, `${fraisCommission.toFixed(2)} €`],
-            [`${translations.reportTotalAchat}`, `${totalAchat.toFixed(2)} €`],
-            [`${translations.reportCopropriete}`, `${copropriete.toFixed(2)} €`]
+            [`${translations.reportPrice}`, `${price.toFixed(2)} €`],
+            [`${translations.reportNotaryFees}`, `${notaryFees.toFixed(2)} €`],
+            [`${translations.reportAppreciationRate}`, `${(appreciationRate * 100).toFixed(2)} %`],
+            [`${translations.reportAgencyCommission}`, `${agencyCommissionFees.toFixed(2)} €`],
+            [`${translations.reportPurchaseTotal}`, `${purchaseTotal.toFixed(2)} €`],
+            [`${translations.reportCoOwnership}`, `${coOwnership.toFixed(2)} €`],
+            [`${translations.reportfileFees}`, `${fileFees.toFixed(2)} €`]
         ]
     });
 
     // Tableau Emprunt
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
-        head: [[`${translations.reportEmprunt}`, `${translations.reportPrix}`]],
+        head: [[`${translations.reportLoan}`, `${translations.reportPrice}`]],
         body: [
-            [`${translations.apport}`, `${apport.toFixed(0)} €`],
-            [`${translations.reportMontantEmprunte}`, `${montantEmprunte.toFixed(0)} €`],
-            [`${translations.reportTauxInteret}`, `${(tauxInteret * 100).toFixed(2)} %`],
-            [`${translations.reportTauxAssurance}`, `${(tauxAssurance * 100).toFixed(2)} %`],
-            [`${translations.reportTAEG}`, `${(TAEG).toFixed(2)} %`],
-            [`${translations.reportMensualite}`, `${mensualite.toFixed(0)} €`],
-            [`${translations.reportInteretsTotaux}`, `${coutTotalInterets.toFixed(0)} €`],
-            [`${translations.reportCoutTotalEmprunt}`, `${coutTotalEmprunt.toFixed(0)} €`]
+            [`${translations.contribution}`, `${contribution.toFixed(0)} €`],
+            [`${translations.reportBorrowedAmount}`, `${borrowedAmount.toFixed(0)} €`],
+            [`${translations.reportInterestRate}`, `${(interestRate * 100).toFixed(2)} %`],
+            [`${translations.reportInsuranceRate}`, `${(insuranceRate * 100).toFixed(2)} %`],
+            [`${translations.reportAPR}`, `${(APR).toFixed(2)} %`],
+            [`${translations.reportMonthlyPayment}`, `${monthlyPayment.toFixed(0)} €`],
+            [`${translations.reportTotalInterests}`, `${totalInterestCost.toFixed(0)} €`],
+            [`${translations.reportLoanTotalCost}`, `${loanTotalCost.toFixed(0)} €`]
         ]
     });
 
     // Tableau Financement
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
-        head: [[`${translations.reportFinancement}`, `${translations.reportPrix}`]],
+        head: [[`${translations.reportFinancing}`, `${translations.reportPrice}`]],
         body: [
-            [`${translations.reportLoyerFictifMensuel}`, `${loyerFictif.toFixed(0)} €`],
-            [`${translations.reportTauxEvolutionLoyerFictif}`, `${(tauxLoyerFictif * 100).toFixed(2)} %`],
-            [`${translations.reportTaxeHabitationAnnuelle}`, `${taxeHabitation.toFixed(0)} €`],
-            [`${translations.reportTaxeFonciereAnnuelle}`, `${taxeFonciere.toFixed(0)} €`]
+            [`${translations.reportFictitiousMonthlyRent}`, `${fictitiousRent.toFixed(0)} €`],
+            [`${translations.reportFictitiousRentEvolutionRate}`, `${(fictitiousRentRate * 100).toFixed(2)} %`],
+            [`${translations.reportHousingTaxAnnuelle}`, `${HousingTax.toFixed(0)} €`],
+            [`${translations.reportPropertyTaxAnnuelle}`, `${propertyTax.toFixed(0)} €`]
         ]
     });
-    doc.addPage();
 
-    // Ajouter la phrase de rappel
-    doc.text(`${translations.reportAnneeRemboursement}: ${anneeRemboursement}`, margin, doc.lastAutoTable.finalY + tableSpacing);
+    // Add the year at which the rent crosses the purchase
+    doc.text(`${translations.reportRepaymentYear}: ${repaymentYear}`, margin, doc.lastAutoTable.finalY + tableSpacing);
 
     // Ajouter le graphique au PDF
     const chart = document.getElementById('myChart');
@@ -314,15 +332,20 @@ async function telechargerPDF() {
     const imageWidth = availableWidth;
     const imageHeight = (chart.height * imageWidth) / chart.width;
 
+    // help : addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+    let imageY = doc.lastAutoTable.finalY + tableSpacing;
+    // Si l'image dépasse la page, on la met sur la page suivante
+    if (imageY + imageHeight > doc.internal.pageSize.getHeight() - margin) {
+        doc.addPage();
+        imageY = margin;
+    }
     doc.addImage(
-        chartImageData, 'PNG', margin, margin, imageWidth, imageHeight
+        chartImageData, 'PNG', margin, margin, imageWidth, imageHeight //, margin, doc.lastAutoTable.finalY + tableSpacing
     );
-    // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
 
     const filename = document.getElementById('pdf-filename').placeholder || translations.pdfFilenamePlaceHolder;
-    // console.log('pdf-filename : ', document.getElementById('pdf-filename').placeholder);
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
     doc.save(pdfFilename);
 
-    restaurerMode(wasDarkMode);
+    restoreMode(wasDarkMode);
 }
