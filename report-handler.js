@@ -320,9 +320,7 @@ export async function downloadPDF() {
     });
 
     // Ajouter la phrase de rappel
-    document.text(`${translations.reportRepaymentYear}: ${repaymentYear}`, margin, document.lastAutoTable.finalY + tableSpacing);
-    document.text(`${translations.reportRappelRentabilite}: ${repaymentYear}`, margin, document.lastAutoTable.finalY + tableSpacing * 2);
-    document.addPage();
+    doc.text(`${translations.reportAnneeRemboursement}: ${anneeRemboursement}`, margin, doc.lastAutoTable.finalY + tableSpacing);
 
     // Ajouter le graphique au PDF
     const chart = document.getElementById('myChart');
