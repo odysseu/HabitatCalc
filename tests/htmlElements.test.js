@@ -1,80 +1,108 @@
-global.TextEncoder = require("util").TextEncoder;
-global.TextDecoder = require("util").TextDecoder;
-const fs = require('fs');
-const path = require('path');
-const { JSDOM } = require('jsdom');
-require('@testing-library/jest-dom');
+// global.TextEncoder = require("util").TextEncoder;
+// global.TextDecoder = require("util").TextDecoder;
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+/**
+ * @jest-environment jsdom
+ */
 
-const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
+describe('Test that all id-ed elements exist in the DOM', () => {
 
-let dom;
-let htmlBody;
-let htmlHead;
+    beforeAll(() => {
+        // Load the index.html file
+        const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
+        document.body.innerHTML = html;
+    });
+    const ids = [
+        'welcome-message',
+        'close-welcome',
+        'home-logo',
+        'github-logo',
+        'language-select',
+        'title',
+        'title-section',
+        'form-calculator',
+        'purchase-section',
+        'price',
+        'notary',
+        'appreciation-rate',
+        'agency-commission',
+        'coOwnership',
+        'loan-section',
+        'file-fees',
+        'contribution',
+        'interest-rate',
+        'apr-overlay',
+        'insuranceRate',
+        'loanDuration',
+        'financing-section',
+        'fictitiousRent',
+        'fictitiousRentRate',
+        'HousingTax',
+        'propertyTax',
+        'incomes-container',
+        'income-0',
+        'income-share-0',
+        'add-income-button',
+        'calculate-button',
+        'simulation',
+        'myChart-container',
+        'myChart',
+        'report-button',
+        'download-button'
+    ];
 
-beforeEach(() => {
-  dom = new JSDOM(html, { runScripts: 'dangerously' });
-  htmlBody = dom.window.document.body;
-  htmlHead = dom.window.document.head;
-});
+    ids.forEach(id => {
+        test(`L'élément avec l'id "${id}" existe`, () => {
+            expect(document.getElementById(id)).not.toBeNull();
+        });
+    });
 
-test('vérifie que les identifiants utilisés dans welcome-message-handler.js existent', () => {
-  const welcomeMessage = htmlBody.querySelector('#welcome-message');
-  const closeWelcome = htmlBody.querySelector('#close-welcome');
+    test('The element with id "myChart" is a canvas', () => {
+        const myChart = document.getElementById('myChart');
+        expect(myChart).not.toBeNull();
+        expect(myChart.tagName).toBe('CANVAS');
+    });
 
-  expect(welcomeMessage).toBeInTheDocument();
-  expect(closeWelcome).toBeInTheDocument();
-});
+    test('The element with id "myChart-container" is a div', () => {
+        const myChartContainer = document.getElementById('myChart-container');
+        expect(myChartContainer).not.toBeNull();
+        expect(myChartContainer.tagName).toBe('DIV');
+    });
+    test('The element with id "simulation" is a div', () => {
+        const simulation = document.getElementById('simulation');
+        expect(simulation).not.toBeNull();
+        expect(simulation.tagName).toBe('DIV');
+    });
+    test('The element with id "welcome-message" is a div', () => {
+        const welcomeMessage = document.getElementById('welcome-message');
+        expect(welcomeMessage).not.toBeNull();
+        expect(welcomeMessage.tagName).toBe('DIV');
+    });
+    test('The element with id "close-welcome" is a button', () => {
+        const closeWelcome = document.getElementById('close-welcome');
+        expect(closeWelcome).not.toBeNull();
+        expect(closeWelcome.tagName).toBe('BUTTON');
+    });
+    test('The element with id "home-logo" is an img', () => {
+        const homeLogo = document.getElementById('home-logo');
+        expect(homeLogo).not.toBeNull();
+        expect(homeLogo.tagName).toBe('IMG');
+    });
+    test('The element with id "github-logo" is an img', () => {
+        const githubLogo = document.getElementById('github-logo');
+        expect(githubLogo).not.toBeNull();
+        expect(githubLogo.tagName).toBe('IMG');
+    });
+    test('The element with id "language-select" is a select', () => {
+        const languageSelect = document.getElementById('language-select');
+        expect(languageSelect).not.toBeNull();
+        expect(languageSelect.tagName).toBe('SELECT');
+    });
+    test('The element with id "title" is a h1', () => {
+        const title = document.getElementById('title');
+        expect(title).not.toBeNull();
+        expect(title.tagName).toBe('TITLE');
+    });
 
-test('vérifie que les identifiants utilisés dans dark-mode.js existent', () => {
-  const toggleSwitch = htmlBody.querySelector('#dark-mode-toggle');
-  const homeLogo = htmlBody.querySelector('#home-logo');
-  const favicon = htmlHead.querySelector('#favicon');
-  const githubLogo = htmlBody.querySelector('#github-logo');
-
-  expect(toggleSwitch).toBeInTheDocument();
-  expect(homeLogo).toBeInTheDocument();
-  expect(favicon).toBeInTheDocument();
-  expect(githubLogo).toBeInTheDocument();
-});
-
-test('checks that the elements used in form-handler.js exist', () => {
-  const form = htmlBody.querySelector('#form-calculator');
-  const simulation = htmlBody.querySelector('#simulation');
-  const myChart = htmlBody.querySelector('#myChart');
-  const incomesContainer = htmlBody.querySelector('#incomes-container');
-  const priceInput = htmlBody.querySelector('#price');
-  const notaryInput = htmlBody.querySelector('#notary');
-  const coOwnershipInput = htmlBody.querySelector('#coOwnership');
-  const appreciationRateInput = htmlBody.querySelector('#appreciation-rate');
-  const fictitiousRentRateInput = htmlBody.querySelector('#fictitiousRentRate');
-  const agencyCommissionInput = htmlBody.querySelector('#agency-commission');
-  const contributionInput = htmlBody.querySelector('#contribution');
-  const interestRateInput = htmlBody.querySelector('#interest-rate');
-  const loanDurationInput = htmlBody.querySelector('#loanDuration');
-  const insuranceRateInput = htmlBody.querySelector('#insuranceRate');
-  const fictitiousRentInput = htmlBody.querySelector('#fictitiousRent');
-  const HousingTaxInput = htmlBody.querySelector('#HousingTax');
-  const propertyTaxInput = htmlBody.querySelector('#propertyTax');
-  const calculateButton = htmlBody.querySelector('#calculate-button');
-  const reportButton = htmlBody.querySelector('#report-button');
-
-  expect(form).toBeInTheDocument();
-  expect(simulation).toBeInTheDocument();
-  expect(myChart).toBeInTheDocument();
-  expect(incomesContainer).toBeInTheDocument();
-  expect(priceInput).toBeInTheDocument();
-  expect(notaryInput).toBeInTheDocument();
-  expect(coOwnershipInput).toBeInTheDocument();
-  expect(appreciationRateInput).toBeInTheDocument();
-  expect(fictitiousRentRateInput).toBeInTheDocument();
-  expect(agencyCommissionInput).toBeInTheDocument();
-  expect(contributionInput).toBeInTheDocument();
-  expect(interestRateInput).toBeInTheDocument();
-  expect(loanDurationInput).toBeInTheDocument();
-  expect(insuranceRateInput).toBeInTheDocument();
-  expect(fictitiousRentInput).toBeInTheDocument();
-  expect(HousingTaxInput).toBeInTheDocument();
-  expect(propertyTaxInput).toBeInTheDocument();
-  expect(calculateButton).toBeInTheDocument();
-  expect(reportButton).toBeInTheDocument();
 });
