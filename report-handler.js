@@ -19,7 +19,7 @@ export async function generateReport() {
     const propertyTax = parseFloat(document.getElementById('propertyTax').value);
     const fictitiousRentRate = parseFloat(document.getElementById('fictitiousRentRate').value) / 100;
     const coOwnershipFees = parseFloat(document.getElementById('coOwnership').value);
-    const maxDuration = 100;
+    const maxDuration = 200;
     const fileFees = parseFloat(document.getElementById('file-fees').value);
 
     const notaryFees = price * notary;
@@ -34,7 +34,7 @@ export async function generateReport() {
     const APR = calculateAPR();
 
     const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
-    const maxCalculatedDuration = Math.min(loanDuration, repaymentYear + 4); // 1 more year to see after meeting year
+    const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4); // 4 more year to see after meeting year
     const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate);
     const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
 
