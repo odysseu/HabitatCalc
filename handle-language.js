@@ -42,7 +42,7 @@ export async function updateAPRLabel(apr, translations) {
     // const response = fetch(`translations/${language}.json`);
     // const translations = response.json();
     if (aprElement && typeof translations !== 'undefined' && translations && translations.reportAPR) {
-        console.log('Updating APR label with value:', `${translations.APR}: ${apr.toFixed(2)}%`);
+        // console.log('Updating APR label with value:', `${translations.APR}: ${apr.toFixed(2)}%`);
         aprElement.textContent = `${translations.APR}: ${apr.toFixed(2)}%`;
     } else {
         console.error('APR element not found or translations are not available.');
@@ -102,7 +102,7 @@ export async function updateContent(translations) {
         if (sectionFinancing) sectionFinancing.textContent = translations.sectionFinancing;
         if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
         if (apr) {
-            console.log("calculating APR inside updateContent");
+            // console.log("calculating APR inside updateContent");
             const aprValue = calculateAPR(document); //apr.textContent = `${translations.reportAPR}: `;
             updateAPRLabel(aprValue, translations);
         }
