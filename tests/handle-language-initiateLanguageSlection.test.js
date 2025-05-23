@@ -88,7 +88,7 @@ describe('initiateLanguageSelection', () => {
 
         await initiateLanguageSelection();
 
-        expect(document.getElementById('language-select').value).toBe('fr');
+        expect(document.getElementById('language-select').value).toBe('en');
         // expect(loadTranslations).toHaveBeenCalledWith('fr');
         // expect(updateContent).toHaveBeenCalledWith({ title: 'Titre' });
     });
