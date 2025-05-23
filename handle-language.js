@@ -12,7 +12,7 @@ export async function initiateLanguageSelection() {
     // console.log('Browser language detected:', browserLanguage);
     // Match browser language with available options in the select element
     const availableLanguages = Array.from(languageSelect.options).map(option => option.value);
-    const defaultLanguage = availableLanguages.includes(browserLanguage) ? browserLanguage : 'fr'; // Fallback to 'fr' if not found
+    const defaultLanguage = availableLanguages.includes(browserLanguage) ? browserLanguage : 'en'; // Fallback to 'en' if not found
     // Set the languageSelect value to the detected language
     languageSelect.value = defaultLanguage;
     // Load translations for the detected language
@@ -29,24 +29,38 @@ export async function loadTranslations(language) {
         // console.log('Translations loaded:', translations);
         return translations;
     } catch (error) {
-        console.error('Error loading translations:', error);
+        console.warn('Error loading translations:', error);
         return null;
     }
 }
 
-
 export async function updateAPRLabel(apr, translations) {
-    // update APR display
     const aprElement = document.getElementById('apr-overlay');
-    // const language = document.getElementById('language-select').value;
-    // const response = fetch(`translations/${language}.json`);
-    // const translations = response.json();
-    if (aprElement && typeof translations !== 'undefined' && translations && translations.reportAPR) {
-        console.log('Updating APR label with value:', `${translations.APR}: ${apr.toFixed(2)}%`);
-        aprElement.textContent = `${translations.APR}: ${apr.toFixed(2)}%`;
-    } else {
-        console.error('APR element not found or translations are not available.');
+    let aprLabel, aprValue;
+
+    if (!aprElement) {
+        console.warn('APR element not found.');
+        return;
     }
+
+    // Handle apr value
+    if (typeof apr !== 'number' || isNaN(apr)) {
+        aprValue = '??.??';
+    } else {
+        aprValue = apr.toFixed(2);
+    }
+
+    // Handle translations and APR label
+    if (translations) {
+        if (!translations.APR) {
+            translations.APR = 'APR_IDIOT_LABEL';
+        }
+        aprLabel = translations.APR;
+    } else {
+        aprLabel = 'APR_IDIOT_TRANSLATION';
+    }
+
+    aprElement.textContent = `${aprLabel}: ${aprValue}%`;
 }
 
 export async function updateContent(translations) {
@@ -102,7 +116,7 @@ export async function updateContent(translations) {
         if (sectionFinancing) sectionFinancing.textContent = translations.sectionFinancing;
         if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
         if (apr) {
-            console.log("calculating APR inside updateContent");
+            // console.log("calculating APR inside updateContent");
             const aprValue = calculateAPR(document); //apr.textContent = `${translations.reportAPR}: `;
             updateAPRLabel(aprValue, translations);
         }
@@ -117,6 +131,6 @@ export async function updateContent(translations) {
         if (welcomeMessage) welcomeMessage.querySelector('p').innerHTML = translations.welcomeMessage;
     }
     else  {
-        console.error('Translations are not available or invalid.');
+        console.warn('Translations are not available or invalid.');
     }
 }

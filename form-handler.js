@@ -19,7 +19,7 @@ export async function resetForm() {
     if (context && typeof context.clearRect === 'function') {
         context.clearRect(0, 0, canvas.width, canvas.height);
     } else {
-        console.error('clearRect method is not available on the canvas context.');
+        console.warn('clearRect method is not available on the canvas context.');
     }
     const languageSelect = document.getElementById('language-select').value;
     const translation = await loadTranslations(languageSelect);
@@ -51,7 +51,7 @@ export function calculateAPR() {
         const coutEmprunt = (monthlyLoanInsurancePayment * loanDuration * 12) - borrowedAmount;
         apr = coutEmprunt / borrowedAmount * 100 / loanDuration ;
     } else if (borrowedAmount < 0) {
-        console.error('Montant emprunté négatif:', borrowedAmount);
+        console.warn('Montant emprunté négatif:', borrowedAmount);
     }
     // console.log('Calculated APR:', apr);
     return apr;
@@ -117,7 +117,7 @@ function isValidNumber(value) {
     try {
         return !isNaN(parseFloat(value)) && isFinite(value) && value.trim() !== "";
     } catch (error) {
-        console.error("Error checking if value is a valid number:", { value, error });
+        console.warn("Error checking if value is a valid number:", { value, error });
         return false;
     }
 }
