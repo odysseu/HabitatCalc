@@ -61,6 +61,18 @@ describe('initiateLanguageSelection', () => {
         // expect(updateContent).toHaveBeenCalledWith({ title: 'Titre' });
     });
 
+    it('Detect navigator userlanguage if it exists in translations', async () => {
+        Object.defineProperty(window.navigator, 'userLanguage', { value: 'french', configurable: true });
+        // const { loadTranslations, updateContent } = require('../handle-language.js');
+
+        await initiateLanguageSelection();
+
+        expect(document.getElementById('language-select').value).toBe('fr');
+        // TODO check how toHaveBeenCalledWith works
+        // expect(loadTranslationsMock).toHaveBeenCalledWith('fr');
+        // expect(updateContent).toHaveBeenCalledWith({ title: 'Titre' });
+    });
+
     it('Detect english navigator language', async () => {
         Object.defineProperty(window.navigator, 'language', { value: 'en-EG', configurable: true });
         // const { loadTranslations, updateContent } = require('../handle-language.js');

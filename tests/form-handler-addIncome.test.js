@@ -60,14 +60,14 @@ describe('addIncome', () => {
   });
 
   // it('should log an error if inputs are invalid', () => {
-  //   console.error = jest.fn();
+  //   console.warn = jest.fn();
 
   //   incomeInput.value = 'invalid';
   //   durationInput.value = 'invalid';
 
   //   addIncome(doc);
 
-  //   expect(console.error).toHaveBeenCalledWith('Invalid input detected:', {
+  //   expect(console.warn).toHaveBeenCalledWith('Invalid input detected:', {
   //     income: 'invalid',
   //     duration: 'invalid',
   //   });
