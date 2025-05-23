@@ -32,7 +32,7 @@ describe('calculateAPR', () => {
 
   it('should calculate default APR', () => {
 
-    const apr = calculateAPR(document);
+    const apr = calculateAPR();
 
     expect(apr).toBeGreaterThan(0);
     expect(apr).toBeCloseTo(0.5, 0.01); // Adjust expected value based on your calculation logic

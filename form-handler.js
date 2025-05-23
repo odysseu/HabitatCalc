@@ -48,8 +48,8 @@ export function calculateAPR() {
     // Calculating APR if borrowed amount is positive
     if (borrowedAmount > 0) {
         const monthlyLoanInsurancePayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
-        const coutEmprunt = (monthlyLoanInsurancePayment * loanDuration * 12) - borrowedAmount;
-        apr = coutEmprunt / borrowedAmount * 100 / loanDuration ;
+        const loanCost = (monthlyLoanInsurancePayment * loanDuration * 12) - borrowedAmount;
+        apr = loanCost / borrowedAmount * 100 / loanDuration ;
     } else if (borrowedAmount < 0) {
         console.warn('Montant emprunté négatif:', borrowedAmount);
     }

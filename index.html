@@ -42,53 +42,53 @@
             <div class="form-section">
                 <div>
                     <h2 id="purchase-section">Achat</h2>
-                    <label for="price">Prix du bien (€): <span class="help-icon">? <span class="help-text">Le prix d'achat du bien immobilier.</span></span></label>
+                    <label for="price">Prix du bien (€) <span class="help-icon">? <span class="help-text">Le prix d'achat du bien immobilier.</span></span></label>
                     <input type="number" step="0.01" id="price" name="price" value="300000" required>
 
-                    <label for="notary">Frais de notaire (%): <span class="help-icon">? <span class="help-text">Pourcentage des frais de notaire applicables (4 pour du neuf, 8 pour de l'ancien).</span></span></label>
+                    <label for="notary">Frais de notaire (%) <span class="help-icon">? <span class="help-text">Pourcentage des frais de notaire applicables (4 pour du neuf, 8 pour de l'ancien).</span></span></label>
                     <input type="number" step="0.01" id="notary" name="notary" value="8" required>
 
-                    <label for="appreciation-rate">Taux appréciation bien (%): <span class="help-icon">? <span class="help-text">Taux d'évolution annuel du prix du bien.</span></span></label>
+                    <label for="appreciation-rate">Taux appréciation bien (%) <span class="help-icon">? <span class="help-text">Taux d'évolution annuel du prix du bien.</span></span></label>
                     <input type="number" step="0.01" id="appreciation-rate" name="appreciation-rate" value="2" required>
 
-                    <label for="agency-commission">Commission agence (%): <span class="help-icon">? <span class="help-text">Pourcentage des frais d'agence.</span></span></label>
+                    <label for="agency-commission">Commission agence (%) <span class="help-icon">? <span class="help-text">Pourcentage des frais d'agence.</span></span></label>
                     <input type="number" step="0.01" id="agency-commission" name="agency-commission" value="0" required>
 
-                    <label for="coOwnership">Frais de copropriété: <span class="help-icon">? <span class="help-text">Frais de copropriété annuels.</span></span></label>
+                    <label for="coOwnership">Frais de copropriété <span class="help-icon">? <span class="help-text">Frais de copropriété annuels.</span></span></label>
                     <input type="number" step="0.01" id="coOwnership" name="coOwnership" value="0" required>
                 </div>
                 <div>
                     <h2 id="loan-section">Emprunt</h2>
-                    <label for="file-fees">Frais de dossier (€): <span class="help-icon">? <span class="help-text">Montant des frais de dossier, frais d'entrée, frais de courtage.</span></span></label>
+                    <label for="file-fees">Frais de dossier (€) <span class="help-icon">? <span class="help-text">Montant des frais de dossier, frais d'entrée, frais de courtage.</span></span></label>
                     <input type="number" step="1" id="file-fees" name="file-fees" value="0" required>
 
-                    <label for="contribution">Apport personnel (€): <span class="help-icon">? <span class="help-text">Montant de l'contribution personnel.</span></span></label>
+                    <label for="contribution">Apport personnel (€) <span class="help-icon">? <span class="help-text">Montant de l'apport personnel.</span></span></label>
                     <input type="number" step="0.01" id="contribution" name="contribution" value="0" required>
 
                     <div class="interest-rate-container">
-                        <label for="interest-rate">Taux d'intérêt (%): <span class="help-icon">? <span class="help-text">Taux d'intérêt annuel du prêt immobilier.</span></span></label>
+                        <label for="interest-rate">Taux d'intérêt (%) <span class="help-icon">? <span class="help-text">Taux d'intérêt annuel du prêt immobilier.</span></span></label>
                         <input type="number" step="0.01" id="interest-rate" name="interest-rate" value="1" required>
-                        <div class="input-overlay" id="apr-overlay">TAEG: 0.00%</div>
+                        <div class="input-overlay" id="apr-overlay">TAEG 0.00%</div>
                     </div>
 
-                    <label for="insuranceRate">Taux de l'assurance emprunteur (%): <span class="help-icon">? <span class="help-text">Pourcentage du prêt pour l'assurance emprunteur.</span></span></label>
+                    <label for="insuranceRate">Taux de l'assurance emprunteur (%) <span class="help-icon">? <span class="help-text">Pourcentage du prêt pour l'assurance emprunteur.</span></span></label>
                     <input type="number" step="0.01" id="insuranceRate" name="insuranceRate" value="0" required>
 
-                    <label for="loanDuration">Durée du prêt (années): <span class="help-icon">? <span class="help-text">Durée totale du prêt en années.</span></span></label>
+                    <label for="loanDuration">Durée du prêt (années) <span class="help-icon">? <span class="help-text">Durée totale du prêt en années.</span></span></label>
                     <input type="number" step="1" id="loanDuration" name="loanDuration" value="20" required>
                 </div>
             </div>
             <h2 id="financing-section">Financement</h2>
-            <label for="fictitiousRent">Loyer fictif mensuel (€): <span class="help-icon">? <span class="help-text">Loyer mensuel que vous paieriez si vous louiez au lieu d'acheter.</span></span></label>
+            <label for="fictitiousRent">Loyer fictif mensuel (€) <span class="help-icon">? <span class="help-text">Loyer mensuel que vous paieriez si vous louiez au lieu d'acheter.</span></span></label>
             <input type="number" id="fictitiousRent" name="fictitiousRent" value="1000" required>
 
-            <label for="fictitiousRentRate">Taux évolution annuelle du loyer fictif (%): <span class="help-icon">? <span class="help-text">Taux d'évolution du loyer fictif annuel si vous louiez au lieu d'acheter (%).</span></span></label>
+            <label for="fictitiousRentRate">Taux évolution annuelle du loyer fictif (%) <span class="help-icon">? <span class="help-text">Taux d'évolution du loyer fictif annuel si vous louiez au lieu d'acheter (%).</span></span></label>
             <input type="number" step="0.01" id="fictitiousRentRate" name="fictitiousRentRate" value="1" required>
 
-            <label for="HousingTax">Taxe d'habitation (€): <span class="help-icon">? <span class="help-text">Montant annuel de la taxe d'habitation.</span></span></label>
+            <label for="HousingTax">Taxe d'habitation (€) <span class="help-icon">? <span class="help-text">Montant annuel de la taxe d'habitation.</span></span></label>
             <input type="number" id="HousingTax" name="HousingTax" value="0" required>
 
-            <label for="propertyTax">Taxe foncière (€): <span class="help-icon">? <span class="help-text">Montant annuel de la taxe foncière.</span></span></label>
+            <label for="propertyTax">Taxe foncière (€) <span class="help-icon">? <span class="help-text">Montant annuel de la taxe foncière.</span></span></label>
             <input type="number" id="propertyTax" name="propertyTax" value="1000" required>
 
             <div id="incomes-container">

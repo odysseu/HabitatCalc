@@ -3,35 +3,43 @@
 // Import functions from form-handler.js if using modules
 import { addIncome, calculateAPR, resetForm } from './form-handler.js';
 import { generateReport } from './report-handler.js';
-import { loadTranslations, updateContent } from './handle-language.js';
+import { loadTranslations, updateContent, updateAPRLabel } from './handle-language.js';
 
 document.addEventListener('DOMContentLoaded', async function () {
     const selectedLanguage = document.getElementById('language-select');
     const translations = await loadTranslations(selectedLanguage.value);
 
-    document.getElementById('insuranceRate').addEventListener('input', function() {
-        updateContent(translations);
+    document.getElementById('insuranceRate').addEventListener('input', async function() {
+        const aprValue = calculateAPR();
+        await updateAPRLabel(aprValue, translations);
     });
-    document.getElementById('interest-rate').addEventListener('input', function() {
-        updateContent(translations);
+    document.getElementById('interest-rate').addEventListener('input', async function() {
+        const aprValue = calculateAPR();
+        await updateAPRLabel(aprValue, translations);
     });
-    document.getElementById('file-fees').addEventListener('input', function() {
-        updateContent(translations);
+    document.getElementById('file-fees').addEventListener('input', async function() {
+        const aprValue = calculateAPR();
+        await updateAPRLabel(aprValue, translations);
     });
-    document.getElementById('price').addEventListener('input', function() {
-        updateContent(translations);
+    document.getElementById('price').addEventListener('input', async function() {
+        const aprValue = calculateAPR();
+        await updateAPRLabel(aprValue, translations);
     });
-    document.getElementById('notary').addEventListener('input', function() {
-        updateContent(translations);
+    document.getElementById('notary').addEventListener('input', async function() {
+        const aprValue = calculateAPR();
+        await updateAPRLabel(aprValue, translations);
     });
-    document.getElementById('agency-commission').addEventListener('input', function() {
-        updateContent(translations);
+    document.getElementById('agency-commission').addEventListener('input', async function() {
+        const aprValue = calculateAPR();
+        await updateAPRLabel(aprValue, translations);
     });
-    document.getElementById('contribution').addEventListener('input', function() {
-        updateContent(translations);
+    document.getElementById('contribution').addEventListener('input', async function() {
+        const aprValue = calculateAPR();
+        await updateAPRLabel(aprValue, translations);
     });
-    document.getElementById('loanDuration').addEventListener('input', function() {
-        updateContent(translations);
+    document.getElementById('loanDuration').addEventListener('input', async function() {
+        const aprValue = calculateAPR();
+        await updateAPRLabel(aprValue, translations);
     });
     document.getElementById('home-logo').addEventListener('click', resetForm);
     document.getElementById('calculate-button').addEventListener('click', generateReport);
@@ -50,7 +58,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Initial call to set the language based on the default selection
     // console.log('Language used :', defaultLanguage);
-    // calculateAPR(document);
+    // calculateAPR();
 
     const welcomeMessage = document.getElementById('welcome-message');
     document.addEventListener('click', function(event) {
@@ -61,5 +69,11 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     document.getElementById('calculate-button').addEventListener('click', generateReport);
 });
+
+
+const selectedLanguage = document.getElementById('language-select');
+const translations = await loadTranslations(selectedLanguage.value);
+const aprValue = calculateAPR();
+await updateAPRLabel(aprValue, translations);
 
 

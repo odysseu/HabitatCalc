@@ -117,7 +117,7 @@ export async function updateContent(translations) {
         if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
         if (apr) {
             // console.log("calculating APR inside updateContent");
-            const aprValue = calculateAPR(document); //apr.textContent = `${translations.reportAPR}: `;
+            const aprValue = calculateAPR(); //apr.textContent = `${translations.reportAPR}: `;
             updateAPRLabel(aprValue, translations);
         }
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
