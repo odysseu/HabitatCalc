@@ -27,10 +27,11 @@ export async function resetForm() {
     updateContent(translation);
     // console.log("Final incomes-container:", document.getElementById('incomes-container').innerHTML);
 }
-
+/**
+ * Calculates the Annual Percentage Rate (APR) based on form values.
+ * Note: This is a simplified estimation and does not follow the official APR calculation (which requires solving for the rate in the present value equation of all cash flows).
+ */
 export function calculateAPR() {
-    // form values
-    // console.log('Calculating APR...');
     const insuranceRate = parseFloat(document.getElementById('insuranceRate').value) / 100 || 0;
     const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 || 0;
     const fileFees = parseFloat(document.getElementById('file-fees').value) || 0;
@@ -39,23 +40,65 @@ export function calculateAPR() {
     const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100 || 0;
     const contribution = parseFloat(document.getElementById('contribution').value) || 0;
     const loanDuration = parseFloat(document.getElementById('loanDuration').value) || 0;
-    // Calculate monthly payments
+
     const notaryFees = price * notary;
-    const commisionFees = price * agencyCommission;
-    const borrowedAmount = price + notaryFees + commisionFees + fileFees - contribution;
-    // Initialisation of APR
-    let apr = 0;
-    // Calculating APR if borrowed amount is positive
-    if (borrowedAmount > 0) {
-        const monthlyLoanInsurancePayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
-        const loanCost = (monthlyLoanInsurancePayment * loanDuration * 12) - borrowedAmount;
-        apr = loanCost / borrowedAmount * 100 / loanDuration ;
-    } else if (borrowedAmount < 0) {
-        console.warn('Montant emprunté négatif:', borrowedAmount);
+    const commissionFees = price * agencyCommission;
+    const borrowedAmount = price + notaryFees + commissionFees + fileFees - contribution;
+
+    if (borrowedAmount <= 0 || loanDuration <= 0) {
+        console.warn('Invalid borrowed amount or loan duration:', borrowedAmount, loanDuration);
+        return 0;
     }
-    // console.log('Calculated APR:', apr);
-    return apr;
+
+    // Calculate total monthly payment (loan + insurance)
+    const monthlyPayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
+    // console.log('Monthly payment calculated:', monthlyPayment);
+
+    // Official APR calculation requires solving for the rate (r) in the equation:
+    // borrowedAmount = Σ [monthlyPayment / (1 + r)^n], for n = 1 to total months
+    // We'll use the Newton-Raphson method for approximation
+
+    const totalMonths = loanDuration * 12;
+    let guess = interestRate / 12; // initial guess (monthly rate)
+    let aprMonthly = guess;
+    let epsilon = 1e-7;
+    let maxIter = 10000;
+
+    function f(r) {
+        let sum = 0;
+        for (let n = 1; n <= totalMonths; n++) {
+            sum += monthlyPayment / Math.pow(1 + r, n);
+        }
+        return sum - borrowedAmount;
+    }
+
+    function fPrime(r) {
+        let sum = 0;
+        for (let n = 1; n <= totalMonths; n++) {
+            sum -= n * monthlyPayment / Math.pow(1 + r, n + 1);
+        }
+        return sum;
+    }
+
+    // Newton-Raphson iteration
+    for (let i = 0; i < maxIter; i++) {
+        let y = f(aprMonthly);
+        let yPrime = fPrime(aprMonthly);
+        if (Math.abs(yPrime) < 1e-10) break; // Avoid division by zero
+        let next = aprMonthly - y / yPrime;
+        if (Math.abs(next - aprMonthly) < epsilon) {
+            aprMonthly = next;
+            break;
+        }
+        aprMonthly = next;
+    }
+
+    // APR annualized and as a percentage
+    let apr = aprMonthly * 12 * 100;
+    // console.log('APR calculated:', apr);
+    return apr > 0 && isFinite(apr) ? apr : 0;
 }
+
 
 export function addIncome() {
     let incomeCount = document.querySelectorAll('.income-container').length;
@@ -147,10 +190,15 @@ export function extractIncomes() {
 
 export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnuel, insuranceRate) {
     const numberMonths = loanDuration * 12;
-    const loanMonthlyPayment = interestRateAnnuel === 0 ? borrowedAmount / numberMonths : (borrowedAmount * (interestRateAnnuel / 12)) / (1 - Math.pow(1 + (interestRateAnnuel / 12), -(loanDuration * 12)));
-    const assuranceMonthlyPayment = borrowedAmount * insuranceRate / numberMonths;
+    const monthlyInterestRate = interestRateAnnuel / 12;
+    const loanMonthlyPayment = interestRateAnnuel === 0
+        ? borrowedAmount / numberMonths
+        : (borrowedAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -numberMonths));
+    const assuranceMonthlyPayment = borrowedAmount * (insuranceRate / 12);
+    
     return loanMonthlyPayment + assuranceMonthlyPayment;
 }
+
 
 export function findPivotYear(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
     const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
