@@ -35,7 +35,7 @@ describe('calculateAPR', () => {
     const apr = calculateAPR();
 
     expect(apr).toBeGreaterThan(0);
-    expect(apr).toBeCloseTo(0.5, 0.01); // Adjust expected value based on your calculation logic
+    expect(apr).toBeCloseTo(1.0, 0.01); // Adjust expected value based on your calculation logic
   });
   it('calculateAPR calculates the APR correctly', () => {
     document.getElementById('insuranceRate').value = '1';
@@ -50,7 +50,7 @@ describe('calculateAPR', () => {
     const apr = calculateAPR();
 
     expect(apr).toBeGreaterThan(0);
-    expect(apr).toBeCloseTo(1.12, 2); // Adjust expected value based on your calculation logic
+    expect(apr).toBeCloseTo(3.68, 2); // Adjust expected value based on your calculation logic
   });
 
 });

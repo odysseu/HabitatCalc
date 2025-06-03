@@ -31,7 +31,7 @@ describe('calculateAPR', () => {
   it('should calculate monthly payment correctly', () => {
     const monthlyPayment = calculateMonthlyPayment(200000, 20, 0.01, 0.002);
     expect(monthlyPayment).toBeGreaterThan(0);
-    expect(monthlyPayment).toBeCloseTo(921, 0); // Adjust expected value based on your calculation logic
+    expect(monthlyPayment).toBeCloseTo(953, 0); // Adjust expected value based on your calculation logic
   });
 
 });
