@@ -1,5 +1,9 @@
+/**
+ * @jest-environment jsdom
+ */
+
 // This is a Jest test file for the addIncome function in form-handler.js
-import { addIncome } from '../form-handler.js';
+import { addIncome } from '../js/form-handler';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 

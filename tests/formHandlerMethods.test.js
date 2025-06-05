@@ -1,12 +1,12 @@
-// Description: Tests for form-handler.js
-
-import { calculatePurchaseLosses, calculateRentLosses, findPivotYear } from '../form-handler';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
-
 /**
  * @jest-environment jsdom
  */
+
+// Description: Tests for form-handler.js
+
+import { calculatePurchaseLosses, calculateRentLosses, findPivotYear } from '../js/form-handler';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 describe('form-handler.js methods', () => {
   global.TextEncoder = require("util").TextEncoder;

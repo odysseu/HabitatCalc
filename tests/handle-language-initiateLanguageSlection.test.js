@@ -3,12 +3,12 @@
  */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { initiateLanguageSelection } from '../handle-language.js';
-import { loadTranslations, updateContent } from '../handle-language.js';
+import { initiateLanguageSelection } from '../js/handle-language';
+// import { loadTranslations, updateContent } from '../handle-language';
 
 // Mock loadTranslations et updateContent
-jest.mock('../handle-language.js', () => {
-    const originalModule = jest.requireActual('../handle-language.js');
+jest.mock('../js/handle-language.js', () => {
+    const originalModule = jest.requireActual('../js/handle-language.js');
     return {
         ...originalModule,
         loadTranslations: jest.fn(() => Promise.resolve({ title: 'Titre' })),
