@@ -1,4 +1,7 @@
-import { addIncome, resetForm } from '../form-handler';
+/**
+ * @jest-environment jsdom
+ */
+import { addIncome, resetForm } from '../js/form-handler';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 

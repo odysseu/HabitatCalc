@@ -1,10 +1,8 @@
-// global.TextEncoder = require("util").TextEncoder;
-// global.TextDecoder = require("util").TextDecoder;
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
 /**
  * @jest-environment jsdom
  */
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 describe('Test that all id-ed elements exist in the DOM', () => {
 
