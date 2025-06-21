@@ -46,7 +46,7 @@ jobs:
     name: Test with node-${{matrix.node-version}}
     strategy:
       matrix:
-        node-version: ['16', 'latest']
+        node-version: ['16', '24.1.0']
     runs-on: ubuntu-latest
     steps:
       - name: Update apt
