@@ -1,7 +1,7 @@
 {
     "name": "HabitatCalc",
     "short_name": "HabitatCalc",
-    "start_url": "/index.html",
+    "start_url": "/HabitatCalc",
     "display": "standalone",
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
