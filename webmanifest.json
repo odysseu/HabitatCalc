@@ -1,7 +1,7 @@
 {
     "name": "HabitatCalc",
     "short_name": "HabitatCalc",
-    "scope": "/gHabitatCalc/",
+    "scope": "/HabitatCalc/",
     "start_url": "/HabitatCalc/",
     "display": "standalone",
     "theme_color": "#000000",
