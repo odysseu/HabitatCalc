@@ -1,7 +1,6 @@
-// global.TextEncoder = require("util").TextEncoder;
-// global.TextDecoder = require("util").TextDecoder;
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+
 /**
  * @jest-environment jsdom
  */
@@ -33,7 +32,7 @@ describe('Test that all id-ed elements exist in the DOM', () => {
         'contribution',
         'interest-rate',
         'apr-overlay',
-        'insuranceRate',
+        'insurance-rate',
         'loanDuration',
         'financing-section',
         'fictitiousRent',
@@ -46,7 +45,7 @@ describe('Test that all id-ed elements exist in the DOM', () => {
         'add-income-button',
         'calculate-button',
         'simulation',
-        'myChart-container',
+        'chart-container',
         'myChart',
         'report-button',
         'download-button'
@@ -64,10 +63,10 @@ describe('Test that all id-ed elements exist in the DOM', () => {
         expect(myChart.tagName).toBe('CANVAS');
     });
 
-    test('The element with id "myChart-container" is a div', () => {
-        const myChartContainer = document.getElementById('myChart-container');
-        expect(myChartContainer).not.toBeNull();
-        expect(myChartContainer.tagName).toBe('DIV');
+    test('The element with id "chart-container" is a div', () => {
+        const chartContainer = document.getElementById('chart-container');
+        expect(chartContainer).not.toBeNull();
+        expect(chartContainer.tagName).toBe('DIV');
     });
     test('The element with id "simulation" is a div', () => {
         const simulation = document.getElementById('simulation');

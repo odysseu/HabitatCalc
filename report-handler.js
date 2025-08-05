@@ -13,7 +13,7 @@ export async function generateReport() {
     const contribution = parseFloat(document.getElementById('contribution').value);
     const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100;
     const loanDuration = parseInt(document.getElementById('loanDuration').value);
-    const insuranceRate = parseInt(document.getElementById('insuranceRate').value);
+    const insuranceRate = parseInt(document.getElementById('insurance-rate').value);
     const fictitiousRent = parseFloat(document.getElementById('fictitiousRent').value);
     const HousingTax = parseFloat(document.getElementById('HousingTax').value);
     const propertyTax = parseFloat(document.getElementById('propertyTax').value);
@@ -259,7 +259,7 @@ export async function downloadPDF() {
     const contribution = parseFloat(document.getElementById('contribution').value);
     const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100;
     const loanDuration = parseInt(document.getElementById('loanDuration').value);
-    const insuranceRate = parseInt(document.getElementById('insuranceRate').value);
+    const insuranceRate = parseInt(document.getElementById('insurance-rate').value);
     const fictitiousRent = parseFloat(document.getElementById('fictitiousRent').value);
     const fileFees = parseFloat(document.getElementById('file-fees').value);
     const HousingTax = parseFloat(document.getElementById('HousingTax').value);

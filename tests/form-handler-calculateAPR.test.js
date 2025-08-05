@@ -35,10 +35,10 @@ describe('calculateAPR', () => {
     const apr = calculateAPR();
 
     expect(apr).toBeGreaterThan(0);
-    expect(apr).toBeCloseTo(1.0, 0.01); // Adjust expected value based on your calculation logic
+    expect(apr).toBeCloseTo(1.0, 0.01);
   });
   it('calculateAPR calculates the APR correctly', () => {
-    document.getElementById('insuranceRate').value = '1';
+    document.getElementById('insurance-rate').value = '1';
     document.getElementById('interest-rate').value = '2';
     document.getElementById('file-fees').value = '1000';
     document.getElementById('price').value = '200000';
@@ -50,7 +50,7 @@ describe('calculateAPR', () => {
     const apr = calculateAPR();
 
     expect(apr).toBeGreaterThan(0);
-    expect(apr).toBeCloseTo(3.68, 2); // Adjust expected value based on your calculation logic
+    expect(apr).toBeCloseTo(3.68, 2);
   });
 
 });

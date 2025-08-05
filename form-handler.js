@@ -12,7 +12,7 @@ export async function resetForm() {
         console.warn('The element with id "myChart" is not a valid canvas. Creating a new canvas.');
         const newCanvas = document.createElement('canvas');
         newCanvas.id = 'myChart';
-        document.getElementById('myChart-container').appendChild(newCanvas);
+        document.getElementById('chart-container').appendChild(newCanvas);
         canvas = newCanvas;
     }
     const context = canvas.getContext('2d');
@@ -32,7 +32,7 @@ export async function resetForm() {
  * Note: This is a simplified estimation and does not follow the official APR calculation (which requires solving for the rate in the present value equation of all cash flows).
  */
 export function calculateAPR() {
-    const insuranceRate = parseFloat(document.getElementById('insuranceRate').value) / 100 || 0;
+    const insuranceRate = parseFloat(document.getElementById('insurance-rate').value) / 100 || 0;
     const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 || 0;
     const fileFees = parseFloat(document.getElementById('file-fees').value) || 0;
     const price = parseFloat(document.getElementById('price').value) || 0;

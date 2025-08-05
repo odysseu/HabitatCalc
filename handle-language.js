@@ -91,7 +91,7 @@ export async function updateContent(translations) {
         const downloadButton = document.querySelector('#download-button button');
         const title = document.getElementById('title');
         const appreciationRateLabel = document.querySelector('label[for="appreciation-rate"]');
-        const insuranceRateLabel = document.querySelector('label[for="insuranceRate"]');
+        const insuranceRateLabel = document.querySelector('label[for="insurance-rate"]');
         const interestRateLabel = document.querySelector('label[for="interest-rate"]');
         const fictitiousRentRateLabel = document.querySelector('label[for="fictitiousRentRate"]');
         const welcomeMessage = document.getElementById('welcome-message');

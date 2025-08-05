@@ -28,7 +28,7 @@ global.fetch = jest.fn((url) => {
  */
 
 describe('resetForm', () => {
-    let container, incomeInput, durationInput, initial_incomes, initial_price, initial_notary, initial_appreciation, initial_agency, initial_coOwnership, initial_file, initial_contribution, initial_interest, initial_insuranceRate, initial_loanDuration, initial_fictitiousRent, initial_fictitiousRentRate, initial_HousingTax, initial_propertyTax;
+    let container, incomeInput, durationInput, initial_incomes, initial_price, initial_notary, initial_appreciation, initial_agency, initial_coOwnership, initial_file, initial_contribution, initial_interestRate, initial_insuranceRate, initial_loanDuration, initial_fictitiousRent, initial_fictitiousRentRate, initial_HousingTax, initial_propertyTax;
     beforeAll(() => {
         // Load the index.html file
         const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
@@ -40,8 +40,8 @@ describe('resetForm', () => {
         initial_coOwnership = document.getElementById('coOwnership').value;
         initial_file = document.getElementById('file-fees').value;
         initial_contribution = document.getElementById('contribution').value;
-        initial_interest = document.getElementById('interest-rate').value;
-        initial_insuranceRate = document.getElementById('insuranceRate').value;
+        initial_interestRate = document.getElementById('interest-rate').value;
+        initial_insuranceRate = document.getElementById('insurance-rate').value;
         initial_loanDuration = document.getElementById('loanDuration').value;
         initial_fictitiousRent = document.getElementById('fictitiousRent').value;
         initial_fictitiousRentRate = document.getElementById('fictitiousRentRate').value;
@@ -65,7 +65,7 @@ describe('resetForm', () => {
         document.getElementById('file-fees').value = '1000';
         document.getElementById('contribution').value = '50000';
         document.getElementById('interest-rate').value = '1';
-        document.getElementById('insuranceRate').value = '1';
+        document.getElementById('insurance-rate').value = '1';
         document.getElementById('loanDuration').value = '20';
         document.getElementById('fictitiousRent').value = '500';
         document.getElementById('fictitiousRentRate').value = '1';
@@ -108,8 +108,8 @@ describe('resetForm', () => {
         expect(document.getElementById('coOwnership').value).toBe(initial_coOwnership);
         expect(document.getElementById('file-fees').value).toBe(initial_file);
         expect(document.getElementById('contribution').value).toBe(initial_contribution);
-        expect(document.getElementById('interest-rate').value).toBe(initial_interest);
-        expect(document.getElementById('insuranceRate').value).toBe(initial_insuranceRate);
+        expect(document.getElementById('interest-rate').value).toBe(initial_interestRate);
+        expect(document.getElementById('insurance-rate').value).toBe(initial_insuranceRate);
         expect(document.getElementById('loanDuration').value).toBe(initial_loanDuration);
         expect(document.getElementById('fictitiousRent').value).toBe(initial_fictitiousRent);
         expect(document.getElementById('fictitiousRentRate').value).toBe(initial_fictitiousRentRate);
