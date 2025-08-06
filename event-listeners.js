@@ -4,6 +4,15 @@ import { addIncome, calculateAPR, resetForm } from './form-handler.js';
 import { generateReport } from './report-handler.js';
 import { loadTranslations, updateContent, updateAPRLabel } from './handle-language.js';
 
+document.querySelectorAll('.form-section-toggle').forEach(header => {
+    header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        content.classList.toggle('collapsed');
+    });
+});
+
+generateReport();
+
 document.addEventListener('DOMContentLoaded', async function () {
     const selectedLanguageElement = document.getElementById('language-select');
     const translations = await loadTranslations(selectedLanguageElement.value);

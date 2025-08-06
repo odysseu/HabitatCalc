@@ -28,6 +28,7 @@ describe('Test that all id-ed elements exist in the DOM', () => {
         'agency-commission',
         'coOwnership',
         'loan-section',
+        'incomes-section',
         'file-fees',
         'contribution',
         'interest-rate',

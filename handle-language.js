@@ -74,16 +74,18 @@ export async function updateContent(translations) {
         const incomeShare0 = document.getElementById('income-share-0');
         const loanDurationLabel = document.querySelector('label[for="loanDuration"]');
         const fileFeesLabel = document.querySelector('label[for="file-fees"]');
-        const logoHelp = document.querySelector('.logo-help');
+        const resetLogoHelp = document.querySelector('.logo-help');
+        const logoHelp = document.querySelector('.github-logo-help');
         const income0 = document.getElementById('income-0');
         const fictitiousRentLabel = document.querySelector('label[for="fictitiousRent"]');
         const notaryLabel = document.querySelector('label[for="notary"]');
         const pdfFileNameLabel = document.querySelector('label[for="pdf-filename"]');
-        const pdfFileNamePlaceHolder = document.getElementById('placerholder["pdf-filename"]');
+        const pdfFileNamePlaceHolder =  document.getElementById("pdf-filename");
         const priceLabel = document.querySelector('label[for="price"]');
         const purchaseSection = document.getElementById('purchase-section');
-        const sectionRent = document.getElementById('loan-section');
-        const sectionFinancing = document.getElementById('financing-section');
+        const loanSection = document.getElementById('loan-section');
+        const financingSection = document.getElementById('financing-section');
+        const incomesSection = document.getElementById('incomes-section');
         const sectionTitle = document.getElementById('title-section');
         const apr = document.getElementById('apr-overlay');
         const propertyTaxLabel = document.querySelector('label[for="propertyTax"]');
@@ -104,6 +106,7 @@ export async function updateContent(translations) {
         if (incomeShare0) incomeShare0.placeholder = translations.helpIncomeShare;
         if (loanDurationLabel) loanDurationLabel.innerHTML = `${translations.loanDuration} <span class="help-icon">? <span class="help-text">${translations.helpLoanDuration}</span></span>`;
         if (fileFeesLabel) fileFeesLabel.innerHTML = `${translations.fileFees} <span class="help-icon">? <span class="help-text">${translations.helpFileFees}</span></span>`;
+        if (resetLogoHelp) resetLogoHelp.textContent = translations.resetFormHelp;
         if (logoHelp) logoHelp.textContent = translations.resetFormHelp;
         if (income0) income0.placeholder = translations.helpMonthlyIncome;
         if (fictitiousRentLabel) fictitiousRentLabel.innerHTML = `${translations.fictitiousRent} <span class="help-icon">? <span class="help-text">${translations.helpFictitiousRent}</span></span>`;
@@ -112,8 +115,9 @@ export async function updateContent(translations) {
         if (pdfFileNamePlaceHolder) pdfFileNamePlaceHolder.placeholder = translations.pdfFileNamePlaceHolder;
         if (priceLabel) priceLabel.innerHTML = `${translations.price} <span class="help-icon">? <span class="help-text">${translations.helpPrice}</span></span>`;
         if (purchaseSection) purchaseSection.textContent = translations.purchaseSection;
-        if (sectionRent) sectionRent.textContent = translations.sectionRent;
-        if (sectionFinancing) sectionFinancing.textContent = translations.sectionFinancing;
+        if (loanSection) loanSection.textContent = translations.loanSection;
+        if (incomesSection) incomesSection.textContent = translations.incomesSection;
+        if (financingSection) financingSection.textContent = translations.financingSection;
         if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
         if (apr) {
             // console.log("calculating APR inside updateContent");

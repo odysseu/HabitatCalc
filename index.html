@@ -20,14 +20,14 @@
         <div class="header-left">
             <div class="logo-container">
                 <img src="logos/home-logo-light.png" alt="Home Logo" class="header-logo" id="home-logo">
-                <span class="logo-help">Réinitialiser le formulaire</span>
+                <span id="reset-logo-help" class="logo-help">Réinitialiser le formulaire</span>
             </div>
         </div>
         <h1 id="title-section">Calculette Projet Immobilier</h1>
         <div class="header-right">
             <a href="https://github.com/odysseu/python-app" target="_self">
                 <img src="logos/github-logo-light.png" alt="GitHub Logo" class="github-logo" id="github-logo">
-                <span class="logo-help">Aller au projet GitHub</span>
+                <span id="github-logo-help" class="logo-help">Aller au projet GitHub</span>
             </a>
             <label class="switch">
                 <input type="checkbox" id="dark-mode-toggle">
@@ -44,7 +44,7 @@
             <div class="form-container">
                 <form id="form-calculator" class="form">
                     <div class="form-section">
-                        <h2 class="form-section-toggle">Achat</h2>
+                        <h2 id="purchase-section" class="form-section-toggle">Achat</h2>
                         <div class="form-section-content">
                             <div class="form-group">
                                 <label for="price">Prix du bien (€)</label>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <h2 class="form-section-toggle">Emprunt</h2>
+                        <h2 id="loan-section" class="form-section-toggle">Emprunt</h2>
                         <div class="form-section-content">
                             <div class="form-group">
                                 <label for="file-fees">Frais de dossier (€)</label>
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <h2 class="form-section-toggle">Financement</h2>
+                        <h2 id="financing-section" class="form-section-toggle">Financement</h2>
                         <div class="form-section-content">
                             <div class="form-group">
                                 <label for="fictitiousRent">Loyer fictif mensuel (€)</label>
@@ -116,7 +116,7 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <h2 class="form-section-toggle">Revenus</h2>
+                        <h2 id="incomes-section" class="form-section-toggle">Revenus</h2>
                         <div class="form-section-content">
                             <div id="incomes-container">
                                 <div class="income-container">
@@ -148,13 +148,7 @@
     <script type="module" src="dark-mode.js"></script>
     <script type="module" src="handle-language.js"></script>
     <script type="module" src="event-listeners.js"></script>
-    <script>
-        document.querySelectorAll('.form-section-toggle').forEach(header => {
-            header.addEventListener('click', () => {
-                const content = header.nextElementSibling;
-                content.classList.toggle('collapsed');
-            });
-        });
-    </script>
+    <!-- <script>
+    </script> -->
 </body>
 </html>
