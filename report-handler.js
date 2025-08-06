@@ -190,6 +190,14 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
     translations = await loadTranslations(language);
 
     const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
+
+    const rootStyles = getComputedStyle(document.documentElement);
+    // const transparency = rootStyles.getPropertyValue('--graphOpacity').trim();
+    const rentColor = rootStyles.getPropertyValue('--graphRentColor').trim();
+    const rentFillColor = rootStyles.getPropertyValue('--graphRentFillColor').trim();
+    const purchaseColor = rootStyles.getPropertyValue('--graphPurchaseColor').trim();
+    const purchaseFillColor = rootStyles.getPropertyValue('--graphPurchaseFillColor').trim();
+
     // 3. Créer le nouveau graphique avec des options de responsivité
     myChart = new Chart(ctx, {
         type: 'line',
@@ -199,25 +207,38 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
                 {
                     label: `${translations.reportRentalCumulativeExpenses}`,
                     data: cumulRent,
-                    borderColor: 'rgb(255, 99, 132)',
-                    fill: false
+                    fill: true,
+                    borderColor: `${rentColor}`, //'rgb(255, 99, 132)',
+                    backgroundColor: `${rentFillColor}`
                 },
                 {
                     label: `${translations.reportCumulPurchaseLosses}`,
                     data: cumulativePurchase,
-                    borderColor: 'rgb(54, 162, 235)',
-                    fill: false
+                    fill: true,
+                    borderColor: `${purchaseColor}`,
+                    backgroundColor: `${purchaseFillColor}`
                 }
             ]
         },
         options: {
+            interaction: {
+                intersect: false,
+                mode: 'index',
+            },
             responsive: true,
-            maintainAspectRatio: true, //false, // Désactiver le maintien du ratio d'aspect pour s'adapter à la taille du parent
+            maintainAspectRatio: false, //false, // Désactiver le maintien du ratio d'aspect pour s'adapter à la taille du parent
             scales: {
                 y: {
                     ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' });
+                        callback: function (value) {
+                            return Intl.NumberFormat(
+                                `${translations.currencyFormat}`,
+                                {
+                                    style: 'currency',
+                                    currency: 'EUR',
+                                    maximumSignificantDigits: 5
+                                }
+                            ).format(value);
                         }
                     }
                 }
@@ -225,7 +246,18 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
             plugins: {
                 title: {
                     display: true,
-                    text: `${translations.reportTitle}`
+                    text: `${translations.graphTitle}`
+                },
+                tooltip: {
+                    usePointStyle: true,
+                    callbacks: {
+                        labelPointStyle: function (context) {
+                            return {
+                                pointStyle: 'circle',
+                                rotation: 0
+                            };
+                        }
+                    }
                 }
             }
         }
@@ -244,7 +276,7 @@ export async function downloadPDF() {
     const tableSpacing = 10;
     const pageWidth = doc.internal.pageSize.getWidth();
     const availableWidth = pageWidth - 2 * margin;
-    
+
     const language = document.getElementById('language-select').value;
     const translations = await loadTranslations(language);
     doc.text(margin, margin, `${translations.reportTitle}`);

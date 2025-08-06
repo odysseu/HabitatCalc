@@ -22,7 +22,12 @@
     --header-left-logo: 40px;
     --header-slider-space: 3px;
     --header-slider-diameter: calc(var(--header-left-logo) - 2 * var(--header-slider-space));
-    --header-slider-width: calc(var(--header-slider-diameter) * 1.5)
+    --header-slider-width: calc(var(--header-slider-diameter) * 2.5);
+    --graphOpacity: 0.1;
+    --graphRentColor: #2584e9c6;
+    --graphRentFillColor: #2c83e125;
+    --graphPurchaseColor: #f03f3fd0;
+    --graphPurchaseFillColor: #df2a2a36;
 }
 
 body {
@@ -42,8 +47,10 @@ body.dark-mode {
 input,
 button {
     padding: 5px;
-    margin: 10px 0;
-    width: calc(100% - 22px);
+    /* margin: 10px 0; */
+    margin-top: 1px;
+    margin-bottom: 10px;
+    /* width: calc(100% - 22px); */
     box-sizing: border-box;
 }
 
@@ -90,19 +97,19 @@ body.dark-mode .sticky-header {
     box-sizing: border-box;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 500px) {
     .form-chart-wrapper {
         flex-wrap: nowrap;
     }
 
     .form-container {
-        flex: 0 0 30%;
-        max-width: 30%;
+        flex: 0 0 35%;
+        max-width: 35%;
     }
 
     .chart-container {
         /* flex: 0 0 70%; */
-        max-width: 70%;
+        max-width: 65%;
     }
 }
 
@@ -138,7 +145,7 @@ body.dark-mode .sticky-header {
     top: 0;
     z-index: 1000;
     box-shadow: 0px 3px 3px 0px var(--header-box-shadow);
-    padding: min(1%,5px);
+    padding: min(1%, 5px);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -147,7 +154,7 @@ body.dark-mode .sticky-header {
 header h1 {
     flex-grow: 0.5;
     text-align: center;
-    margin: 0;
+    /* margin: 0; */
     font-size: 2.5vw;
 }
 
@@ -164,7 +171,7 @@ header h1 {
 
 .header-right {
     justify-content: flex-end;
-    gap: 10px
+    gap: max(1px, 5%);
 }
 
 .header-left .logo-container,
@@ -183,6 +190,7 @@ header h1 {
 .a {
     height: var(--header-left-logo)
 }
+
 .header-right .github-logo {
     /* max-width: 32px; */
     max-height: var(--header-left-logo);
