@@ -20,9 +20,10 @@
     --toggle-dark-bg-color: #dde5f0cb;
     /* --border-form-section: #cccccc36; */
     --header-left-logo: 40px;
-    --header-slider-space: 3px;
-    --header-slider-diameter: calc(var(--header-left-logo) - 2 * var(--header-slider-space));
-    --header-slider-width: calc(var(--header-slider-diameter) * 2.5);
+    --header-slider-space: 3px; /* space inside track */
+    --header-slider-diameter: var(--header-left-logo); /* - 2 * var(--header-slider-space)) track height */
+    --header-slider-width: calc(var(--header-slider-diameter) * 2); /* track length */
+    --header-slider-knob-size: calc(var(--header-slider-diameter) - 2 * var(--header-slider-space)); /* knob slightly smaller than track */
     --graphOpacity: 0.1;
     --graphRentColor: #2584e9c6;
     --graphRentFillColor: #2c83e125;
@@ -154,7 +155,7 @@ body.dark-mode .sticky-header {
 header h1 {
     flex-grow: 0.5;
     text-align: center;
-    /* margin: 0; */
+    margin: 2px;
     font-size: 2.5vw;
 }
 
@@ -171,7 +172,7 @@ header h1 {
 
 .header-right {
     justify-content: flex-end;
-    gap: max(1px, 5%);
+    gap: 9px;
 }
 
 .header-left .logo-container,
@@ -272,22 +273,23 @@ body.dark-mode #language-select {
 .slider:before {
     position: absolute;
     content: "";
-    height: calc(var(--header-slider-diameter) - 2 * var(--header-slider-space));
-    width: calc(var(--header-slider-diameter) - 2 * var(--header-slider-space));
+    height: var(--header-slider-knob-size);
+    width: var(--header-slider-knob-size);
     left: var(--header-slider-space);
-    bottom: var(--header-slider-space);
-    /* right: 3px; */
+    bottom: calc((var(--header-slider-diameter) - var(--header-slider-knob-size)) / 2);
     background-color: var(--white);
     transition: 0.4s;
     border-radius: 50%;
 }
 
-input:checked+.slider {
+input:checked + .slider {
     background-color: var(--primary-color);
 }
 
-input:checked+.slider:before {
-    transform: translateX(calc(var(--header-slider-width) - var(--header-slider-diameter)));
+input:checked + .slider:before {
+    transform: translateX(
+        calc(var(--header-slider-width) - var(--header-slider-knob-size) - 2 * var(--header-slider-space))
+    );
 }
 
 .container {
