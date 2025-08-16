@@ -335,7 +335,7 @@ body.dark-mode .container {
 
 .form-section-content {
     transition: max-height 0.3s ease-out;
-    padding: 2%;
+    padding: 1%;
     overflow: hidden;
 }
 
@@ -405,7 +405,7 @@ body.dark-mode .container {
 .input-overlay {
     position: absolute;
     left: 50px;
-    top: calc(50% + 5px);
+    top: 50%;
     ;
     /* Positionne le haut de l'overlay au milieu de l'élément parent */
     /* transform: translateY(-50%); Décale l'overlay vers le haut de la moitié de sa hauteur */
