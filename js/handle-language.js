@@ -23,7 +23,7 @@ export async function initiateLanguageSelection() {
 
 export async function loadTranslations(language) {
     try {
-        const response = await fetch(`../translations/${language}.json`);
+        const response = await fetch(`translations/${language}.json`);
         const translations = await response.json();
         // updateContent(translations);
         // console.log('Translations loaded:', translations);
