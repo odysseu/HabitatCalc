@@ -1,6 +1,9 @@
+/**
+ * @jest-environment jsdom
+ */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { loadTranslations, updateAPRLabel } from '../handle-language.js';
+import { loadTranslations, updateAPRLabel } from '../js/handle-language';
 
 describe('updateAPRLabel', () => {
     let aprElement;

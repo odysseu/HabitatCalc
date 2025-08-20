@@ -1,11 +1,11 @@
-// This is a Jest test file for the addIncome function in form-handler.js
-import { addIncome, extractIncomes } from '../form-handler';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
-
 /**
  * @jest-environment jsdom
  */
+
+// This is a Jest test file for the addIncome function in form-handler.js
+import { addIncome, extractIncomes } from '../js/form-handler';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 describe('extractIncomes', () => {
   let container, incomeInput, durationInput, totalIncome;

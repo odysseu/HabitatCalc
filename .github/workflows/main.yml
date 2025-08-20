@@ -49,6 +49,8 @@ jobs:
         node-version: ['latest']
     runs-on: ubuntu-latest
     steps:
+      - name: Update apt
+        run: sudo apt-get update
       - name: Checkout repository
         uses: actions/checkout@v4
 

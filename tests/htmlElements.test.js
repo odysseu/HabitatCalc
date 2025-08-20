@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
+=======
+>>>>>>> structure
 /**
  * @jest-environment jsdom
  */
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 describe('Test that all id-ed elements exist in the DOM', () => {
 
