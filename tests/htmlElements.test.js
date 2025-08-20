@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
-
-=======
->>>>>>> structure
 /**
  * @jest-environment jsdom
  */

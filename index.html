@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +8,10 @@
     <link rel="apple-touch-icon" sizes="180x180" href="logos/home-logo-light.png">
     <link rel="canonical" href="https://odysseu.github.io/HabitatCalc/" />
     <link rel="manifest" href="/HabitatCalc/webmanifest.json">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/styles.css">
     <link id="favicon" rel="icon" href="logos/favicon-light.ico" type="image/x-icon">
 </head>
+
 <body>
     <div id="welcome-message" class="welcome-message">
         <p>Bienvenue!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il devient
@@ -40,103 +42,116 @@
         </div>
     </header>
     <div class="container">
-        <div class="form-chart-wrapper">
-            <div class="form-container">
-                <form id="form-calculator" class="form">
-                    <div class="form-section">
-                        <h2 id="purchase-section" class="form-section-toggle">Achat</h2>
-                        <div class="form-section-content">
-                            <div class="form-group">
-                                <label for="price">Prix du bien (€)</label>
-                                <input type="number" step="0.01" id="price" name="price" value="300000" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="notary">Frais de notaire (%)</label>
-                                <input type="number" step="0.01" id="notary" name="notary" value="8" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="appreciation-rate">Taux appréciation bien (%)</label>
-                                <input type="number" step="0.01" id="appreciation-rate" name="appreciation-rate" value="2" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="agency-commission">Commission agence (%)</label>
-                                <input type="number" step="0.01" id="agency-commission" name="agency-commission" value="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="coOwnership">Frais de copropriété</label>
-                                <input type="number" step="0.01" id="coOwnership" name="coOwnership" value="0" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-section">
-                        <h2 id="loan-section" class="form-section-toggle">Emprunt</h2>
-                        <div class="form-section-content">
-                            <div class="form-group">
-                                <label for="file-fees">Frais de dossier (€)</label>
-                                <input type="number" step="1" id="file-fees" name="file-fees" value="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="contribution">Apport personnel (€)</label>
-                                <input type="number" step="0.01" id="contribution" name="contribution" value="0" required>
-                            </div>
-                            <div class="form-group interest-rate-container">
-                                <label for="interest-rate">Taux d'intérêt (%)</label>
-                                <input type="number" step="0.01" id="interest-rate" name="interest-rate" value="1" required>
-                                <div class="input-overlay" id="apr-overlay">TAEG 0.00%</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="insurance-rate">Taux de l'assurance emprunteur (%)</label>
-                                <input type="number" step="0.01" id="insurance-rate" name="insurance-rate" value="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="loanDuration">Durée du prêt (années)</label>
-                                <input type="number" step="1" id="loanDuration" name="loanDuration" value="20" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-section">
-                        <h2 id="financing-section" class="form-section-toggle">Financement</h2>
-                        <div class="form-section-content">
-                            <div class="form-group">
-                                <label for="fictitiousRent">Loyer fictif mensuel (€)</label>
-                                <input type="number" id="fictitiousRent" name="fictitiousRent" value="1000" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="fictitiousRentRate">Taux évolution annuelle du loyer fictif (%)</label>
-                                <input type="number" step="0.01" id="fictitiousRentRate" name="fictitiousRentRate" value="1" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="HousingTax">Taxe d'habitation (€)</label>
-                                <input type="number" id="HousingTax" name="HousingTax" value="0" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="propertyTax">Taxe foncière (€)</label>
-                                <input type="number" id="propertyTax" name="propertyTax" value="1000" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-section">
-                        <h2 id="incomes-section" class="form-section-toggle">Revenus</h2>
-                        <div class="form-section-content">
-                            <div id="incomes-container">
-                                <div class="income-container">
-                                    <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required>
-                                    <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l'année)" required>
-                                    <button type="button" id="add-income-button">+</button>
+        <div class="form-chart-simulation">
+            <div class="form-chart-wrapper">
+                <div class="form-container">
+                    <form id="form-calculator" class="form">
+                        <div class="form-section">
+                            <h2 id="purchase-section" class="form-section-toggle">Achat</h2>
+                            <div class="form-section-content">
+                                <div class="form-group">
+                                    <label for="price">Prix du bien (€)</label>
+                                    <input type="number" step="0.01" id="price" name="price" value="300000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="notary">Frais de notaire (%)</label>
+                                    <input type="number" step="0.01" id="notary" name="notary" value="8" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="appreciation-rate">Taux appréciation bien (%)</label>
+                                    <input type="number" step="0.01" id="appreciation-rate" name="appreciation-rate"
+                                        value="2" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="agency-commission">Commission agence (%)</label>
+                                    <input type="number" step="0.01" id="agency-commission" name="agency-commission"
+                                        value="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="coOwnership">Frais de copropriété</label>
+                                    <input type="number" step="0.01" id="coOwnership" name="coOwnership" value="0"
+                                        required>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="button" id="calculate-button">Calculer</button>
-                    </div>
-                </form>
+                        <div class="form-section">
+                            <h2 id="loan-section" class="form-section-toggle">Emprunt</h2>
+                            <div class="form-section-content">
+                                <div class="form-group">
+                                    <label for="file-fees">Frais de dossier (€)</label>
+                                    <input type="number" step="1" id="file-fees" name="file-fees" value="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="contribution">Apport personnel (€)</label>
+                                    <input type="number" step="0.01" id="contribution" name="contribution" value="0"
+                                        required>
+                                </div>
+                                <div class="form-group interest-rate-container">
+                                    <label for="interest-rate">Taux d'intérêt (%)</label>
+                                    <input type="number" step="0.01" id="interest-rate" name="interest-rate" value="1"
+                                        required>
+                                    <div class="input-overlay" id="apr-overlay">TAEG 0.00%</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="insurance-rate">Taux de l'assurance emprunteur (%)</label>
+                                    <input type="number" step="0.01" id="insurance-rate" name="insurance-rate" value="0"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="loanDuration">Durée du prêt (années)</label>
+                                    <input type="number" step="1" id="loanDuration" name="loanDuration" value="20"
+                                        required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <h2 id="financing-section" class="form-section-toggle">Financement</h2>
+                            <div class="form-section-content">
+                                <div class="form-group">
+                                    <label for="fictitiousRent">Loyer fictif mensuel (€)</label>
+                                    <input type="number" id="fictitiousRent" name="fictitiousRent" value="1000"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="fictitiousRentRate">Taux évolution annuelle du loyer fictif (%)</label>
+                                    <input type="number" step="0.01" id="fictitiousRentRate" name="fictitiousRentRate"
+                                        value="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="HousingTax">Taxe d'habitation (€)</label>
+                                    <input type="number" id="HousingTax" name="HousingTax" value="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="propertyTax">Taxe foncière (€)</label>
+                                    <input type="number" id="propertyTax" name="propertyTax" value="1000" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <h2 id="incomes-section" class="form-section-toggle">Revenus</h2>
+                            <div class="form-section-content">
+                                <div id="incomes-container">
+                                    <div class="income-container">
+                                        <input type="number" id="income-0" name="income-0"
+                                            placeholder="Revenu mensuel (€)" required>
+                                        <input type="number" step="0.01" id="income-share-0" name="income-share-0"
+                                            placeholder="Durée (% de l'année)" required>
+                                        <button type="button" id="add-income-button">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" id="calculate-button">Calculer</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="chart-container" class="chart-container">
+                    <canvas id="myChart"></canvas>
+                </div>
             </div>
-            <div id="chart-container" class="chart-container">
-                <canvas id="myChart"></canvas>
-            </div>
+            <div id="simulation"></div>
         </div>
-        <div id="simulation"></div>
         <div id="report-button"></div>
         <div id="download-button"></div>
     </div>
@@ -149,4 +164,5 @@
     <script type="module" src="js/handle-language.js"></script>
     <script type="module" src="js/event-listeners.js"></script>
 </body>
+
 </html>
