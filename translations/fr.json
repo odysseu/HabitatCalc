@@ -53,7 +53,7 @@
     "reportFictitiousRentEvolutionRate": "Taux d'évolution du loyer fictif",
     "reportInterestRate": "Taux d'intérêt",
     "APR": "TAEG",
-    "reportAPR": "TAEG; c'est le % du prix de l'opération complète par an; c'est à dire tous les couts inclus, rapporté à l'emprunt, par an",
+    "reportAPR": "TAEG; c'est le % du prix de l'opération complète par an; c'est à dire tous les coûts inclus, rapporté à l'emprunt, par an",
     "reportPropertyTaxAnnuelle": "Taxe foncière annuelle",
     "reportHousingTaxAnnuelle": "Taxe d'habitation annuelle",
     "reportTitle": "Simulation du Projet Immobilier (€)",

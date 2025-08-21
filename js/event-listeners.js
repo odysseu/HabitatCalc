@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', async function () {
         await generateReport();
     });
 
+    // Trigger generateReport when the theme changes
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    darkModeToggle.addEventListener('change', async () => {
+        await generateReport();
+    });
+
     // Logo resets form
     document.getElementById('home-logo').addEventListener('click', resetForm);
 

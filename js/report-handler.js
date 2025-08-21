@@ -191,12 +191,13 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
 
     const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
 
-    const rootStyles = getComputedStyle(document.documentElement);
+    const rootStyles = getComputedStyle(document.body);
     // const transparency = rootStyles.getPropertyValue('--graphOpacity').trim();
     const rentColor = rootStyles.getPropertyValue('--graphRentColor').trim();
     const rentFillColor = rootStyles.getPropertyValue('--graphRentFillColor').trim();
     const purchaseColor = rootStyles.getPropertyValue('--graphPurchaseColor').trim();
     const purchaseFillColor = rootStyles.getPropertyValue('--graphPurchaseFillColor').trim();
+    const textColor = rootStyles.getPropertyValue('--graphTextColor').trim();
 
     // 3. Créer le nouveau graphique avec des options de responsivité
     myChart = new Chart(ctx, {
@@ -208,7 +209,7 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
                     label: `${translations.reportRentalCumulativeExpenses}`,
                     data: cumulRent,
                     fill: true,
-                    borderColor: `${rentColor}`, //'rgb(255, 99, 132)',
+                    borderColor: `${rentColor}`,
                     backgroundColor: `${rentFillColor}`
                 },
                 {
@@ -226,7 +227,7 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
                 mode: 'index',
             },
             responsive: true,
-            maintainAspectRatio: false, //false, // Désactiver le maintien du ratio d'aspect pour s'adapter à la taille du parent
+            maintainAspectRatio: false, // Désactive le maintien du ratio d'aspect pour s'adapter à la taille du parent
             scales: {
                 y: {
                     ticks: {
@@ -239,14 +240,28 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
                                     maximumSignificantDigits: 5
                                 }
                             ).format(value);
-                        }
+                        },
+                        color: `${textColor}`
+                    }
+                },
+
+                x: {
+                    ticks: {
+                        color: `${textColor}`
                     }
                 }
             },
             plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: `${textColor}`
+                    }
+                },
                 title: {
                     display: true,
-                    text: `${translations.graphTitle}`
+                    text: `${translations.graphTitle}`,
+                    color: `${textColor}`
                 },
                 tooltip: {
                     usePointStyle: true,
