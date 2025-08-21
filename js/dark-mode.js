@@ -9,13 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function switchTheme(theme) {
         if (theme === "dark-mode") {
             document.body.classList.add("dark-mode");
-            if (homeLogo) homeLogo.src = "logos/home-logo-dark.png";
-            if (favicon) favicon.href = "logos/favicon-dark.ico";
+            if (homeLogo) homeLogo.src = "logos/home-logo-dark-v2.png";
+            if (favicon) favicon.href = "logos/favicon-dark-v2.ico";
             if (githubLogo) githubLogo.src = "logos/github-logo-dark.png";
         } else {
             document.body.classList.remove("dark-mode");
-            if (homeLogo) homeLogo.src = "logos/home-logo-light.png";
-            if (favicon) favicon.href = "logos/favicon-light.ico";
+            if (homeLogo) homeLogo.src = "logos/home-logo-light-v2.png";
+            if (favicon) favicon.href = "logos/favicon-light-v2.ico";
             if (githubLogo) githubLogo.src = "logos/github-logo-light.png";
         }
     }

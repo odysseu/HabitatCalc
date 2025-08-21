@@ -206,12 +206,8 @@ header h1 {
     cursor: pointer;
 }
 
-.a {
-    height: var(--header-left-logo)
-}
-
 .header-right .github-logo {
-    max-height: var(--header-left-logo);
+    max-height: calc(var(--header-left-logo) * 0.7);
     cursor: pointer;
 }
 
