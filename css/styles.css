@@ -85,7 +85,7 @@ body.dark-mode .sticky-header {
     display: flex;
     flex-direction: column;
     gap: 1px;
-    margin-top: 1px;
+    margin-top: 5px;
     width: 100%;
     height: auto;
     min-height: 500px;

@@ -31,7 +31,7 @@ global.fetch = jest.fn((url) => {
  */
 
 describe('resetForm', () => {
-    let container, incomeInput, durationInput, initial_incomes, initial_price, initial_notary, initial_appreciation, initial_agency, initial_coOwnership, initial_file, initial_contribution, initial_interestRate, initial_insuranceRate, initial_loanDuration, initial_fictitiousRent, initial_fictitiousRentRate, initial_HousingTax, initial_propertyTax;
+    let container, incomeInput, durationInput, initial_incomes, initial_price, initial_notary, initial_appreciation, initial_agency, initial_coOwnership, initial_file, initial_contribution, initial_interestRate, initial_insuranceRate, initial_loanDuration, initial_fictitiousRent, initial_fictitiousRentRate, initialBuyHousingTax, initialRentingHousingTax, initial_propertyTax;
     beforeAll(() => {
         // Load the index.html file
         const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
@@ -48,7 +48,8 @@ describe('resetForm', () => {
         initial_loanDuration = document.getElementById('loanDuration').value;
         initial_fictitiousRent = document.getElementById('fictitiousRent').value;
         initial_fictitiousRentRate = document.getElementById('fictitiousRentRate').value;
-        initial_HousingTax = document.getElementById('HousingTax').value;
+        initialBuyHousingTax = document.getElementById('buyHousingTax').value;
+        initialRentingHousingTax = document.getElementById('rentingHousingTax').value;
         initial_propertyTax = document.getElementById('propertyTax').value;
     });
 
@@ -72,7 +73,8 @@ describe('resetForm', () => {
         document.getElementById('loanDuration').value = '20';
         document.getElementById('fictitiousRent').value = '500';
         document.getElementById('fictitiousRentRate').value = '1';
-        document.getElementById('HousingTax').value = '1000';
+        document.getElementById('buyHousingTax').value = '1000';
+        document.getElementById('rentingHousingTax').value = '0';
         document.getElementById('propertyTax').value = '900';
 
         // document.getElementById('incomes-container').innerHTML = `
@@ -116,7 +118,8 @@ describe('resetForm', () => {
         expect(document.getElementById('loanDuration').value).toBe(initial_loanDuration);
         expect(document.getElementById('fictitiousRent').value).toBe(initial_fictitiousRent);
         expect(document.getElementById('fictitiousRentRate').value).toBe(initial_fictitiousRentRate);
-        expect(document.getElementById('HousingTax').value).toBe(initial_HousingTax);
+        expect(document.getElementById('buyHousingTax').value).toBe(initialBuyHousingTax);
+        expect(document.getElementById('rentingHousingTax').value).toBe(initialRentingHousingTax);
         expect(document.getElementById('propertyTax').value).toBe(initial_propertyTax);
         expect(document.getElementById('incomes-container').innerHTML.replace(/\s+/g, ' ').trim()).toBe(initial_incomes.replace(/\s+/g, ' ').trim());
         expect(document.getElementById('incomes-container').children.length).toBe(1); // Only one income container should remain

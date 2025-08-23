@@ -15,7 +15,8 @@ export async function generateReport() {
     const loanDuration = parseInt(document.getElementById('loanDuration').value);
     const insuranceRate = parseInt(document.getElementById('insurance-rate').value) / 100;
     const fictitiousRent = parseFloat(document.getElementById('fictitiousRent').value);
-    const HousingTax = parseFloat(document.getElementById('HousingTax').value);
+    const buyHousingTax = parseFloat(document.getElementById('buyHousingTax').value);
+    const rentingHousingTax = parseFloat(document.getElementById('rentingHousingTax').value);
     const propertyTax = parseFloat(document.getElementById('propertyTax').value);
     const fictitiousRentRate = parseFloat(document.getElementById('fictitiousRentRate').value) / 100;
     const coOwnershipFees = parseFloat(document.getElementById('coOwnership').value);
@@ -33,10 +34,10 @@ export async function generateReport() {
     const cumulMonthlyIncomes = cumulIncomes / 12;
     const APR = calculateAPR();
 
-    const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
+    const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
     const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4); // 4 more year to see after meeting year
-    const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate);
-    const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
+    const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate, rentingHousingTax);
+    const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
 
     // generate the simulation report board
     let translations;
@@ -73,6 +74,10 @@ export async function generateReport() {
                 <tr>
                     <td>${translations.reportCoOwnership}:</td>
                     <td style="text-align: right;">${coOwnershipFees.toFixed(2)} €</td>
+                </tr>
+                <tr>
+                    <td>${translations.reportBuyHousingTax}:</td>
+                    <td style="text-align: right;">${buyHousingTax.toFixed(2)} €</td>
                 </tr>
             </table>
         </div>
@@ -114,7 +119,7 @@ export async function generateReport() {
             </table>
         </div>
         <div>
-            <h3>${translations.reportFinancing}</h3>
+            <h3>${translations.reportRenting}</h3>
             <table>
                 <tr>
                     <td>${translations.reportFictitiousMonthlyRent}:</td>
@@ -125,11 +130,11 @@ export async function generateReport() {
                     <td style="text-align: right;">${(fictitiousRentRate * 100).toFixed(2)} %</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportHousingTaxAnnuelle}:</td>
-                    <td style="text-align: right;">${HousingTax.toFixed(2)} €</td>
+                    <td>${translations.reportRentingHousingTax}:</td>
+                    <td style="text-align: right;">${rentingHousingTax.toFixed(2)} €</td>
                 </tr>
                 <tr>
-                    <td>${translations.reportPropertyTaxAnnuelle}:</td>
+                    <td>${translations.reportPropertyTax}:</td>
                     <td style="text-align: right;">${propertyTax.toFixed(2)} €</td>
                 </tr>
     `;
@@ -309,7 +314,8 @@ export async function downloadPDF() {
     const insuranceRate = parseInt(document.getElementById('insurance-rate').value) / 100;
     const fictitiousRent = parseFloat(document.getElementById('fictitiousRent').value);
     const fileFees = parseFloat(document.getElementById('file-fees').value);
-    const HousingTax = parseFloat(document.getElementById('HousingTax').value);
+    const buyHousingTax = parseFloat(document.getElementById('buyHousingTax').value);
+    const rentingHousingTax = parseFloat(document.getElementById('rentingHousingTax').value);
     const propertyTax = parseFloat(document.getElementById('propertyTax').value);
     const APR = calculateAPR();
 
@@ -336,6 +342,7 @@ export async function downloadPDF() {
             [`${translations.reportAgencyCommission}`, `${agencyCommissionFees.toFixed(2)} €`],
             [`${translations.reportPurchaseTotal}`, `${purchaseTotal.toFixed(2)} €`],
             [`${translations.reportCoOwnership}`, `${coOwnership.toFixed(2)} €`],
+            [`${translations.reportBuyHousingTax}`, `${buyHousingTax.toFixed(0)} €`],
             [`${translations.reportfileFees}`, `${fileFees.toFixed(2)} €`]
         ]
     });
@@ -356,15 +363,15 @@ export async function downloadPDF() {
         ]
     });
 
-    // Tableau Financement
+    // Tableau Location
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
-        head: [[`${translations.reportFinancing}`, `${translations.reportPrice}`]],
+        head: [[`${translations.reportRenting}`, `${translations.reportPrice}`]],
         body: [
             [`${translations.reportFictitiousMonthlyRent}`, `${fictitiousRent.toFixed(0)} €`],
             [`${translations.reportFictitiousRentEvolutionRate}`, `${(fictitiousRentRate * 100).toFixed(2)} %`],
-            [`${translations.reportHousingTaxAnnuelle}`, `${HousingTax.toFixed(0)} €`],
-            [`${translations.reportPropertyTaxAnnuelle}`, `${propertyTax.toFixed(0)} €`]
+            [`${translations.reportRentingHousingTax}`, `${rentingHousingTax.toFixed(0)} €`],
+            [`${translations.reportPropertyTax}`, `${propertyTax.toFixed(0)} €`]
         ]
     });
 

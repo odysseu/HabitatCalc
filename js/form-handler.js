@@ -1,5 +1,6 @@
 // description: This script handles the form submission, validation, and calculation of APR and other financial metrics.
 import { loadTranslations, updateContent } from './handle-language.js';
+
 export async function resetForm() {
     // Properly reset the incomes-container by setting its innerHTML
     document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> <button type="button" id="add-income-button">+</button> </div>';
@@ -43,7 +44,7 @@ export function calculateAPR() {
 
     const notaryFees = price * notary;
     const commissionFees = price * agencyCommission;
-    const borrowedAmount = price + notaryFees + commissionFees + fileFees - contribution;
+    const borrowedAmount = Math.max(0, price + notaryFees + commissionFees + fileFees - contribution);
 
     if (borrowedAmount <= 0 || loanDuration <= 0) {
         console.warn('Invalid borrowed amount or loan duration:', borrowedAmount, loanDuration);
@@ -200,18 +201,20 @@ export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRa
 }
 
 
-export function findPivotYear(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
+export function findPivotYear(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
     const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         // Purchase
         const resaleValue = price * Math.pow(1 + appreciationRate, t);
         const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
         const cumulPropertyTax = propertyTax * t;
+        const cumulBuyHousingTax = buyHousingTax * t;
         const cumulativeCoOwnershipFees = coOwnershipFees * t;
-        const netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
+        const netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
         // rent
-        const rentNetLosses = (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
-        if (rentNetLosses > netPurchaseLosses) {
+        const cumulRentingHousingTax = rentingHousingTax * t;
+        const netRentLosses = cumulRentingHousingTax + (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
+        if (netRentLosses > netPurchaseLosses) {
             return t - 1; // crossing of losses
         }
     }
@@ -219,27 +222,29 @@ export function findPivotYear(price, notaryFees, agencyCommisionFees, contributi
     return maxDuration; // no crossing of losses
 }
 
-export function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees) {
+export function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees) {
     const purchaseLosses = [];
     const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         const resaleValue = price * Math.pow(1 + appreciationRate, t);
         const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
         const cumulPropertyTax = propertyTax * t;
+        const cumulBuyHousingTax = buyHousingTax * t;
         const cumulativeCoOwnershipFees = coOwnershipFees * t;
-        let netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
+        let netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax  + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
         netPurchaseLosses = Math.round(netPurchaseLosses, 0);
         purchaseLosses.push(netPurchaseLosses);
     }
     return purchaseLosses;
 }
 
-export function calculateRentLosses(income, rentDuration, fictitiousRentRate) {
+export function calculateRentLosses(income, rentDuration, fictitiousRentRate, rentingHousingTax) {
     const rentLosses = [];
     for (let t = 1; t <= rentDuration; t++) {
+        let cumulRentingHousingTax = rentingHousingTax * t;
         let cumulIncome = (income * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
         cumulIncome = Math.round(cumulIncome, 0);
-        rentLosses.push(cumulIncome);
+        rentLosses.push(cumulRentingHousingTax + cumulIncome);
     }
     return rentLosses;
 }
