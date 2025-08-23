@@ -84,12 +84,13 @@ export async function updateContent(translations) {
         const priceLabel = document.querySelector('label[for="price"]');
         const purchaseSection = document.getElementById('purchase-section');
         const loanSection = document.getElementById('loan-section');
-        const financingSection = document.getElementById('financing-section');
+        const rentingSection = document.getElementById('renting-section');
         const incomesSection = document.getElementById('incomes-section');
         const sectionTitle = document.getElementById('title-section');
         const apr = document.getElementById('apr-overlay');
         const propertyTaxLabel = document.querySelector('label[for="propertyTax"]');
-        const HousingTaxLabel = document.querySelector('label[for="HousingTax"]');
+        const buyHousingTaxLabel = document.querySelector('label[for="buyHousingTax"]');
+        const rentingHousingTaxLabel = document.querySelector('label[for="rentingHousingTax"]');
         const downloadButton = document.querySelector('#download-button button');
         const title = document.getElementById('title');
         const appreciationRateLabel = document.querySelector('label[for="appreciation-rate"]');
@@ -117,7 +118,7 @@ export async function updateContent(translations) {
         if (purchaseSection) purchaseSection.textContent = translations.purchaseSection;
         if (loanSection) loanSection.textContent = translations.loanSection;
         if (incomesSection) incomesSection.textContent = translations.incomesSection;
-        if (financingSection) financingSection.textContent = translations.financingSection;
+        if (rentingSection) rentingSection.textContent = translations.rentingSection;
         if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
         if (apr) {
             // console.log("calculating APR inside updateContent");
@@ -129,7 +130,8 @@ export async function updateContent(translations) {
         if (interestRateLabel) interestRateLabel.innerHTML = `${translations.interestRate} <span class="help-icon">? <span class="help-text">${translations.helpInterestRate}</span></span>`;
         if (fictitiousRentRateLabel) fictitiousRentRateLabel.innerHTML = `${translations.fictitiousRentRate} <span class="help-icon">? <span class="help-text">${translations.helpFictitiousRentRate}</span></span>`;
         if (propertyTaxLabel) propertyTaxLabel.innerHTML = `${translations.propertyTax} <span class="help-icon">? <span class="help-text">${translations.helpPropertyTax}</span></span>`;
-        if (HousingTaxLabel) HousingTaxLabel.innerHTML = `${translations.HousingTax} <span class="help-icon">? <span class="help-text">${translations.helpHousingTax}</span></span>`;
+        if (buyHousingTaxLabel) buyHousingTaxLabel.innerHTML = `${translations.buyHousingTax} <span class="help-icon">? <span class="help-text">${translations.helpBuyHousingTax}</span></span>`;
+        if (rentingHousingTaxLabel) rentingHousingTaxLabel.innerHTML = `${translations.rentingHousingTax} <span class="help-icon">? <span class="help-text">${translations.helpRentingHousingTax}</span></span>`;
         if (downloadButton) downloadButton.textContent = translations.downloadPDF;
         if (title) title.textContent = translations.title;
         if (welcomeMessage) welcomeMessage.querySelector('p').innerHTML = translations.welcomeMessage;

@@ -44,6 +44,8 @@ describe('form-handler.js methods', () => {
       5000,   // contribution
       1000,   // monthlyPayment
       1000,   // propertyTax
+      0,      // buyHousingTax
+      0,      // rentingHousingTax
       0.02,   // appreciationRate
       30,     // maxDuration
       20,     // loanDuration
@@ -65,6 +67,7 @@ describe('form-handler.js methods', () => {
       5000,   // contribution
       1000,   // monthlyPayment
       1000,   // propertyTax
+      0,      // buyHousingTax
       0.02,   // appreciationRate
       30,     // maxDuration
       20,     // loanDuration
@@ -75,10 +78,34 @@ describe('form-handler.js methods', () => {
 
     expect(losses.length).toBe(30);
     expect(losses[0]).toBeGreaterThan(0);
+    expect(losses[0]).toBe(20000);
+  });
+
+
+  test('calculatePurchaseLosses calculates purchase losses correctly', () => {
+    const losses = calculatePurchaseLosses(
+      200000, // price
+      16000,  // notaryFees
+      0,      // agencyCommissionFees
+      5000,   // contribution
+      1000,   // monthlyPayment
+      1000,   // propertyTax
+      1000,   // buyHousingTax
+      0.02,   // appreciationRate
+      30,     // maxDuration
+      20,     // loanDuration
+      0,      // cumulIncomes
+      0,      // coOwnershipFees
+      0       // fileFees
+    );
+
+    expect(losses.length).toBe(30);
+    expect(losses[0]).toBeGreaterThan(0);
+    expect(losses[0]).toBe(21000);
   });
 
   test('calculateRentLosses calculates rent losses correctly', () => {
-    const losses = calculateRentLosses(1500, 30, 0.03);
+    const losses = calculateRentLosses(1500, 30, 0.03, 0);
     expect(losses.length).toBe(30);
     expect(losses[0]).toBeGreaterThan(0);
   });
