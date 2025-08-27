@@ -1,21 +1,31 @@
 :root {
-    --light-bg-color: #d1dbe0;
-    --light-text-color: #000000;
-    --dark-bg-color: #1e2a38;
-    --dark-text-color: #d1dbe0;
-    --primary-color: #2196F3;
-    --primary-hover-color: #0056b3;
+    --light-bg-color: #ced4da; /*d1dbe0*/
+    --light-text-color: #0009;
+    --dark-bg-color: #1e2a38; /*1e2a38*/
+    --dark-text-color: #fdfdfdc4;
+    --primary-color: #57a2e9;
+    --primary-color-dark: #1970c26e;
+    --primary-hover-color: #1971c2;
     --secondary-color: #949494;
-    --border-color: #ccc;
+    --border-color: var(--light-bg-color);
+    --border-color-dark: var(--light-bg-color);
     --welcome-message-light-bg-color: #aac3cf;
     --welcome-message-dark-bg-color: #314050;
+    --language-select-light-bg-color: #aac3cf42;
+    --language-select-dark-bg-color: var(--welcome-message-dark-bg-color);
     --input-dark-bg: #2a3b4d;
+    --input-light-bg: #e9ecef;
     --tooltip-bg: #949494;
     --white: white;
     --welcome-bow-shadow: #0000001a;
     --header-box-shadow: #0c1116b4;
     --body-dark-button-border: #444;
-    --slider-background-color: #ccc;
+    --slider-knob-color: #fefefe; /*var(--primary-color-dark);*/
+    --slider-knob-color-dark: #fefefe;
+    --slider-primary-color: #1e14d2;
+    --slider-primary-color-dark: #5ca6ffc4;
+    --slider-background-color: #3678bf;
+    --slider-background-color-dark: #ccccccb2;
     --toggle-light-bg-color: #25374d91;
     --toggle-dark-bg-color: #dde5f0cb;
     --header-left-logo: 40px;
@@ -23,7 +33,7 @@
     --header-slider-diameter: calc(var(--header-left-logo) * 0.5);
     --header-slider-width: calc(var(--header-slider-diameter) * 2);
     --header-slider-knob-size: calc(var(--header-slider-diameter) - 2 * var(--header-slider-space));
-    --graphOpacity: 0.1;
+    --graphOpacity: 0.01;
     --graphRentColorLight: #2584e9c6;
     --graphRentFillColorLight: #2c83e125;
     --graphPurchaseColorLight: #f03f3fd0;
@@ -32,8 +42,10 @@
     --graphRentFillColorDark: #4a93e225;
     --graphPurchaseColorDark: #f06161d0;
     --graphPurchaseFillColorDark: #e7484836;
-    --graphTextColorLight: #2e2e2ecd;
-    --graphTextColorDark: #d3d3d3b6;
+    --graphTextColorLight: #0000008e;
+    --graphTextColorDark: #fdfdfd91;
+    --form-section-border-color: #9593932e;
+    --form-container-border-color: #95939382;
 }
 
 body {
@@ -67,10 +79,16 @@ button {
     margin-top: 1px;
     margin-bottom: 10px;
     box-sizing: border-box;
+    background-color: var(--input-light-bg);
 }
 
-body.dark-mode input,
 body.dark-mode button {
+    background-color: var(--primary-color-dark);
+    color: var(--dark-text-color);
+    border: 1px solid var(--body-dark-button-border);
+}
+
+body.dark-mode input {
     background-color: var(--input-dark-bg);
     color: var(--dark-text-color);
     border: 1px solid var(--body-dark-button-border);
@@ -89,6 +107,7 @@ body.dark-mode .sticky-header {
     width: 100%;
     height: auto;
     min-height: 500px;
+    box-shadow: 0px 1px 5px 0px #0c111629;
 }
 
 .form-chart-simulation {
@@ -102,8 +121,9 @@ body.dark-mode .sticky-header {
     overflow-y: auto;
     padding: 0px 5px;
     box-sizing: border-box;
-    border: 1px solid var(--tooltip-bg);
+    border: 1px solid var(--form-container-border-color);
     border-radius: 5px;
+    box-shadow: 0px 3px 3px 0px var(--header-box-shadow);
 }
 
 .chart-container {
@@ -246,12 +266,12 @@ header h1 {
     padding: 5px;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    background-color: var(--light-bg-color);
+    background-color: var(--language-select-light-bg-color);
     color: var(--light-text-color);
 }
 
 body.dark-mode #language-select {
-    background-color: var(--dark-bg-color);
+    background-color: var(--language-select-dark-bg-color);
     color: var(--dark-text-color);
     border-color: var(--dark-bg-color);
 }
@@ -279,6 +299,7 @@ body.dark-mode #language-select {
     background-color: var(--slider-background-color);
     transition: 0.4s;
     border-radius: var(--header-slider-diameter);
+    /* border: 1px solid var(--body-dark-button-border); */
 }
 
 .slider:before {
@@ -288,21 +309,35 @@ body.dark-mode #language-select {
     width: var(--header-slider-knob-size);
     left: var(--header-slider-space);
     bottom: calc((var(--header-slider-diameter) - var(--header-slider-knob-size)) / 2);
-    background-color: var(--white);
+    background-color: var(--slider-knob-color);
     transition: 0.4s;
     border-radius: 50%;
 }
 
 input:checked+.slider {
-    background-color: var(--primary-color);
+    background-color: var(--primary-color-dark);
 }
+
+
+body.dark-mode .slider {
+    background-color: var(--slider-background-color-dark);
+}
+
+body.dark-mode .slider:before {
+    background-color: var(--slider-knob-color-dark);
+}
+/* 
+body.dark-mode input:checked+.slider {
+    background-color: var(--slider-primary-color-dark);
+} */
+
 
 input:checked+.slider:before {
     transform: translateX(calc(var(--header-slider-width) - var(--header-slider-knob-size) - 2 * var(--header-slider-space)));
 }
 
 .container {
-    width: calc(100% - 10px);
+    width: calc(100% - 5px);
     margin: auto;
     border: 1px solid var(--border-color);
     border-radius: 10px;
@@ -321,7 +356,7 @@ body.dark-mode .container {
 }
 
 .form-section {
-    border: 1px solid var(--tooltip-bg);
+    border: 1px solid var(--form-section-border-color);
     border-radius: 5px;
     overflow: hidden;
 }

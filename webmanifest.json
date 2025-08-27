@@ -8,12 +8,12 @@
     "background_color": "#ffffff",
     "icons": [
         {
-            "src": "logos/home-logo-light-v2.png",
+            "src": "logos/home-logo-light-v3.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "logos/home-logo-light-v2.png",
+            "src": "logos/home-logo-light-v3.png",
             "sizes": "512x512",
             "type": "image/png"
         }

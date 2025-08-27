@@ -86,5 +86,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Recalculate APR with new language
         const aprValue = calculateAPR();
         await updateAPRLabel(aprValue, newTranslations);
+
+        await generateReport();
     });
 });
