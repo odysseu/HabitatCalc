@@ -30,7 +30,7 @@
 
 ## App link 🚀
 
-This simple app accessible [> on github-pages <](https://odysseu.github.io/HabitatCalc/)
+This simple app is accessible [> on github-pages <](https://odysseu.github.io/HabitatCalc/)
 
 ## Deploy and try the simulator locally 💻
 
