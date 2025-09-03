@@ -3,7 +3,6 @@ let myChart = null; // graph variable to store the chart instance
 import { calculateMonthlyPayment, extractIncomes, calculateAPR, findPivotYear, calculateRentLosses, calculatePurchaseLosses } from './form-handler.js';
 import { loadTranslations } from './handle-language.js';
 import { forceLightMode, restoreMode } from './dark-mode.js';
-
 export async function generateReport() {
     // get the values from the form
     const price = parseFloat(document.getElementById('price').value);
@@ -33,148 +32,122 @@ export async function generateReport() {
     const cumulIncomes = extractIncomes();
     const cumulMonthlyIncomes = cumulIncomes / 12;
     const APR = calculateAPR();
-
     const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
-    const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4); // 4 more year to see after meeting year
+    const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4);
     const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate, rentingHousingTax);
     const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
 
     // generate the simulation report board
-    let translations;
     const language = document.getElementById('language-select').value;
-    translations = await loadTranslations(language);
-    // const translations = window.translations; // Assuming translations are loaded globally
+    // let translations;
+    let translations = await loadTranslations(language);
 
-    let simulation = `
-        <h2>${translations.reportTitle}</h2>
+    // Création du conteneur principal
+    const simulationContainer = document.getElementById('simulation');
+    simulationContainer.className = 'simulation';
+    simulationContainer.innerHTML = '';
+    simulationContainer.appendChild(createSectionTitle(translations.reportTitle));
 
-        <div>
-            <h3>${translations.reportPurchase}</h3>
-            <table>
-                <tr>
-                    <td>${translations.reportPrice}:</td>
-                    <td style="text-align: right;">${price.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportNotaryFees}:</td>
-                    <td style="text-align: right;">${notaryFees.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportAppreciationRate}:</td>
-                    <td style="text-align: right;">${(appreciationRate * 100).toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportAgencyCommission}:</td>
-                    <td style="text-align: right;">${agencyCommissionFees.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportPurchaseTotal}:</td>
-                    <td style="text-align: right;">${purchaseTotal.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportCoOwnership}:</td>
-                    <td style="text-align: right;">${coOwnershipFees.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportBuyHousingTax}:</td>
-                    <td style="text-align: right;">${buyHousingTax.toFixed(2)} €</td>
-                </tr>
-            </table>
-        </div>
-        <div>
-            <h3>${translations.reportLoan}</h3>
-            <table>
-                <tr>
-                    <td>${translations.contribution}:</td>
-                    <td style="text-align: right;">${contribution.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportBorrowedAmount}:</td>
-                    <td style="text-align: right;">${borrowedAmount.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportInsuranceRate}:</td>
-                    <td style="text-align: right;">${(insuranceRate * 100).toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportInterestRate}:</td>
-                    <td style="text-align: right;">${(interestRate * 100).toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportAPR}:</td>
-                    <td style="text-align: right;">${APR.toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportMonthlyPayment}:</td>
-                    <td style="text-align: right;">${monthlyPayment.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportTotalInterests}:</td>
-                    <td style="text-align: right;">${totalInterestCost.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportLoanTotalCost}:</td>
-                    <td style="text-align: right;">${loanTotalCost.toFixed(2)} €</td>
-                </tr>
-            </table>
-        </div>
-        <div>
-            <h3>${translations.reportRenting}</h3>
-            <table>
-                <tr>
-                    <td>${translations.reportFictitiousMonthlyRent}:</td>
-                    <td style="text-align: right;">${fictitiousRent.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportFictitiousRentEvolutionRate}:</td>
-                    <td style="text-align: right;">${(fictitiousRentRate * 100).toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportRentingHousingTax}:</td>
-                    <td style="text-align: right;">${rentingHousingTax.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportPropertyTax}:</td>
-                    <td style="text-align: right;">${propertyTax.toFixed(2)} €</td>
-                </tr>
-    `;
+    // Section Achat
+    simulationContainer.appendChild(createResultsSection(
+        translations.reportPurchase,
+        [
+            { label: translations.reportPrice, value: `${price.toFixed(2)} €` },
+            { label: translations.reportNotaryFees, value: `${notaryFees.toFixed(2)} €` },
+            { label: translations.reportAppreciationRate, value: `${(appreciationRate * 100).toFixed(2)} %` },
+            { label: translations.reportAgencyCommission, value: `${agencyCommissionFees.toFixed(2)} €` },
+            { label: translations.reportPurchaseTotal, value: `${purchaseTotal.toFixed(2)} €` },
+            { label: translations.reportCoOwnership, value: `${coOwnershipFees.toFixed(2)} €` },
+            { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)} €` }
+        ]
+    ));
 
-    // add monthly incomes if any
+    // Section Emprunt
+    simulationContainer.appendChild(createResultsSection(
+        translations.reportLoan,
+        [
+            { label: translations.contribution, value: `${contribution.toFixed(2)} €` },
+            { label: translations.reportBorrowedAmount, value: `${borrowedAmount.toFixed(2)} €` },
+            { label: translations.reportInsuranceRate, value: `${(insuranceRate * 100).toFixed(2)} %` },
+            { label: translations.reportInterestRate, value: `${(interestRate * 100).toFixed(2)} %` },
+            { label: translations.reportAPR, value: `${APR.toFixed(2)} %` },
+            { label: translations.reportMonthlyPayment, value: `${monthlyPayment.toFixed(2)} €` },
+            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)} €` },
+            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)} €` }
+        ]
+    ));
+
+    // Renting Section
+    const rentingRows = [
+        { label: translations.reportFictitiousMonthlyRent, value: `${fictitiousRent.toFixed(2)} €` },
+        { label: translations.reportFictitiousRentEvolutionRate, value: `${(fictitiousRentRate * 100).toFixed(2)} %` },
+        { label: translations.reportRentingHousingTax, value: `${rentingHousingTax.toFixed(2)} €` },
+        { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)} €` }
+    ];
     if (cumulMonthlyIncomes > 0) {
-        simulation += `
-                <tr>
-                    <td>${translations.reportMonthlyAgregatedIncome}:</td>
-                    <td style="text-align: right;">${cumulMonthlyIncomes.toFixed(2)} €</td>
-                </tr>
-        `;
+        rentingRows.push({ label: translations.reportMonthlyAgregatedIncome, value: `${cumulMonthlyIncomes.toFixed(2)} €` });
     }
+    simulationContainer.appendChild(createResultsSection(translations.reportRenting, rentingRows));
 
-    simulation += `
-            </table>
-        </div>
-        <div>
-            <h3>${translations.reportAmortization}</h3>
-            <p>${translations.reportRepaymentYear}: ${repaymentYear}</p>
-        </div>
+    // 
+    const amortizationSection = document.createElement('div');
+    amortizationSection.className = 'results-section';
+    amortizationSection.innerHTML = `
+        <h3>${translations.reportAmortization}</h3>
+        <p>${translations.reportRepaymentYear}: ${repaymentYear}</p>
     `;
+    simulationContainer.appendChild(amortizationSection);
 
-    document.getElementById('simulation').innerHTML = simulation;
-    // Générer le graphique
-    genererGraphique(cumulRent, cumulativePurchase, maxCalculatedDuration);
+    // chart generation
+    await generateChart(cumulRent, cumulativePurchase, maxCalculatedDuration);
 
-    const reportButton = `
+    // Bouton de téléchargement PDF
+    const reportButtonContainer = document.getElementById('report-button');
+    reportButtonContainer.innerHTML = `
         <label for="pdf-filename">${translations.pdfFileName}</label>
-        <input type="text" id="pdf-filename" name="pdf-filename" placeholder=${translations.pdfFileNamePlaceHolder} required>
-        <button id="download-button">${translations.downloadPDF}</button>
+        <input type="text" id="pdf-filename" name="pdf-filename" placeholder="${translations.pdfFileNamePlaceHolder}" required>
+        <button id="download-button" class="button">${translations.downloadPDF}</button>
     `;
-
-    document.getElementById('report-button').innerHTML = reportButton;
-
-    // Attacher l'événement de téléchargement au bouton
     document.getElementById('download-button').addEventListener('click', downloadPDF);
 }
 
-export async function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
+// Utility function to create section title
+function createSectionTitle(text) {
+    const title = document.createElement('h2');
+    title.textContent = text;
+    return title;
+}
+
+// Utility function to create a results section with a table
+function createResultsSection(title, rows) {
+    const section = document.createElement('div');
+    section.className = 'results-section';
+
+    const titleElement = document.createElement('h3');
+    titleElement.textContent = title;
+    section.appendChild(titleElement);
+
+    const table = document.createElement('table');
+    table.className = 'results-table';
+
+    const tbody = document.createElement('tbody');
+    rows.forEach(row => {
+        const tr = document.createElement('tr');
+        const tdLabel = document.createElement('td');
+        tdLabel.textContent = row.label;
+        const tdValue = document.createElement('td');
+        tdValue.textContent = row.value;
+        tr.appendChild(tdLabel);
+        tr.appendChild(tdValue);
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    section.appendChild(table);
+    return section;
+}
+
+export async function generateChart(cumulRent, cumulativePurchase, maxDuration) {
     // 1. Destroy the cart if it exists
     if (myChart) {
         myChart.destroy();

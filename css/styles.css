@@ -1,6 +1,6 @@
 :root {
     --light-bg-color: #d1dbe0;
-    --light-text-color: #000000;
+    --light-text-color: #000000c9;
     --dark-bg-color: #1e2a38;
     --dark-text-color: #d1dbe0;
     --primary-color: #2196F3;
@@ -101,7 +101,7 @@ body.dark-mode .sticky-header {
     max-width: 100%;
     overflow-y: auto;
     padding: 0px 5px;
-    box-sizing: border-box;
+    /* box-sizing: border-box; */
     border: 1px solid var(--tooltip-bg);
     border-radius: 5px;
 }
@@ -121,11 +121,13 @@ body.dark-mode .sticky-header {
         flex-direction: row;
         height: 71vh;
     }
+
     .form-container {
         flex: 0 0 35%;
         max-width: 35%;
         height: 100%;
     }
+
     .chart-container {
         flex: 1 1 65%;
         max-width: 65%;
@@ -134,6 +136,7 @@ body.dark-mode .sticky-header {
         align-items: center;
         justify-content: center;
     }
+
     .chart-container canvas {
         height: 100% !important;
         max-height: none;
@@ -304,7 +307,7 @@ input:checked+.slider:before {
 .container {
     width: calc(100% - 10px);
     margin: auto;
-    border: 1px solid var(--border-color);
+    /* border: 1px solid var(--border-color); */
     border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
@@ -318,6 +321,7 @@ body.dark-mode .container {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-top: 5px;
 }
 
 .form-section {
@@ -483,4 +487,86 @@ body.dark-mode .welcome-message {
 
 .welcome-message button:hover {
     background-color: var(--primary-hover-color);
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 5px 0;
+    font-size: 0.9em;
+    box-shadow: 0 0 10px var(--header-box-shadow);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.results-table thead {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+.results-table th,
+.results-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.results-table td:last-child {
+    text-align: right;
+    font-weight: bold;
+}
+
+.results-table tbody tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.results-table tbody tr:nth-of-type(even) {
+    background-color: var(--even-row-color);
+}
+
+.results-table tbody tr:last-of-type {
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.results-table tbody tr:hover {
+    background-color: var(--hover-row-color);
+}
+
+body.dark-mode .results-table tbody tr:nth-of-type(even) {
+    background-color: var(--dark-even-row-color);
+}
+
+body.dark-mode .results-table tbody tr:hover {
+    background-color: var(--dark-hover-row-color);
+}
+
+.results-table th {
+    font-weight: bold;
+}
+
+.results-section {
+    margin-bottom: 20px;
+    background-color: var(--formula-background);
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+body.dark-mode .results-section {
+    background-color: var(--dark-bg-color);
+    border-color: var(--primary-color);
+}
+
+.results-section h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;
+}
+
+body.dark-mode .results-section h3 {
+    color: var(--primary-color-alpha-dark);
+}
+
+.simulation h2{
+    text-align: center;
 }
