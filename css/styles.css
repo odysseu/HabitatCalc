@@ -347,8 +347,8 @@ body.dark-mode .container {
 
 .form-section-toggle::after {
     content: "+";
-    /* font-size: 1.2em; */
-    /* transition: transform 0.3s; */
+    font-size: 1.2em;
+    transition: transform 0.3s;
 }
 
 .form-section-toggle.expanded::after {
@@ -377,11 +377,12 @@ body.dark-mode .form-section-toggle {
     flex: 1 1 300px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
 }
 
 .form-group label {
-    font-weight: bold;
+    font-size: large;
+    /* font-weight: bold; */
 }
 
 .input-field {
@@ -596,7 +597,7 @@ body.dark-mode .results-section-toggle {
 
 .results-table td:last-child {
     text-align: right;
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 .results-table tbody tr {
@@ -624,7 +625,7 @@ body.dark-mode .results-table tbody tr:hover {
 }
 
 .results-table th {
-    font-weight: bold;
+    /* font-weight: bold; */
 }
 
 .simulation h2 {
