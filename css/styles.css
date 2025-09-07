@@ -39,6 +39,8 @@
     --dark-even-row-color: #2a3b4d;
     --dark-hover-row-color: #3a4b5d;
     --formula-background: #f8f9fa;
+    --toggle-font-size: 1em;
+    --toggle-icon-size: 1.2em;
 }
 
 body {
@@ -68,8 +70,8 @@ body.dark-mode {
 input,
 button {
     padding: 5px;
-    margin-top: 1px;
-    margin-bottom: 10px;
+    /* margin-top: 1px;
+    margin-bottom: 10px; */
     box-sizing: border-box;
 }
 
@@ -321,6 +323,7 @@ body.dark-mode .container {
     flex-direction: column;
     gap: 5px;
     margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .form-section {
@@ -330,12 +333,13 @@ body.dark-mode .container {
 }
 
 .form-section-toggle {
-    padding: 1px;
+    padding: 10px 15px;
     border: none;
     text-align: left;
     cursor: pointer;
     font-weight: bold;
-    width: 100%;
+    font-size: var(--toggle-font-size);
+    /* width: 100%; */
     margin: 0;
     background-color: var(--formula-background);
     color: var(--light-text-color);
@@ -347,7 +351,7 @@ body.dark-mode .container {
 
 .form-section-toggle::after {
     content: "+";
-    font-size: 1.2em;
+    font-size: var(--toggle-icon-size);
     transition: transform 0.3s;
 }
 
@@ -364,6 +368,9 @@ body.dark-mode .form-section-toggle {
     transition: max-height 0.3s ease-out;
     padding: 1%;
     overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
     /* max-height: 1000px; */
 }
 
@@ -382,7 +389,6 @@ body.dark-mode .form-section-toggle {
 
 .form-group label {
     font-size: large;
-    /* font-weight: bold; */
 }
 
 .input-field {
@@ -401,8 +407,8 @@ body.dark-mode .form-section-toggle {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    /* padding: 10px 20px; */
-    /* margin: 5px; */
+    padding: 10px 20px;
+    margin: 5px;
 }
 
 .form-actions button:hover {
@@ -517,7 +523,7 @@ body.dark-mode .welcome-message {
 
 /* Collapsible Results Sections */
 .results-section {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     background-color: var(--formula-background);
     padding: 0;
     border-radius: 8px;
@@ -536,6 +542,7 @@ body.dark-mode .results-section {
     text-align: left;
     cursor: pointer;
     font-weight: bold;
+    font-size: var(--toggle-font-size);
     width: 100%;
     background-color: var(--formula-background);
     color: var(--light-text-color);
@@ -552,7 +559,7 @@ body.dark-mode .results-section-toggle {
 
 .results-section-toggle::after {
     content: "+";
-    font-size: 1.2em;
+    font-size: var(--toggle-icon-size);
     transition: transform 0.3s;
 }
 
@@ -562,9 +569,9 @@ body.dark-mode .results-section-toggle {
 
 .results-section-content {
     transition: max-height 0.3s ease-out;
-    max-height: 1000px;
+    /* max-height: 1000px; */
     overflow: hidden;
-    padding: 15px;
+    /* padding: 15px; */
 }
 
 .results-section-content.collapsed {
@@ -577,7 +584,7 @@ body.dark-mode .results-section-toggle {
 .results-table {
     width: 100%;
     border-collapse: collapse;
-    margin: 5px 0;
+    /* margin: 5px 0; */
     font-size: 0.9em;
     box-shadow: 0 0 10px var(--header-box-shadow);
     border-radius: 8px;
@@ -597,7 +604,6 @@ body.dark-mode .results-section-toggle {
 
 .results-table td:last-child {
     text-align: right;
-    /* font-weight: bold; */
 }
 
 .results-table tbody tr {
@@ -624,12 +630,9 @@ body.dark-mode .results-table tbody tr:hover {
     background-color: var(--dark-hover-row-color);
 }
 
-.results-table th {
-    /* font-weight: bold; */
-}
-
 .simulation h2 {
     text-align: center;
+    font-size: var(--toggle-font-size);
 }
 
 /* Button */
