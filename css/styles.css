@@ -16,8 +16,8 @@
     --header-box-shadow: #0c1116b4;
     --body-dark-button-border: #444;
     --slider-background-color: #ccc;
-    --toggle-light-bg-color: #25374d91;
-    --toggle-dark-bg-color: #dde5f0cb;
+    --toggle-light-bg-color: #b8cee082; /*#9cbcdb80*/
+    --toggle-dark-bg-color: #1b3b627a;
     --header-left-logo: 40px;
     --header-slider-space: 3px;
     --header-slider-diameter: calc(var(--header-left-logo) * 0.5);
@@ -333,7 +333,7 @@ body.dark-mode .container {
 }
 
 .form-section-toggle {
-    padding: 10px 15px;
+    padding: 10px 10px;
     border: none;
     text-align: left;
     cursor: pointer;
@@ -341,7 +341,7 @@ body.dark-mode .container {
     font-size: var(--toggle-font-size);
     /* width: 100%; */
     margin: 0;
-    background-color: var(--formula-background);
+    background-color: var(--toggle-light-bg-color);
     color: var(--light-text-color);
     display: flex;
     justify-content: space-between;
@@ -360,7 +360,7 @@ body.dark-mode .container {
 }
 
 body.dark-mode .form-section-toggle {
-    background-color: var(--dark-bg-color);
+    background-color: var(--toggle-dark-bg-color);
     color: var(--dark-text-color);
 }
 
