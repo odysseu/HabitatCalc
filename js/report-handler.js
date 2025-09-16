@@ -4,6 +4,11 @@ import { calculateMonthlyPayment, extractIncomes, calculateAPR, findPivotYear, c
 import { loadTranslations } from './handle-language.js';
 import { forceLightMode, restoreMode } from './dark-mode.js';
 
+function updateSummary(repaymentYear, cumulativePurchase) {
+    document.getElementById('repaymentYearDisplay').textContent = repaymentYear;
+    document.getElementById('cumulativePurchaseDisplay').textContent = `${cumulativePurchase.toFixed(2)} €`;
+}
+
 export async function generateReport() {
     // Get the values from the form
     const price = parseFloat(document.getElementById('price').value);
@@ -38,10 +43,13 @@ export async function generateReport() {
     const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4);
     const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate, rentingHousingTax);
     const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
-
+    // const cumulRentUntilRepayment = cumulRent.slice(0, repaymentYear + 1);
+    const cumulativePurchaseUntilRepayment = cumulativePurchase.slice(0, repaymentYear + 1)[repaymentYear];
     // Load translations
     const language = document.getElementById('language-select').value;
     const translations = await loadTranslations(language);
+
+    updateSummary(repaymentYear, cumulativePurchaseUntilRepayment);
 
     // Create the main simulation container
     const simulationContainer = document.getElementById('simulation');

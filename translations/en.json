@@ -74,6 +74,8 @@
     "propertyTax": "Property tax (€)",
     "buyHousingTax": "Housing tax (€)",
     "rentingHousingTax": "Housing tax (€)",
+    "summary-part1": "From year ",
+    "summary-part2": ", it becomes more advantageous to have bought rather than rented. At this point, he money spent in any cas would be approximately ",
     "title": "Real Estate Project Calculator",
     "welcomeMessage": "Welcome!<br /><br />This tool is a real estate investment calculator to determine when it becomes profitable to buy a property rather than rent it."
 }
