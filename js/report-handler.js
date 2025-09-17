@@ -98,9 +98,6 @@ export async function generateReport() {
     }
     simulationContainer.appendChild(createCollapsibleResultsSection(translations.reportRenting, rentingRows));
 
-    // Amortization Section (collapsible)
-    simulationContainer.appendChild(createCollapsibleAmortizationSection(translations, repaymentYear));
-
     // Chart generation
     await generateChart(cumulRent, cumulativePurchase, maxCalculatedDuration);
 
@@ -154,31 +151,6 @@ function createCollapsibleResultsSection(title, rows) {
 
     table.appendChild(tbody);
     content.appendChild(table);
-
-    section.appendChild(toggle);
-    section.appendChild(content);
-
-    return section;
-}
-
-// Utility function to create a collapsible amortization section
-function createCollapsibleAmortizationSection(translations, repaymentYear) {
-    const section = document.createElement('div');
-    section.className = 'results-section';
-
-    const toggle = document.createElement('button');
-    toggle.className = 'results-section-toggle expanded';
-    toggle.textContent = translations.reportAmortization;
-    toggle.addEventListener('click', () => {
-        content.classList.toggle('collapsed');
-        toggle.classList.toggle('expanded');
-    });
-
-    const content = document.createElement('div');
-    content.className = 'results-section-content';
-    content.innerHTML = `
-        <p>${translations.reportRepaymentYear}: ${repaymentYear}</p>
-    `;
 
     section.appendChild(toggle);
     section.appendChild(content);

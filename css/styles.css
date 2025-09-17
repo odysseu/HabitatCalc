@@ -107,7 +107,7 @@ body.dark-mode .sticky-header {
     max-width: 100%;
     overflow-y: auto;
     padding: 0px 5px;
-    border: 1px solid var(--tooltip-bg);
+    border: 1px solid var(--border-color);
     border-radius: 5px;
 }
 
@@ -127,14 +127,23 @@ body.dark-mode .sticky-header {
     padding: 10px;
     margin-top: 5px;
     text-align: center;
-    background-color: var(--formula-background);
+    background-color: var(--light-bg-color);
     border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 0.95em;
     box-sizing: border-box;
 }
 
+body.dark-mode .summary-box {
+    background-color: var(--dark-bg-color);
+    border-color: var(--tooltip-bg);
+}
+
 .summary-box strong {
+    font-size: 1.1em;
+}
+
+body.dark-mode .summary-box strong {
     color: var(--primary-color);
     font-weight: bold;
 }
