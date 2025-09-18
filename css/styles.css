@@ -28,9 +28,9 @@
     --dark-result-table-background-color: #314050;
     --light-result-section-table-background-color: #6dc0e6c2;
     --dark-result-section-table-background-color: #1f558fc2;
-    --even-row-color: #f2f2f2;
+    --light-even-row-color: #f2f2f2;
     --dark-even-row-color: #2a3b4d;
-    --hover-row-color: #e3f2fd;
+    --light-hover-row-color: #e3f2fd;
     --dark-hover-row-color: #3a4b5d;
 
     /* Couleurs des graphiques */
@@ -72,6 +72,8 @@ body {
     --welcome-message-bg-color: var(--welcome-message-light-bg-color);
     --input-border-color: var(--light-input-border-color);
     --toggle-bg-color: var(--toggle-light-bg-color);
+    --even-row-color: var(--light-even-row-color);
+    --hover-row-color: var(--light-hover-row-color);
     
     font-family: Arial, sans-serif;
     background-color: var(--light-bg-color);
@@ -100,6 +102,8 @@ body.dark-mode {
     --welcome-message-bg-color: var(--welcome-message-dark-bg-color);
     --input-border-color: var(--dark-input-border-color);
     --toggle-bg-color: var(--toggle-dark-bg-color);
+    --even-row-color: var(--dark-even-row-color);
+    --hover-row-color: var(--dark-hover-row-color);
 }
 
 input {
@@ -320,14 +324,8 @@ header h1 {
     padding: 5px;
     border: 1px solid var(--border-color);
     border-radius: 5px;
-    background-color: var(--light-bg-color);
-    color: var(--light-text-color);
-}
-
-body.dark-mode #language-select {
-    background-color: var(--dark-bg-color);
-    color: var(--dark-text-color);
-    border-color: var(--dark-bg-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
 }
 
 .switch {
@@ -381,10 +379,6 @@ input:checked+.slider:before {
     border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
-}
-
-body.dark-mode .container {
-    border-color: var(--dark-bg-color);
 }
 
 .form {
@@ -588,11 +582,7 @@ body.dark-mode .container {
     border-width: 5px;
     border-style: solid;
     border-color: var(--tooltip-bg) transparent transparent transparent;
-}
-
-body.dark-mode .help-text {
-    background-color: var(--dark-bg-color);
-    border-color: var(--dark-bg-color);
+    background-color: var(--bg-color);
 }
 
 .help-icon:hover .help-text {
@@ -651,16 +641,11 @@ body.dark-mode .help-text {
     font-size: var(--toggle-font-size);
     width: 100%;
     background-color: var(--result-section-table-background-color);
-    color: var(--light-text-color);
+    color: var(--text-color);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-body.dark-mode .results-section-toggle {
-    background-color: var(--dark-bg-color);
-    color: var(--dark-text-color);
 }
 
 .results-section-toggle::after {
@@ -720,10 +705,6 @@ body.dark-mode .results-section-toggle {
     background-color: var(--even-row-color);
 }
 
-body.dark-mode .results-table tbody tr:nth-of-type(even) {
-    background-color: var(--dark-even-row-color);
-}
-
 .results-table tbody tr:last-of-type {
     border-bottom: 2px solid var(--primary-color);
 }
@@ -732,9 +713,6 @@ body.dark-mode .results-table tbody tr:nth-of-type(even) {
     background-color: var(--hover-row-color);
 }
 
-body.dark-mode .results-table tbody tr:hover {
-    background-color: var(--dark-hover-row-color);
-}
 
 .simulation h2 {
     text-align: center;
