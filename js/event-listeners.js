@@ -8,6 +8,7 @@ document.querySelectorAll('.form-section-toggle').forEach(header => {
     header.addEventListener('click', () => {
         const content = header.nextElementSibling;
         content.classList.toggle('collapsed');
+        header.classList.toggle('expanded');
     });
 });
 

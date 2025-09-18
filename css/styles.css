@@ -71,6 +71,8 @@ body {
     --text-color: var(--light-text-color);
     --welcome-message-bg-color: var(--welcome-message-light-bg-color);
     --input-border-color: var(--light-input-border-color);
+    --toggle-bg-color: var(--toggle-light-bg-color);
+    
     font-family: Arial, sans-serif;
     background-color: var(--light-bg-color);
     color: var(--light-text-color);
@@ -97,6 +99,7 @@ body.dark-mode {
     --text-color: var(--dark-text-color);
     --welcome-message-bg-color: var(--welcome-message-dark-bg-color);
     --input-border-color: var(--dark-input-border-color);
+    --toggle-bg-color: var(--toggle-dark-bg-color);
 }
 
 input {
@@ -407,8 +410,8 @@ body.dark-mode .container {
     font-size: var(--toggle-font-size);
     /* width: 100%; */
     margin: 0;
-    background-color: var(--toggle-light-bg-color);
-    color: var(--light-text-color);
+    background-color: var(--toggle-bg-color);
+    color: var(--text-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -416,19 +419,15 @@ body.dark-mode .container {
 }
 
 .form-section-toggle::after {
-    content: "+";
-    font-size: var(--toggle-icon-size);
+    content: "-";
     transition: transform 0.3s;
 }
 
 .form-section-toggle.expanded::after {
-    content: "-";
+    content: "+";
+    transition: transform 0.3s;
 }
 
-body.dark-mode .form-section-toggle {
-    background-color: var(--toggle-dark-bg-color);
-    color: var(--dark-text-color);
-}
 
 .form-section-content {
     transition: max-height 0.3s ease-out;
@@ -666,7 +665,6 @@ body.dark-mode .results-section-toggle {
 
 .results-section-toggle::after {
     content: "+";
-    font-size: var(--toggle-icon-size);
     transition: transform 0.3s;
 }
 
