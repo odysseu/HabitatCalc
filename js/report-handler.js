@@ -6,7 +6,7 @@ import { forceLightMode, restoreMode } from './dark-mode.js';
 
 function updateSummary(repaymentYear, cumulativePurchase) {
     document.getElementById('repaymentYearDisplay').textContent = repaymentYear;
-    document.getElementById('cumulativePurchaseDisplay').textContent = `${cumulativePurchase.toFixed(2)} €`;
+    document.getElementById('cumulativePurchaseDisplay').textContent = `${cumulativePurchase.toFixed(0)}\u00A0€`;
 }
 
 export async function generateReport() {
@@ -177,11 +177,11 @@ export async function generateChart(cumulRent, cumulativePurchase, maxDuration) 
     const translations = await loadTranslations(language);
     const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
     const rootStyles = getComputedStyle(document.body);
-    const rentColor = rootStyles.getPropertyValue('--graphRentColor').trim();
-    const rentFillColor = rootStyles.getPropertyValue('--graphRentFillColor').trim();
-    const purchaseColor = rootStyles.getPropertyValue('--graphPurchaseColor').trim();
-    const purchaseFillColor = rootStyles.getPropertyValue('--graphPurchaseFillColor').trim();
-    const textColor = rootStyles.getPropertyValue('--graphTextColor').trim();
+    const rentColor = rootStyles.getPropertyValue('--graph-rent-color').trim();
+    const rentFillColor = rootStyles.getPropertyValue('--graph-rent-fill-color').trim();
+    const purchaseColor = rootStyles.getPropertyValue('--graph-purchase-color').trim();
+    const purchaseFillColor = rootStyles.getPropertyValue('--graph-purchase-fill-color').trim();
+    const textColor = rootStyles.getPropertyValue('--graph-text-color').trim();
     // 3. Create the new chart with responsive options
     myChart = new Chart(ctx, {
         type: 'line',
