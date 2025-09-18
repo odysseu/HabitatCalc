@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('calculate-button').addEventListener('click', generateReport);
 
     // Add income field
-    document.getElementById('add-income-button').addEventListener('click', addIncome);
+    document.getElementById('change-income-button').addEventListener('click', addIncome);
 
     // Welcome message close
     const welcomeMessage = document.getElementById('welcome-message');

@@ -99,7 +99,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="rentingHousingTax">Taxe d'habitation (€)</label>
-                                    <input type="number" id="rentingHousingTax" name="rentingHousingTax" value="0" required>
+                                    <input type="number" id="rentingHousingTax" name="rentingHousingTax" value="0"
+                                        required>
                                 </div>
                             </div>
                         </div>
@@ -138,11 +139,13 @@
                             <div class="form-section-content">
                                 <div id="incomes-container">
                                     <div class="income-container">
-                                        <input type="number" id="income-0" name="income-0"
-                                            placeholder="Revenu mensuel (€)" required>
-                                        <input type="number" step="0.01" id="income-share-0" name="income-share-0"
-                                            placeholder="Durée (% de l'année)" required>
-                                        <button type="button" id="add-income-button">+</button>
+                                        <div class="income-inputs">
+                                            <input type="number" id="income-0" name="income-0"
+                                                placeholder="Revenu mensuel (€)" required>
+                                            <input type="number" step="0.01" id="income-share-0" name="income-share-0"
+                                                placeholder="Durée (% de l'année)" required>
+                                        </div>
+                                        <button type="button" id="change-income-button">+</button>
                                     </div>
                                 </div>
                             </div>
@@ -159,7 +162,8 @@
                     <p>
                         <span id="summary-part1">À partir de l’année </span>
                         <strong id="repaymentYearDisplay">X</strong>
-                        <span id="summary-part2">, il devient plus avantageux d’avoir acheté plutôt que loué. À ce moment-là, la dépense dans chaque cas aura été d'environ </span>
+                        <span id="summary-part2">, il devient plus avantageux d’avoir acheté plutôt que loué. À ce
+                            moment-là, la dépense dans chaque cas aura été d'environ </span>
                         <strong id="cumulativePurchaseDisplay">Y €</strong>
                     </p>
                 </div>
@@ -167,7 +171,6 @@
             <div id="simulation"></div>
         </div>
         <div class="form-actions" id="report-button"></div>
-        <div id="download-button"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"></script>

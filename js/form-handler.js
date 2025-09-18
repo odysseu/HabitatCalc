@@ -1,9 +1,10 @@
 // description: This script handles the form submission, validation, and calculation of APR and other financial metrics.
 import { loadTranslations, updateContent } from './handle-language.js';
+import { generateReport } from './report-handler.js';
 
 export async function resetForm() {
     // Properly reset the incomes-container by setting its innerHTML
-    document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> <button type="button" id="add-income-button">+</button> </div>';
+    document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> <button type="button" id="change-income-button">+</button> </div>';
     // console.log("First incomes-container:", document.getElementById('incomes-container').innerHTML);
     document.getElementById('form-calculator').reset();
     // console.log("Second incomes-container:", document.getElementById('incomes-container').innerHTML);
@@ -102,64 +103,81 @@ export function calculateAPR() {
 
 
 export function addIncome() {
-    let incomeCount = document.querySelectorAll('.income-container').length;
     const container = document.getElementById('incomes-container');
-    // Get values from the first fields
-    const currentIncomeValue = container.querySelector('input[name="income-0"]').value.trim();
-    const currentTimeShareValue = container.querySelector('input[name="income-share-0"]').value.trim();
+    const incomeContainers = container.querySelectorAll('.income-container');
+    const incomeCount = incomeContainers.length;
 
-    let newIncome;
-    try {
-        if (isValidNumber(currentIncomeValue) && isValidNumber(currentTimeShareValue)) {
-            // If both are valid numbers, create the new inputs
-            newIncome = document.createElement('div');
-            newIncome.className = 'income-container';
-            const inputIncome = document.createElement('input');
-            inputIncome.type = 'number';
-            inputIncome.id = `income-${incomeCount}`;
-            inputIncome.name = `income-${incomeCount}`;
-            inputIncome.value = currentIncomeValue;
-            inputIncome.placeholder = 'Revenu mensuel (€)';
-            inputIncome.required = true;
+    // Récupérer les valeurs du dernier conteneur
+    const lastIncomeContainer = incomeContainers[0];
+    const currentIncomeValue = lastIncomeContainer.querySelector('input[name^="income-"]').value.trim();
+    const currentTimeShareValue = lastIncomeContainer.querySelector('input[name^="income-share-"]').value.trim();
 
-            const inputDuration = document.createElement('input');
-            inputDuration.type = 'number';
-            inputDuration.step = '0.01';
-            inputDuration.id = `income-share-${incomeCount}`;
-            inputDuration.name = `income-share-${incomeCount}`;
-            inputDuration.value = currentTimeShareValue;
-            inputDuration.placeholder = 'Durée (% de l\'année)';
-            inputDuration.required = true;
-
-            const deleteButton = document.createElement('button');
-            deleteButton.type = 'button';
-            deleteButton.textContent = '-';
-            deleteButton.onclick = function() { deleteIncome(this); };
-
-            newIncome.appendChild(inputIncome);
-            newIncome.appendChild(inputDuration);
-            newIncome.appendChild(deleteButton);
-            container.appendChild(newIncome);
-            incomeCount++;
-        } else {
-            console.log("Invalid input detected:", {
-                income: currentIncomeValue,
-                duration: currentTimeShareValue
-            });
-        }
-    } catch (error) {
-        console.log("Error validating input:", error);
+    // Vérifier que les valeurs sont valides
+    if (!isValidNumber(currentIncomeValue) || !isValidNumber(currentTimeShareValue)) {
+        console.log("Invalid input detected:", {
+            income: currentIncomeValue,
+            duration: currentTimeShareValue
+        });
+        return;
     }
-    
-    // Reset the fields to ensure next inputs will be added in the form
-    container.querySelector('input[name="income-0"]').value = "";
-    container.querySelector('input[name="income-share-0"]').value = "";
-    
+
+    // Créer un nouveau conteneur
+    const newIncomeContainer = document.createElement('div');
+    newIncomeContainer.className = 'income-container';
+
+    // Créer la div pour les inputs
+    const incomeInputsDiv = document.createElement('div');
+    incomeInputsDiv.className = 'income-inputs';
+
+    // Créer les inputs
+    const inputIncome = document.createElement('input');
+    inputIncome.type = 'number';
+    inputIncome.id = `income-${incomeCount}`;
+    inputIncome.name = `income-${incomeCount}`;
+    inputIncome.placeholder = 'Revenu mensuel (€)';
+    inputIncome.required = true;
+    inputIncome.value = currentIncomeValue;
+
+    const inputDuration = document.createElement('input');
+    inputDuration.type = 'number';
+    inputDuration.step = '0.01';
+    inputDuration.id = `income-share-${incomeCount}`;
+    inputDuration.name = `income-share-${incomeCount}`;
+    inputDuration.placeholder = 'Durée (% de l\'année)';
+    inputDuration.required = true;
+    inputDuration.value = currentTimeShareValue;
+
+    // Ajouter les inputs à leur conteneur
+    incomeInputsDiv.appendChild(inputIncome);
+    incomeInputsDiv.appendChild(inputDuration);
+    newIncomeContainer.appendChild(incomeInputsDiv);
+
+    // Créer le bouton moins
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'change-income-button';
+    deleteButton.textContent = '-';
+    deleteButton.onclick = function() { deleteIncome(this); };
+
+    // Ajouter le bouton moins
+    newIncomeContainer.appendChild(deleteButton);
+
+    // Ajouter au DOM
+    container.appendChild(newIncomeContainer);
+
+    // Réinitialiser les champs du dernier conteneur
+    lastIncomeContainer.querySelector('input[name^="income-"]').value = "";
+    lastIncomeContainer.querySelector('input[name^="income-share-"]').value = "";
 }
 
 function isValidNumber(value) {
     try {
-        return !isNaN(parseFloat(value)) && isFinite(value) && value.trim() !== "";
+        if (value === "" || value === null || value === undefined) {
+            return false;
+        }
+
+        const num = parseFloat(value);
+        return !isNaN(num) && isFinite(num) && num >= 0;
     } catch (error) {
         console.warn("Error checking if value is a valid number:", { value, error });
         return false;
@@ -167,8 +185,9 @@ function isValidNumber(value) {
 }
 
 export function deleteIncome(button) {
-    const container = document.getElementById('incomes-container');
-    container.removeChild(button.parentElement);
+    const incomeContainer = button.parentElement;
+    incomeContainer.remove();
+    generateReport();
 }
 
 export function extractIncomes() {

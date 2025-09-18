@@ -43,7 +43,7 @@ describe('Test that all id-ed elements exist in the DOM', () => {
         'incomes-container',
         'income-0',
         'income-share-0',
-        'add-income-button',
+        'change-income-button',
         'calculate-button',
         'simulation',
         'chart-container',

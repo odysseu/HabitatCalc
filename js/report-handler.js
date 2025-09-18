@@ -61,13 +61,13 @@ export async function generateReport() {
     simulationContainer.appendChild(createCollapsibleResultsSection(
         translations.reportPurchase,
         [
-            { label: translations.reportPrice, value: `${price.toFixed(2)} €` },
-            { label: translations.reportNotaryFees, value: `${notaryFees.toFixed(2)} €` },
-            { label: translations.reportAppreciationRate, value: `${(appreciationRate * 100).toFixed(2)} %` },
-            { label: translations.reportAgencyCommission, value: `${agencyCommissionFees.toFixed(2)} €` },
-            { label: translations.reportPurchaseTotal, value: `${purchaseTotal.toFixed(2)} €` },
-            { label: translations.reportCoOwnership, value: `${coOwnershipFees.toFixed(2)} €` },
-            { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)} €` }
+            { label: translations.reportPrice, value: `${price.toFixed(2)}\u00A0€` },
+            { label: translations.reportNotaryFees, value: `${notaryFees.toFixed(2)}\u00A0€` },
+            { label: translations.reportAppreciationRate, value: `${(appreciationRate * 100).toFixed(2)}\u00A0%` },
+            { label: translations.reportAgencyCommission, value: `${agencyCommissionFees.toFixed(2)}\u00A0€` },
+            { label: translations.reportPurchaseTotal, value: `${purchaseTotal.toFixed(2)}\u00A0€` },
+            { label: translations.reportCoOwnership, value: `${coOwnershipFees.toFixed(2)}\u00A0€` },
+            { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)}\u00A0€` }
         ]
     ));
 
@@ -75,39 +75,67 @@ export async function generateReport() {
     simulationContainer.appendChild(createCollapsibleResultsSection(
         translations.reportLoan,
         [
-            { label: translations.contribution, value: `${contribution.toFixed(2)} €` },
-            { label: translations.reportBorrowedAmount, value: `${borrowedAmount.toFixed(2)} €` },
-            { label: translations.reportInsuranceRate, value: `${(insuranceRate * 100).toFixed(2)} %` },
-            { label: translations.reportInterestRate, value: `${(interestRate * 100).toFixed(2)} %` },
-            { label: translations.reportAPR, value: `${APR.toFixed(2)} %` },
-            { label: translations.reportMonthlyPayment, value: `${monthlyPayment.toFixed(2)} €` },
-            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)} €` },
-            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)} €` }
+            { label: translations.contribution, value: `${contribution.toFixed(2)}\u00A0€` },
+            { label: translations.reportBorrowedAmount, value: `${borrowedAmount.toFixed(2)}\u00A0€` },
+            { label: translations.reportInsuranceRate, value: `${(insuranceRate * 100).toFixed(2)}\u00A0%` },
+            { label: translations.reportInterestRate, value: `${(interestRate * 100).toFixed(2)}\u00A0%` },
+            { label: translations.reportAPR, value: `${APR.toFixed(2)}\u00A0%` },
+            { label: translations.reportMonthlyPayment, value: `${monthlyPayment.toFixed(2)}\u00A0€` },
+            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)}\u00A0€` },
+            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)}\u00A0€` }
         ]
     ));
 
     // Renting Section (collapsible)
     const rentingRows = [
-        { label: translations.reportFictitiousMonthlyRent, value: `${fictitiousRent.toFixed(2)} €` },
-        { label: translations.reportFictitiousRentEvolutionRate, value: `${(fictitiousRentRate * 100).toFixed(2)} %` },
-        { label: translations.reportRentingHousingTax, value: `${rentingHousingTax.toFixed(2)} €` },
-        { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)} €` }
+        { label: translations.reportFictitiousMonthlyRent, value: `${fictitiousRent.toFixed(2)}\u00A0€` },
+        { label: translations.reportFictitiousRentEvolutionRate, value: `${(fictitiousRentRate * 100).toFixed(2)}\u00A0%` },
+        { label: translations.reportRentingHousingTax, value: `${rentingHousingTax.toFixed(2)}\u00A0€` },
+        { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)}\u00A0€` }
     ];
     if (cumulMonthlyIncomes > 0) {
-        rentingRows.push({ label: translations.reportMonthlyAgregatedIncome, value: `${cumulMonthlyIncomes.toFixed(2)} €` });
+        rentingRows.push({ label: translations.reportMonthlyAgregatedIncome, value: `${cumulMonthlyIncomes.toFixed(2)}\u00A0€` });
     }
     simulationContainer.appendChild(createCollapsibleResultsSection(translations.reportRenting, rentingRows));
 
     // Chart generation
     await generateChart(cumulRent, cumulativePurchase, maxCalculatedDuration);
 
-    // PDF download button
+    // PDF download section
     const reportButtonContainer = document.getElementById('report-button');
-    reportButtonContainer.innerHTML = `
-        <label for="pdf-filename">${translations.pdfFileName}</label>
-        <input type="text" id="pdf-filename" name="pdf-filename" placeholder="${translations.pdfFileNamePlaceHolder}" required>
-        <button id="download-button" class="button">${translations.downloadPDF}</button>
-    `;
+    reportButtonContainer.innerHTML = '';
+
+    const downloadSection = document.createElement('div');
+    downloadSection.className = 'report-download-container';
+
+    const filenameLabel = document.createElement('label');
+    filenameLabel.setAttribute('for', 'pdf-filename');
+    filenameLabel.textContent = translations.pdfFileName;
+
+    const filenameInputs = document.createElement('div');
+    filenameInputs.className = 'report-download-inputs';
+
+    const filenameInput = document.createElement('input');
+    filenameInput.type = 'text';
+    filenameInput.id = 'pdf-filename';
+    filenameInput.name = 'pdf-filename';
+    filenameInput.placeholder = translations.pdfFileNamePlaceHolder;
+    filenameInput.required = true;
+
+    const downloadButton = document.createElement('button');
+    downloadButton.id = 'download-button';
+    downloadButton.className = 'button';
+    downloadButton.textContent = translations.downloadPDF;
+
+    filenameInputs.appendChild(filenameInput);
+    filenameInputs.appendChild(downloadButton);
+
+    downloadSection.appendChild(filenameLabel);
+    downloadSection.appendChild(filenameInputs);
+
+    reportButtonContainer.appendChild(downloadSection);
+
+    // Add event listener
     document.getElementById('download-button').addEventListener('click', downloadPDF);
 }
 

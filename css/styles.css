@@ -7,19 +7,27 @@
     --primary-color: #2196F3;
     --primary-hover-color: #0056b3;
     --secondary-color: #949494;
-    --border-color: #cccccc5f;
-    --body-dark-button-border: #444;
+    --light-border-color: #a6a6a68a;
+    --dark-border-color: #cccccc1f;
+    --light-button-border-color: #444;
+    --dark-button-border-color: #969696;
     --white: white;
     --welcome-bow-shadow: #0000001a;
     --header-box-shadow: #0c1116b4;
     --tooltip-bg: #949494;
-    --input-dark-bg: #2a3b4d;
+    --input-dark-bg: #32486270;
+    --input-light-bg: #ffffff82;
+    --light-input-border-color: #cccccc5f;
+    --dark-input-border-color: #cccccc1f;
     --welcome-message-light-bg-color: #aac3cf;
     --welcome-message-dark-bg-color: #314050;
     --toggle-light-bg-color: #b8cee082;
     --toggle-dark-bg-color: #1b3b627a;
     --slider-background-color: #ccc;
-    --formula-background: #f8f9fa;
+    --light-result-table-background-color: #aac3cf;
+    --dark-result-table-background-color: #314050;
+    --light-result-section-table-background-color: #6dc0e6c2;
+    --dark-result-section-table-background-color: #1f558fc2;
     --even-row-color: #f2f2f2;
     --dark-even-row-color: #2a3b4d;
     --hover-row-color: #e3f2fd;
@@ -54,7 +62,15 @@ body {
     --graph-purchase-color: var(--graph-purchase-color-light);
     --graph-purchase-fill-color: var(--graph-purchase-fill-color-light);
     --graph-text-color: var(--graph-text-color-light);
-    --summary-bg-color: var(--light-bg-color);
+    --button-border-color: var(--light-button-border-color);
+    --border-color: var(--light-border-color);
+    --result-table-background-color: var(--light-result-table-background-color);
+    --result-section-table-background-color: var(--light-result-section-table-background-color);
+    --input-bg: var(--input-light-bg);
+    --bg-color: var(--light-bg-color);
+    --text-color: var(--light-text-color);
+    --welcome-message-bg-color: var(--welcome-message-light-bg-color);
+    --input-border-color: var(--light-input-border-color);
     font-family: Arial, sans-serif;
     background-color: var(--light-bg-color);
     color: var(--light-text-color);
@@ -72,6 +88,15 @@ body.dark-mode {
     --graph-purchase-fill-color: var(--graph-purchase-fill-color-dark);
     --graph-text-color: var(--graph-text-color-dark);
     --summary-bg-color: var(--dark-bg-color);
+    --button-border-color: var(--dark-button-border-color);
+    --border-color: var(--dark-border-color);
+    --result-table-background-color: var(--dark-result-table-background-color);
+    --result-section-table-background-color: var(--dark-result-section-table-background-color);
+    --input-bg: var(--input-dark-bg);
+    --bg-color: var(--dark-bg-color);
+    --text-color: var(--dark-text-color);
+    --welcome-message-bg-color: var(--welcome-message-dark-bg-color);
+    --input-border-color: var(--dark-input-border-color);
 }
 
 input {
@@ -80,6 +105,9 @@ input {
     padding-bottom: 1px;
     padding-left: 5px;
     box-sizing: border-box;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border-color);
+    color: var(--text-color);
 }
 
 button {
@@ -87,18 +115,9 @@ button {
     /* margin-top: 1px;
     margin-bottom: 10px; */
     box-sizing: border-box;
-}
-
-body.dark-mode input,
-body.dark-mode button {
-    background-color: var(--input-dark-bg);
-    color: var(--dark-text-color);
-    border: 1px solid var(--body-dark-button-border);
-}
-
-body.dark-mode .sticky-header {
-    background-color: var(--dark-bg-color);
-    color: var(--dark-text-color);
+    background-color: var(--input-bg);
+    border: 1px solid var(--button-border-color);
+    color: var(--text-color);
 }
 
 .form-chart-wrapper {
@@ -141,8 +160,8 @@ body.dark-mode .sticky-header {
     padding: 10px;
     margin-top: 5px;
     text-align: justify;
-    background-color: var(--summary-bg-color);
-    border: 1px solid var(--summary-border-color);
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 0.95em;
     box-sizing: border-box;
@@ -210,8 +229,8 @@ body.dark-mode .sticky-header {
 }
 
 .sticky-header {
-    background-color: var(--light-bg-color);
-    color: var(--light-text-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -221,6 +240,7 @@ body.dark-mode .sticky-header {
     align-items: center;
     justify-content: space-between;
 }
+
 
 header h1 {
     flex-grow: 0.5;
@@ -353,7 +373,7 @@ input:checked+.slider:before {
 }
 
 .container {
-    width: calc(100% - 10px);
+    width: 99.5%;
     margin: auto;
     border-radius: 10px;
     display: flex;
@@ -373,7 +393,7 @@ body.dark-mode .container {
 }
 
 .form-section {
-    border: 1px solid var(--tooltip-bg);
+    border: 1px solid var(--border-color);
     border-radius: 5px;
     overflow: hidden;
 }
@@ -456,7 +476,6 @@ body.dark-mode .form-section-toggle {
     padding: 10px 20px;
     margin: 5px;
 }
-
 .form-actions button:hover {
     background-color: var(--primary-hover-color);
 }
@@ -470,11 +489,61 @@ body.dark-mode .form-section-toggle {
     align-items: center;
 }
 
-.income-container>input,
-.income-container>button {
-    flex: 0 0 auto;
-    width: 200px;
+.income-inputs {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    gap: 10px;
+}
+
+.income-inputs > input {
+    flex: 1;
+    min-width: 120px;
     border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+#change-income-button {
+    flex: 0 0 auto;
+    /* width: 40px;
+    height: 40px; */
+    border-radius: 5px;
+    margin-left: auto;
+    align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+    .income-container {
+        /* flex-direction: column; */
+        align-items: flex-start;
+    }
+
+    .income-inputs {
+        width: 100%;
+    }
+
+    #change-income-button {
+        margin-left: 0;
+        align-self: flex-end;
+        width: auto;
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* .income-inputs {
+        flex-direction: column;
+    } */
+
+    .income-inputs > input {
+        width: 100%;
+    }
+
+    #change-income-button {
+        width: 100%;
+        margin-top: 10px;
+    }
 }
 
 .interest-rate-container {
@@ -537,19 +606,14 @@ body.dark-mode .help-text {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: var(--welcome-message-light-bg-color);
+    background-color: var(--welcome-message-bg-color);
+    color: var(--text-color);
     border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 0 10px var(--welcome-bow-shadow);
     z-index: 1000;
     text-align: center;
-}
-
-body.dark-mode .welcome-message {
-    background-color: var(--welcome-message-dark-bg-color);
-    color: var(--dark-text-color);
-    border-color: var(--dark-bg-color);
 }
 
 .welcome-message p {
@@ -571,27 +635,23 @@ body.dark-mode .welcome-message {
 
 .results-section {
     margin-bottom: 5px;
-    background-color: var(--formula-background);
+    background-color: var(--bg-color);
     padding: 0;
     border-radius: 8px;
-    border: 1px solid var(--tooltip-bg);
+    border: 1px solid var(--border-color);
     overflow: hidden;
 }
 
-body.dark-mode .results-section {
-    background-color: var(--dark-bg-color);
-    border-color: var(--tooltip-bg);
-}
 
 .results-section-toggle {
-    padding: 10px 15px;
+    padding: 5px 10px;
     border: none;
     text-align: left;
     cursor: pointer;
     font-weight: bold;
     font-size: var(--toggle-font-size);
     width: 100%;
-    background-color: var(--formula-background);
+    background-color: var(--result-section-table-background-color);
     color: var(--light-text-color);
     border-bottom: 1px solid var(--border-color);
     display: flex;
@@ -696,4 +756,52 @@ body.dark-mode .results-table tbody tr:hover {
 
 .button:hover {
     background-color: var(--primary-hover-color);
+}
+
+.report-download-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: var(--bg-color);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.report-download-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+#download-button {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px 0;
+    transition: background-color 0.3s;
+}
+
+#download-button:hover {
+    background-color: var(--primary-hover-color);
+}
+
+#pdf-filename {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+#pdf-filename::placeholder {
+    color: var(--secondary-color);
 }
