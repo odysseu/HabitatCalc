@@ -1,21 +1,17 @@
 {
-    "name": "HabitatCalc",
-    "short_name": "HabitatCalc",
-    "scope": "/HabitatCalc/",
-    "start_url": "/HabitatCalc/",
-    "display": "standalone",
-    "theme_color": "#000000",
-    "background_color": "#ffffff",
-    "icons": [
-        {
-            "src": "logos/home-logo-light-v3.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "logos/home-logo-light-v3.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
-    ]
+  "name": "HabitatCalc",
+  "short_name": "HabitatCalc",
+  "description": "This simulator helps determine when it becomes more cost-effective to buy a property rather than continue renting.",
+  "scope": "/HabitatCalc/",
+  "start_url": "/HabitatCalc/",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "logos/home-logo-dark-v3.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

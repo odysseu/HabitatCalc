@@ -98,6 +98,9 @@ export async function updateContent(translations) {
         const interestRateLabel = document.querySelector('label[for="interest-rate"]');
         const fictitiousRentRateLabel = document.querySelector('label[for="fictitiousRentRate"]');
         const welcomeMessage = document.getElementById('welcome-message');
+        const summaryPart1 = document.getElementById('summary-part1');
+        const summaryPart2 = document.getElementById('summary-part2');
+
 
         if (contributionLabel) contributionLabel.innerHTML = `${translations.contribution} <span class="help-icon">? <span class="help-text">${translations.helpContribution}</span></span>`;
         if (calculateButton) calculateButton.textContent = translations.generateReport;
@@ -125,6 +128,9 @@ export async function updateContent(translations) {
             const aprValue = calculateAPR(); //apr.textContent = `${translations.reportAPR}: `;
             updateAPRLabel(aprValue, translations);
         }
+        if (summaryPart1) summaryPart1.textContent = translations.summaryPart1;
+        if (summaryPart2) summaryPart2.textContent = translations.summaryPart2;
+        
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
         if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;
         if (interestRateLabel) interestRateLabel.innerHTML = `${translations.interestRate} <span class="help-icon">? <span class="help-text">${translations.helpInterestRate}</span></span>`;
@@ -135,6 +141,7 @@ export async function updateContent(translations) {
         if (downloadButton) downloadButton.textContent = translations.downloadPDF;
         if (title) title.textContent = translations.title;
         if (welcomeMessage) welcomeMessage.querySelector('p').innerHTML = translations.welcomeMessage;
+        
     }
     else  {
         console.warn('Translations are not available or invalid.');

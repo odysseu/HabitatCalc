@@ -4,8 +4,13 @@ import { calculateMonthlyPayment, extractIncomes, calculateAPR, findPivotYear, c
 import { loadTranslations } from './handle-language.js';
 import { forceLightMode, restoreMode } from './dark-mode.js';
 
+function updateSummary(repaymentYear, cumulativePurchase) {
+    document.getElementById('repaymentYearDisplay').textContent = repaymentYear;
+    document.getElementById('cumulativePurchaseDisplay').textContent = `${cumulativePurchase.toFixed(0)}\u00A0€`;
+}
+
 export async function generateReport() {
-    // get the values from the form
+    // Get the values from the form
     const price = parseFloat(document.getElementById('price').value);
     const notary = parseFloat(document.getElementById('notary').value) / 100;
     const appreciationRate = parseFloat(document.getElementById('appreciation-rate').value) / 100;
@@ -23,6 +28,7 @@ export async function generateReport() {
     const maxDuration = 200;
     const fileFees = parseFloat(document.getElementById('file-fees').value);
 
+    // Calculations
     const notaryFees = price * notary;
     const agencyCommissionFees = price * agencyCommission;
     const purchaseTotal = price + notaryFees + agencyCommissionFees + fileFees;
@@ -33,154 +39,159 @@ export async function generateReport() {
     const cumulIncomes = extractIncomes();
     const cumulMonthlyIncomes = cumulIncomes / 12;
     const APR = calculateAPR();
-
     const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
-    const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4); // 4 more year to see after meeting year
+    const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4);
     const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate, rentingHousingTax);
     const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
-
-    // generate the simulation report board
-    let translations;
+    // const cumulRentUntilRepayment = cumulRent.slice(0, repaymentYear + 1);
+    const cumulativePurchaseUntilRepayment = cumulativePurchase.slice(0, repaymentYear + 1)[repaymentYear];
+    // Load translations
     const language = document.getElementById('language-select').value;
-    translations = await loadTranslations(language);
-    // const translations = window.translations; // Assuming translations are loaded globally
+    const translations = await loadTranslations(language);
 
-    let simulation = `
-        <h2>${translations.reportTitle}</h2>
+    updateSummary(repaymentYear, cumulativePurchaseUntilRepayment);
 
-        <div>
-            <h3>${translations.reportPurchase}</h3>
-            <table>
-                <tr>
-                    <td>${translations.reportPrice}:</td>
-                    <td style="text-align: right;">${price.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportNotaryFees}:</td>
-                    <td style="text-align: right;">${notaryFees.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportAppreciationRate}:</td>
-                    <td style="text-align: right;">${(appreciationRate * 100).toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportAgencyCommission}:</td>
-                    <td style="text-align: right;">${agencyCommissionFees.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportPurchaseTotal}:</td>
-                    <td style="text-align: right;">${purchaseTotal.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportCoOwnership}:</td>
-                    <td style="text-align: right;">${coOwnershipFees.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportBuyHousingTax}:</td>
-                    <td style="text-align: right;">${buyHousingTax.toFixed(2)} €</td>
-                </tr>
-            </table>
-        </div>
-        <div>
-            <h3>${translations.reportLoan}</h3>
-            <table>
-                <tr>
-                    <td>${translations.contribution}:</td>
-                    <td style="text-align: right;">${contribution.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportBorrowedAmount}:</td>
-                    <td style="text-align: right;">${borrowedAmount.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportInsuranceRate}:</td>
-                    <td style="text-align: right;">${(insuranceRate * 100).toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportInterestRate}:</td>
-                    <td style="text-align: right;">${(interestRate * 100).toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportAPR}:</td>
-                    <td style="text-align: right;">${APR.toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportMonthlyPayment}:</td>
-                    <td style="text-align: right;">${monthlyPayment.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportTotalInterests}:</td>
-                    <td style="text-align: right;">${totalInterestCost.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportLoanTotalCost}:</td>
-                    <td style="text-align: right;">${loanTotalCost.toFixed(2)} €</td>
-                </tr>
-            </table>
-        </div>
-        <div>
-            <h3>${translations.reportRenting}</h3>
-            <table>
-                <tr>
-                    <td>${translations.reportFictitiousMonthlyRent}:</td>
-                    <td style="text-align: right;">${fictitiousRent.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportFictitiousRentEvolutionRate}:</td>
-                    <td style="text-align: right;">${(fictitiousRentRate * 100).toFixed(2)} %</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportRentingHousingTax}:</td>
-                    <td style="text-align: right;">${rentingHousingTax.toFixed(2)} €</td>
-                </tr>
-                <tr>
-                    <td>${translations.reportPropertyTax}:</td>
-                    <td style="text-align: right;">${propertyTax.toFixed(2)} €</td>
-                </tr>
-    `;
+    // Create the main simulation container
+    const simulationContainer = document.getElementById('simulation');
+    simulationContainer.className = 'simulation';
+    simulationContainer.innerHTML = '';
+    simulationContainer.appendChild(createSectionTitle(translations.reportTitle));
 
-    // add monthly incomes if any
+    // Purchase Section (collapsible)
+    simulationContainer.appendChild(createCollapsibleResultsSection(
+        translations.reportPurchase,
+        [
+            { label: translations.reportPrice, value: `${price.toFixed(2)}\u00A0€` },
+            { label: translations.reportNotaryFees, value: `${notaryFees.toFixed(2)}\u00A0€` },
+            { label: translations.reportAppreciationRate, value: `${(appreciationRate * 100).toFixed(2)}\u00A0%` },
+            { label: translations.reportAgencyCommission, value: `${agencyCommissionFees.toFixed(2)}\u00A0€` },
+            { label: translations.reportPurchaseTotal, value: `${purchaseTotal.toFixed(2)}\u00A0€` },
+            { label: translations.reportCoOwnership, value: `${coOwnershipFees.toFixed(2)}\u00A0€` },
+            { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)}\u00A0€` }
+        ]
+    ));
+
+    // Loan Section (collapsible)
+    simulationContainer.appendChild(createCollapsibleResultsSection(
+        translations.reportLoan,
+        [
+            { label: translations.contribution, value: `${contribution.toFixed(2)}\u00A0€` },
+            { label: translations.reportBorrowedAmount, value: `${borrowedAmount.toFixed(2)}\u00A0€` },
+            { label: translations.reportInsuranceRate, value: `${(insuranceRate * 100).toFixed(2)}\u00A0%` },
+            { label: translations.reportInterestRate, value: `${(interestRate * 100).toFixed(2)}\u00A0%` },
+            { label: translations.reportAPR, value: `${APR.toFixed(2)}\u00A0%` },
+            { label: translations.reportMonthlyPayment, value: `${monthlyPayment.toFixed(2)}\u00A0€` },
+            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)}\u00A0€` },
+            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)}\u00A0€` }
+        ]
+    ));
+
+    // Renting Section (collapsible)
+    const rentingRows = [
+        { label: translations.reportFictitiousMonthlyRent, value: `${fictitiousRent.toFixed(2)}\u00A0€` },
+        { label: translations.reportFictitiousRentEvolutionRate, value: `${(fictitiousRentRate * 100).toFixed(2)}\u00A0%` },
+        { label: translations.reportRentingHousingTax, value: `${rentingHousingTax.toFixed(2)}\u00A0€` },
+        { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)}\u00A0€` }
+    ];
     if (cumulMonthlyIncomes > 0) {
-        simulation += `
-                <tr>
-                    <td>${translations.reportMonthlyAgregatedIncome}:</td>
-                    <td style="text-align: right;">${cumulMonthlyIncomes.toFixed(2)} €</td>
-                </tr>
-        `;
+        rentingRows.push({ label: translations.reportMonthlyAgregatedIncome, value: `${cumulMonthlyIncomes.toFixed(2)}\u00A0€` });
     }
+    simulationContainer.appendChild(createCollapsibleResultsSection(translations.reportRenting, rentingRows));
 
-    simulation += `
-            </table>
-        </div>
-        <div>
-            <h3>${translations.reportAmortization}</h3>
-            <p>${translations.reportRepaymentYear}: ${repaymentYear}</p>
-        </div>
-    `;
+    // Chart generation
+    await generateChart(cumulRent, cumulativePurchase, maxCalculatedDuration);
 
-    document.getElementById('simulation').innerHTML = simulation;
-    // Générer le graphique
-    genererGraphique(cumulRent, cumulativePurchase, maxCalculatedDuration);
+    // PDF download section
+    const reportButtonContainer = document.getElementById('report-button');
+    reportButtonContainer.innerHTML = '';
 
-    const reportButton = `
-        <label for="pdf-filename">${translations.pdfFileName}</label>
-        <input type="text" id="pdf-filename" name="pdf-filename" placeholder=${translations.pdfFileNamePlaceHolder} required>
-        <button id="download-button">${translations.downloadPDF}</button>
-    `;
+    const downloadSection = document.createElement('div');
+    downloadSection.className = 'report-download-container';
 
-    document.getElementById('report-button').innerHTML = reportButton;
+    const filenameLabel = document.createElement('label');
+    filenameLabel.setAttribute('for', 'pdf-filename');
+    filenameLabel.textContent = translations.pdfFileName;
 
-    // Attacher l'événement de téléchargement au bouton
+    const filenameInputs = document.createElement('div');
+    filenameInputs.className = 'report-download-inputs';
+
+    const filenameInput = document.createElement('input');
+    filenameInput.type = 'text';
+    filenameInput.id = 'pdf-filename';
+    filenameInput.name = 'pdf-filename';
+    filenameInput.placeholder = translations.pdfFileNamePlaceHolder;
+    filenameInput.required = true;
+
+    const downloadButton = document.createElement('button');
+    downloadButton.id = 'download-button';
+    downloadButton.className = 'button';
+    downloadButton.textContent = translations.downloadPDF;
+
+    filenameInputs.appendChild(filenameInput);
+    filenameInputs.appendChild(downloadButton);
+
+    downloadSection.appendChild(filenameLabel);
+    downloadSection.appendChild(filenameInputs);
+
+    reportButtonContainer.appendChild(downloadSection);
+
+    // Add event listener
     document.getElementById('download-button').addEventListener('click', downloadPDF);
 }
 
-export async function genererGraphique(cumulRent, cumulativePurchase, maxDuration) {
-    // 1. Destroy the cart if it exists
+// Utility function to create section title
+function createSectionTitle(text) {
+    const title = document.createElement('h2');
+    title.textContent = text;
+    return title;
+}
+
+// Utility function to create a collapsible results section with a table
+function createCollapsibleResultsSection(title, rows) {
+    const section = document.createElement('div');
+    section.className = 'results-section';
+
+    const toggle = document.createElement('button');
+    toggle.className = 'results-section-toggle expanded';
+    toggle.textContent = title;
+    toggle.addEventListener('click', () => {
+        content.classList.toggle('collapsed');
+        toggle.classList.toggle('expanded');
+    });
+
+    const content = document.createElement('div');
+    content.className = 'results-section-content';
+
+    const table = document.createElement('table');
+    table.className = 'results-table';
+
+    const tbody = document.createElement('tbody');
+    rows.forEach(row => {
+        const tr = document.createElement('tr');
+        const tdLabel = document.createElement('td');
+        tdLabel.textContent = row.label;
+        const tdValue = document.createElement('td');
+        tdValue.textContent = row.value;
+        tr.appendChild(tdLabel);
+        tr.appendChild(tdValue);
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    content.appendChild(table);
+
+    section.appendChild(toggle);
+    section.appendChild(content);
+
+    return section;
+}
+
+export async function generateChart(cumulRent, cumulativePurchase, maxDuration) {
+    // 1. Destroy the chart if it exists
     if (myChart) {
         myChart.destroy();
     }
-
-    // 2. get the canvas element and adjust size
+    // 2. Get the canvas element and adjust size
     const ctx = document.getElementById('myChart').getContext('2d');
     const canvas = ctx.canvas;
     const parent = canvas.parentNode;
@@ -190,21 +201,16 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
     canvas.width = parentWidth;
     canvas.height = parentHeight;
     // Load translations for the chart
-    let translations;
     const language = document.getElementById('language-select').value;
-    translations = await loadTranslations(language);
-
+    const translations = await loadTranslations(language);
     const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
-
     const rootStyles = getComputedStyle(document.body);
-    // const transparency = rootStyles.getPropertyValue('--graphOpacity').trim();
-    const rentColor = rootStyles.getPropertyValue('--graphRentColor').trim();
-    const rentFillColor = rootStyles.getPropertyValue('--graphRentFillColor').trim();
-    const purchaseColor = rootStyles.getPropertyValue('--graphPurchaseColor').trim();
-    const purchaseFillColor = rootStyles.getPropertyValue('--graphPurchaseFillColor').trim();
-    const textColor = rootStyles.getPropertyValue('--graphTextColor').trim();
-
-    // 3. Créer le nouveau graphique avec des options de responsivité
+    const rentColor = rootStyles.getPropertyValue('--graph-rent-color').trim();
+    const rentFillColor = rootStyles.getPropertyValue('--graph-rent-fill-color').trim();
+    const purchaseColor = rootStyles.getPropertyValue('--graph-purchase-color').trim();
+    const purchaseFillColor = rootStyles.getPropertyValue('--graph-purchase-fill-color').trim();
+    const textColor = rootStyles.getPropertyValue('--graph-text-color').trim();
+    // 3. Create the new chart with responsive options
     myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -232,7 +238,7 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
                 mode: 'index',
             },
             responsive: true,
-            maintainAspectRatio: false, // Désactive le maintien du ratio d'aspect pour s'adapter à la taille du parent
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     ticks: {
@@ -249,7 +255,6 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
                         color: `${textColor}`
                     }
                 },
-
                 x: {
                     ticks: {
                         color: `${textColor}`
@@ -282,26 +287,23 @@ export async function genererGraphique(cumulRent, cumulativePurchase, maxDuratio
             }
         }
     });
-    // 4. Mettre à jour le contenu HTML de l'élément canvas
-    document.getElementById('myChart').innerHTML = myChart;
+    // 4. Update the global variable
+    // document.getElementById('myChart').innerHTML = myChart;
 }
 
 export async function downloadPDF() {
     const wasDarkMode = forceLightMode();
-
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    // Configuration des marges et positions
+    // Configuration of margins and positions
     const margin = 20;
     const tableSpacing = 10;
     const pageWidth = doc.internal.pageSize.getWidth();
     const availableWidth = pageWidth - 2 * margin;
-
     const language = document.getElementById('language-select').value;
     const translations = await loadTranslations(language);
     doc.text(margin, margin, `${translations.reportTitle}`);
-    var finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : tableSpacing;
-
+    let finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : tableSpacing;
     const price = parseFloat(document.getElementById('price').value);
     const notary = parseFloat(document.getElementById('notary').value) / 100;
     const coOwnership = parseFloat(document.getElementById('coOwnership').value);
@@ -318,7 +320,6 @@ export async function downloadPDF() {
     const rentingHousingTax = parseFloat(document.getElementById('rentingHousingTax').value);
     const propertyTax = parseFloat(document.getElementById('propertyTax').value);
     const APR = calculateAPR();
-
     const notaryFees = price * notary;
     const agencyCommissionFees = price * agencyCommission;
     const purchaseTotal = price + notaryFees + agencyCommissionFees;
@@ -326,7 +327,6 @@ export async function downloadPDF() {
     const monthlyPayment = interestRate === 0 ? borrowedAmount / (loanDuration * 12) : (borrowedAmount * interestRate / 12) / (1 - Math.pow(1 + interestRate / 12, -loanDuration * 12));
     const loanTotalCost = monthlyPayment * loanDuration * 12;
     const totalInterestCost = loanTotalCost - borrowedAmount;
-
     const maxDuration = 100;
     const coOwnershipFees = parseFloat(document.getElementById('coOwnership').value);
     const cumulIncomes = extractIncomes();
@@ -346,8 +346,7 @@ export async function downloadPDF() {
             [`${translations.reportfileFees}`, `${fileFees.toFixed(2)} €`]
         ]
     });
-
-    // Tableau Emprunt
+    // Loan Table
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
         head: [[`${translations.reportLoan}`, `${translations.reportPrice}`]],
@@ -362,8 +361,7 @@ export async function downloadPDF() {
             [`${translations.reportLoanTotalCost}`, `${loanTotalCost.toFixed(0)} €`]
         ]
     });
-
-    // Tableau Location
+    // Renting Table
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
         head: [[`${translations.reportRenting}`, `${translations.reportPrice}`]],
@@ -374,32 +372,25 @@ export async function downloadPDF() {
             [`${translations.reportPropertyTax}`, `${propertyTax.toFixed(0)} €`]
         ]
     });
-
     // Add the year at which the rent crosses the purchase
     doc.text(`${translations.reportRepaymentYear}: ${repaymentYear}`, margin, doc.lastAutoTable.finalY + tableSpacing);
-
-    // Ajouter le graphique au PDF
+    // Add the chart to the PDF
     const chart = document.getElementById('myChart');
     const chartImageData = chart.toDataURL('image/png');
-
-    // Calculer la hauteur de l'image en fonction de la largeur disponible
+    // Calculate the height of the image based on the available width
     const imageWidth = availableWidth;
     const imageHeight = (chart.height * imageWidth) / chart.width;
-
-    // help : addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+    // If the image exceeds the page, put it on the next page
     let imageY = doc.lastAutoTable.finalY + tableSpacing;
-    // Si l'image dépasse la page, on la met sur la page suivante
     if (imageY + imageHeight > doc.internal.pageSize.getHeight() - margin) {
         doc.addPage();
         imageY = margin;
     }
     doc.addImage(
-        chartImageData, 'PNG', margin, margin, imageWidth, imageHeight //, margin, doc.lastAutoTable.finalY + tableSpacing
+        chartImageData, 'PNG', margin, margin, imageWidth, imageHeight
     );
-
-    const filename = document.getElementById('pdf-filename').value || document.getElementById('pdf-filename').placeholder; // || translations.pdfFilenamePlaceHolder;
+    const filename = document.getElementById('pdf-filename').value || document.getElementById('pdf-filename').placeholder;
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
     doc.save(pdfFilename);
-
     restoreMode(wasDarkMode);
 }

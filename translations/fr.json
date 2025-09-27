@@ -32,7 +32,6 @@
     "pdfFileNamePlaceHolder": "rapport-simulation-immobilière.pdf",
     "price": "Prix du bien (€)",
     "reportPurchase": "Achat",
-    "reportAmortization": "Amortissement",
     "reportRepaymentYear": "Achat amorti à partir de l'année",
     "reportAgencyCommission": "Commission d'agence",
     "reportCoOwnership": "Frais de syndic annuels",
@@ -64,7 +63,7 @@
     "resetFormHelp": "Réinitialiser le formulaire",
     "purchaseSection": "Achat",
     "loanSection": "Emprunt",
-    "incomesSection": "Revenus",
+    "incomesSection": "Revenus lors de l'achat",
     "rentingSection": "Location",
     "sectionTitle": "Calculette Projet Immobilier",
     "appreciationRate": "Taux d'appréciation du bien (%)",
@@ -74,6 +73,8 @@
     "propertyTax": "Taxe foncière (€)",
     "buyHousingTax": "Taxe d'habitation (€)",
     "rentingHousingTax": "Taxe d'habitation (€)",
+    "summaryPart1": "À partir de l’année ",
+    "summaryPart2": ", il devient plus avantageux d’avoir acheté plutôt que loué. À ce moment-là, la dépense dans chaque cas aura été d'environ ",
     "title": "Calculette Projet Immobilier",
     "welcomeMessage": "Bienvenue!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il devient rentable d'acheter un bien plutôt que de le louer."
 }
