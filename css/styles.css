@@ -46,6 +46,7 @@
     --graph-text-color-dark: #d3d3d3b6;
 
     /* Tailles et espaces (inchangés) */
+
     --header-left-logo: 40px;
     --header-slider-space: 3px;
     --header-slider-diameter: calc(var(--header-left-logo) * 0.5);
@@ -122,9 +123,28 @@ button {
     /* margin-top: 1px;
     margin-bottom: 10px; */
     box-sizing: border-box;
+
     background-color: var(--input-bg);
     border: 1px solid var(--button-border-color);
     color: var(--text-color);
+
+}
+
+body.dark-mode button {
+    background-color: var(--primary-color-dark);
+    color: var(--dark-text-color);
+    border: 1px solid var(--body-dark-button-border);
+}
+
+body.dark-mode input {
+    background-color: var(--input-dark-bg);
+    color: var(--dark-text-color);
+    border: 1px solid var(--body-dark-button-border);
+}
+
+body.dark-mode .sticky-header {
+    background-color: var(--dark-bg-color);
+    color: var(--dark-text-color);
 }
 
 .form-chart-wrapper {
@@ -148,7 +168,8 @@ button {
     max-width: 100%;
     overflow-y: auto;
     padding: 0px 5px;
-    border: 1px solid var(--border-color);
+    box-sizing: border-box;
+    border: 1px solid var(--form-container-border-color);
     border-radius: 5px;
     box-shadow: 0px 3px 3px 0px var(--header-box-shadow);
 }
@@ -369,22 +390,8 @@ header h1 {
 }
 
 input:checked+.slider {
-    background-color: var(--primary-color-dark);
+    background-color: var(--primary-color);
 }
-
-
-body.dark-mode .slider {
-    background-color: var(--slider-background-color-dark);
-}
-
-body.dark-mode .slider:before {
-    background-color: var(--slider-knob-color-dark);
-}
-/* 
-body.dark-mode input:checked+.slider {
-    background-color: var(--slider-primary-color-dark);
-} */
-
 
 input:checked+.slider:before {
     transform: translateX(calc(var(--header-slider-width) - var(--header-slider-knob-size) - 2 * var(--header-slider-space)));
@@ -407,7 +414,7 @@ input:checked+.slider:before {
 }
 
 .form-section {
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--form-section-border-color);
     border-radius: 5px;
     overflow: hidden;
 }
