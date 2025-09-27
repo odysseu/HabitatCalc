@@ -9,8 +9,12 @@
     --secondary-color: #949494;
     --light-border-color: #a6a6a68a;
     --dark-border-color: #cccccc1f;
-    --light-button-border-color: #444;
-    --dark-button-border-color: #969696;
+    --body-dark-button-border: #cccccc1f;
+    --body-light-button-border: #a6a6a68a;
+    --light-button-background: #b8cee0;
+    --dark-button-background: #324862;
+    /* --light-button-border-color: #444; */
+    /* --dark-button-border-color: #969696; */
     --white: white;
     --welcome-bow-shadow: #0000001a;
     --header-box-shadow: #0c1116b4;
@@ -45,6 +49,9 @@
     --graph-text-color-light: #2e2e2ecd;
     --graph-text-color-dark: #d3d3d3b6;
 
+    --light-slider-knob-color: #ffffff;
+    --dark-slider-knob-color: #ffffff;
+
     /* Tailles et espaces (inchangés) */
 
     --header-left-logo: 40px;
@@ -63,7 +70,7 @@ body {
     --graph-purchase-color: var(--graph-purchase-color-light);
     --graph-purchase-fill-color: var(--graph-purchase-fill-color-light);
     --graph-text-color: var(--graph-text-color-light);
-    --button-border-color: var(--light-button-border-color);
+    /* --button-border-color: var(--light-button-border-color); */
     --border-color: var(--light-border-color);
     --result-table-background-color: var(--light-result-table-background-color);
     --result-section-table-background-color: var(--light-result-section-table-background-color);
@@ -75,6 +82,9 @@ body {
     --toggle-bg-color: var(--toggle-light-bg-color);
     --even-row-color: var(--light-even-row-color);
     --hover-row-color: var(--light-hover-row-color);
+    --body-button-border: var(--body-light-button-border);
+    --button-background: var(--light-button-background);
+    --slider-knob-color: var(--light-slider-knob-color);
     
     font-family: Arial, sans-serif;
     background-color: var(--light-bg-color);
@@ -93,7 +103,7 @@ body.dark-mode {
     --graph-purchase-fill-color: var(--graph-purchase-fill-color-dark);
     --graph-text-color: var(--graph-text-color-dark);
     --summary-bg-color: var(--dark-bg-color);
-    --button-border-color: var(--dark-button-border-color);
+    /* --button-border-color: var(--dark-button-border-color); */
     --border-color: var(--dark-border-color);
     --result-table-background-color: var(--dark-result-table-background-color);
     --result-section-table-background-color: var(--dark-result-section-table-background-color);
@@ -105,6 +115,9 @@ body.dark-mode {
     --toggle-bg-color: var(--toggle-dark-bg-color);
     --even-row-color: var(--dark-even-row-color);
     --hover-row-color: var(--dark-hover-row-color);
+    --body-button-border: var(--body-dark-button-border);
+    --button-background: var(--dark-button-background);
+    --slider-knob-color: var(--dark-slider-knob-color);
 }
 
 input {
@@ -124,27 +137,10 @@ button {
     margin-bottom: 10px; */
     box-sizing: border-box;
 
-    background-color: var(--input-bg);
-    border: 1px solid var(--button-border-color);
+    background-color: var(--button-background);
+    border: 1px solid var(--body-button-border);
     color: var(--text-color);
 
-}
-
-body.dark-mode button {
-    background-color: var(--primary-color-dark);
-    color: var(--dark-text-color);
-    border: 1px solid var(--body-dark-button-border);
-}
-
-body.dark-mode input {
-    background-color: var(--input-dark-bg);
-    color: var(--dark-text-color);
-    border: 1px solid var(--body-dark-button-border);
-}
-
-body.dark-mode .sticky-header {
-    background-color: var(--dark-bg-color);
-    color: var(--dark-text-color);
 }
 
 .form-chart-wrapper {
@@ -188,7 +184,7 @@ body.dark-mode .sticky-header {
     flex: 0 0 auto;
     width: 100%;
     padding: 10px;
-    margin-top: 5px;
+    /* margin-top: 5px; */
     text-align: justify;
     background-color: var(--bg-color);
     border: 1px solid var(--border-color);
@@ -210,14 +206,14 @@ body.dark-mode .sticky-header {
     }
 
     .form-container {
-        flex: 0 0 30%;
-        max-width: 30%;
+        flex: 0 0 35%;
+        max-width: 35%;
         height: 100%;
     }
 
     .chart-container {
-        flex: 1 1 50%;
-        max-width: 50%;
+        flex: 1 1 45%;
+        max-width: 45%;
         height: 100%;
         display: flex;
         align-items: center;
@@ -231,7 +227,7 @@ body.dark-mode .sticky-header {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: 5px;
+        /* margin-left: 5px; */
     }
 
     .chart-container canvas {
@@ -484,8 +480,8 @@ input:checked+.slider:before {
 }
 
 .form-actions button {
-    background-color: var(--primary-color);
-    color: var(--white);
+    background-color: var(--button-background);
+    color: var(--text-color);
     font-size: 16px;
     border: none;
     border-radius: 5px;
@@ -510,7 +506,7 @@ input:checked+.slider:before {
     display: flex;
     flex: 1;
     min-width: 0;
-    gap: 10px;
+    gap: 5px;
 }
 
 .income-inputs > input {
@@ -549,9 +545,9 @@ input:checked+.slider:before {
 }
 
 @media (max-width: 480px) {
-    /* .income-inputs {
+    .income-inputs {
         flex-direction: column;
-    } */
+    }
 
     .income-inputs > input {
         width: 100%;
@@ -570,7 +566,7 @@ input:checked+.slider:before {
 .input-overlay {
     position: absolute;
     left: 50px;
-    top: 50%;
+    top: calc(50% + 2.5px);
     font-size: 0.85em;
     color: var(--secondary-color);
     white-space: nowrap;
@@ -635,8 +631,8 @@ input:checked+.slider:before {
 
 .welcome-message button {
     padding: 10px 20px;
-    background-color: var(--primary-color);
-    color: var(--white);
+    background-color: var(--button-background);
+    color: var(--text-color);
     border: none;
     cursor: pointer;
     border-radius: 5px;
@@ -644,6 +640,7 @@ input:checked+.slider:before {
 
 .welcome-message button:hover {
     background-color: var(--primary-hover-color);
+    color: var(--white);
 }
 
 .results-section {
@@ -730,7 +727,7 @@ input:checked+.slider:before {
 }
 
 .results-table tbody tr:last-of-type {
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 1px solid var(--primary-color);
 }
 
 .results-table tbody tr:hover {
@@ -744,8 +741,8 @@ input:checked+.slider:before {
 }
 
 .button {
-    background-color: var(--primary-color);
-    color: var(--white);
+    background-color: var(--button-background);
+    color: var(--text-color);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -777,8 +774,8 @@ input:checked+.slider:before {
 }
 
 #download-button {
-    background-color: var(--primary-color);
-    color: var(--white);
+    background-color: var(--button-background);
+    color: var(--text-color);
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
