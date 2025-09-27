@@ -3,9 +3,7 @@
  */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-
 describe('Test that all id-ed elements exist in the DOM', () => {
-
     beforeAll(() => {
         // Load the index.html file
         const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
@@ -49,21 +47,24 @@ describe('Test that all id-ed elements exist in the DOM', () => {
         'chart-container',
         'myChart',
         'report-button',
-        'download-button'
+        'reset-logo-help',
+        'github-logo-help',
+        'dark-mode-toggle',
+        'summary-part1',
+        'repaymentYearDisplay',
+        'summary-part2',
+        'cumulativePurchaseDisplay'
     ];
-
     ids.forEach(id => {
-        test(`L'élément avec l'id "${id}" existe`, () => {
+        test(`he element with id "${id}" should exist`, () => {
             expect(document.getElementById(id)).not.toBeNull();
         });
     });
-
     test('The element with id "myChart" is a canvas', () => {
         const myChart = document.getElementById('myChart');
         expect(myChart).not.toBeNull();
         expect(myChart.tagName).toBe('CANVAS');
     });
-
     test('The element with id "chart-container" is a div', () => {
         const chartContainer = document.getElementById('chart-container');
         expect(chartContainer).not.toBeNull();
@@ -99,10 +100,9 @@ describe('Test that all id-ed elements exist in the DOM', () => {
         expect(languageSelect).not.toBeNull();
         expect(languageSelect.tagName).toBe('SELECT');
     });
-    test('The element with id "title" is a h1', () => {
+    test('The element with id "title" is a title', () => {
         const title = document.getElementById('title');
         expect(title).not.toBeNull();
         expect(title.tagName).toBe('TITLE');
     });
-
 });

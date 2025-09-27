@@ -4,7 +4,7 @@ import { generateReport } from './report-handler.js';
 
 export async function resetForm() {
     // Properly reset the incomes-container by setting its innerHTML
-    document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> <button type="button" id="change-income-button">+</button> </div>';
+    document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <div class="income-inputs"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> </div> <button type="button" id="change-income-button">+</button> </div>';
     // console.log("First incomes-container:", document.getElementById('incomes-container').innerHTML);
     document.getElementById('form-calculator').reset();
     // console.log("Second incomes-container:", document.getElementById('incomes-container').innerHTML);
@@ -112,8 +112,8 @@ export function addIncome() {
     const currentIncomeValue = lastIncomeContainer.querySelector('input[name^="income-"]').value.trim();
     const currentTimeShareValue = lastIncomeContainer.querySelector('input[name^="income-share-"]').value.trim();
 
-    // Vérifier que les valeurs sont valides
-    if (!isValidNumber(currentIncomeValue) || !isValidNumber(currentTimeShareValue)) {
+    // Verify that inputs are valid numbers and within expected ranges
+    if (!isValidNumber(currentIncomeValue) || !isValidPercentage(currentTimeShareValue)) {
         console.log("Invalid input detected:", {
             income: currentIncomeValue,
             duration: currentTimeShareValue
@@ -129,7 +129,7 @@ export function addIncome() {
     const incomeInputsDiv = document.createElement('div');
     incomeInputsDiv.className = 'income-inputs';
 
-    // Créer les inputs
+    // create income inputs
     const inputIncome = document.createElement('input');
     inputIncome.type = 'number';
     inputIncome.id = `income-${incomeCount}`;
@@ -147,25 +147,25 @@ export function addIncome() {
     inputDuration.required = true;
     inputDuration.value = currentTimeShareValue;
 
-    // Ajouter les inputs à leur conteneur
+    // Add inputs to the div
     incomeInputsDiv.appendChild(inputIncome);
     incomeInputsDiv.appendChild(inputDuration);
     newIncomeContainer.appendChild(incomeInputsDiv);
 
-    // Créer le bouton moins
+    // create delete button
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
     deleteButton.className = 'change-income-button';
     deleteButton.textContent = '-';
     deleteButton.onclick = function() { deleteIncome(this); };
 
-    // Ajouter le bouton moins
+    // Add delete button to the new income container
     newIncomeContainer.appendChild(deleteButton);
 
-    // Ajouter au DOM
+    // Add the new income container to the main container
     container.appendChild(newIncomeContainer);
 
-    // Réinitialiser les champs du dernier conteneur
+    // Reset the input fields in the last container
     lastIncomeContainer.querySelector('input[name^="income-"]').value = "";
     lastIncomeContainer.querySelector('input[name^="income-share-"]').value = "";
 }
@@ -180,6 +180,20 @@ function isValidNumber(value) {
         return !isNaN(num) && isFinite(num) && num >= 0;
     } catch (error) {
         console.warn("Error checking if value is a valid number:", { value, error });
+        return false;
+    }
+}
+
+function isValidPercentage(value) {
+    try {
+        if (value === "" || value === null || value === undefined) {
+            return false;
+        }
+
+        const num = parseFloat(value);
+        return !isNaN(num) && isFinite(num) && num >= 0 && num <= 100;
+    } catch (error) {
+        console.warn("Error checking if value is a valid percentage:", { value, error });
         return false;
     }
 }
