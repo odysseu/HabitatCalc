@@ -22,6 +22,7 @@ describe('addIncome', () => {
           <div class="income-container">
               <input type="number" name="income-0" value="${incomeInput.value}" />
               <input type="number" name="income-share-0" value="${durationInput.value}" />
+              <button type="button" class="change-income-button">-</button>
           </div>
       `;
   });

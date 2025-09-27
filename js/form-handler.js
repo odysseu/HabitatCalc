@@ -201,7 +201,6 @@ function isValidPercentage(value) {
 export function deleteIncome(button) {
     const incomeContainer = button.parentElement;
     incomeContainer.remove();
-    generateReport();
 }
 
 export function extractIncomes() {

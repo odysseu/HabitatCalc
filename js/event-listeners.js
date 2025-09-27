@@ -1,6 +1,5 @@
 // description: This script handles the event listeners for the form and other UI interactions.
-
-import { addIncome, calculateAPR, resetForm } from './form-handler.js';
+import { addIncome, calculateAPR, resetForm, deleteIncome } from './form-handler.js';
 import { generateReport } from './report-handler.js';
 import { loadTranslations, updateContent, updateAPRLabel } from './handle-language.js';
 
@@ -17,11 +16,9 @@ generateReport();
 document.addEventListener('DOMContentLoaded', async function () {
     const selectedLanguageElement = document.getElementById('language-select');
     const translations = await loadTranslations(selectedLanguageElement.value);
-
     // Initial APR calculation on load
     const initialAPR = calculateAPR();
     await updateAPRLabel(initialAPR, translations);
-
     // Update APR label when relevant fields change
     const aprInputs = [
         'insurance-rate',
@@ -33,7 +30,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         'contribution',
         'loanDuration'
     ];
-
     aprInputs.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -43,27 +39,31 @@ document.addEventListener('DOMContentLoaded', async function () {
             });
         }
     });
-
     // Trigger generateReport on any change in the form
     const form = document.getElementById('form-calculator');
     form.addEventListener('change', async () => {
         await generateReport();
     });
-
     // Trigger generateReport when the theme changes
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     darkModeToggle.addEventListener('change', async () => {
         await generateReport();
     });
-
     // Logo resets form
     document.getElementById('home-logo').addEventListener('click', resetForm);
-
     // Manual trigger button
     document.getElementById('calculate-button').addEventListener('click', generateReport);
-
     // Add income field
     document.getElementById('change-income-button').addEventListener('click', addIncome);
+
+    // Add event delegation for delete buttons
+    const incomesContainer = document.getElementById('incomes-container');
+    incomesContainer.addEventListener('click', async function(event) {
+        if (event.target.classList.contains('change-income-button')) {
+            deleteIncome(event.target);
+            await generateReport();
+        }
+    });
 
     // Welcome message close
     const welcomeMessage = document.getElementById('welcome-message');
@@ -71,23 +71,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     closeButton.addEventListener('click', function () {
         welcomeMessage.style.display = 'none';
     });
-
     document.addEventListener('click', function (event) {
         if (!welcomeMessage.contains(event.target) && event.target !== closeButton) {
             welcomeMessage.style.display = 'none';
         }
     });
-
     // Language change
     selectedLanguageElement.addEventListener('change', async function () {
         const lang = selectedLanguageElement.value;
         const newTranslations = await loadTranslations(lang);
         updateContent(newTranslations);
-
         // Recalculate APR with new language
         const aprValue = calculateAPR();
         await updateAPRLabel(aprValue, newTranslations);
-
         await generateReport();
     });
 });
