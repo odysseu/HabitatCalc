@@ -8,9 +8,9 @@
 </details>
 
 <details>
-  <summary>🇫‍🇷 Français</summary>
+  <summary>🇫🇷 Français</summary>
   Bienvenue!
-  Ce simulateur est une calculette d'investissement immobilier. Il aide à déterminer à quel moment il devient plus avantageux d'acheter un logement plutôt que de continuer à le louer. En prenant en compte divers facteurs financiers tels que le coût de la location, le prix d'achat, les taux d'intérêt, les frais de notaire, et les éventuelles déductions fiscales, le simulateur compare les coûts totaux de chaque option sur une période donnée. Grâce à cette analyse, vous pouvez faire un choix éclairé et optimiser vos dépenses en fonction de votre situation personnelle et du marché immobilier.
+  Ce simulateur est une calculette d'investissement immobilier. Il aide à déterminer à quel moment il devient plus avantageux d'acheter un logement plutôt que de continuer à le louer. En prenant en compte divers facteurs financiers tels que le coût de la location, le prix d'achat, les taux d'intérêt, les frais de notaire, et les éventuelles déductions fiscales, le simulateur compare les coûts totaux de chaque option sur une période donnée. Grâce à cette analyse, on peut faire un choix éclairé et optimiser nos dépenses en fonction de notre situation personnelle et du marché immobilier.
 
 </details>
 
@@ -50,19 +50,25 @@ If you wish to deploy the app localy and visualise it in your browser :
 
   ```sh
   git clone https://github.com/odysseu/HabitatCalc.git
+  ```
+
+- Go to the project root :
+
+  ```
   cd HabitatCalc
   ```
 
-- simply execute at the project root :
+- Launch the app :
 
   ```sh
   python -m http.server
   ```
+
 - Open in your favorite browser `http://localhost:8000/`
 
 ### Hint if developing in codespace
 
-If you're using codespace, for exemple in `https://fictional-something-...-end.github.dev`, then you can add in the URL `-8000.app` and will be able to see the app at `https://fictional-something-...-end-8000.app.github.dev`
+If you're using codespace, for exemple the URL could be `https://fictional-something-...-end.github.dev`, then you can add in the URL `-8000.app` and will be able to see the app at `https://fictional-something-...-end-8000.app.github.dev`
 
 ## Testing 🧪
 
@@ -75,8 +81,13 @@ If you're using codespace, for exemple in `https://fictional-something-...-end.g
 
 - Clone the Repository:
 
-  ```
+  ```sh
   git clone https://github.com/odysseu/HabitatCalc.git
+  ```
+
+- Go to the project root :
+
+  ```
   cd HabitatCalc
   ```
 
@@ -90,9 +101,9 @@ If you're using codespace, for exemple in `https://fictional-something-...-end.g
 
 To run the tests, use the following command:
 
-```
-npm test
-```
+  ```
+  npm test
+  ```
 
 ### Writing Tests
 
@@ -100,6 +111,6 @@ npm test
 - **Test Files**: Place your test files in the `tests/` directory. Use the `.test.js` or `.spec.js` extensions.
 - **Assertions**: Use Jest's built-in matchers for assertions.
 
-#### Example Test Files
+#### Test files exemples
 
 See the `*.test.js` files in the `tests/` directory for test file inspiration
