@@ -155,21 +155,23 @@
                         </div>
                     </form>
                 </div>
-                <div id="chart-container" class="chart-container">
-                    <canvas id="myChart"></canvas>
-                </div>
-                <div class="summary-box">
-                    <p>
-                        <span id="summary-part1">À partir de l’année </span>
-                        <strong id="repaymentYearDisplay">X</strong>
-                        <span id="summary-part2">, il devient plus avantageux d’avoir acheté plutôt que loué. À ce
-                            moment-là, la dépense dans chaque cas aura été d'environ </span>
-                        <strong id="cumulativePurchaseDisplay">Y €</strong>
-                    </p>
+                <!-- <div class="chart-summary-wrapper"> -->
+                    <div id="chart-container" class="chart-container">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <div class="summary-box">
+                        <p>
+                            <span id="summary-part1">À partir de l’année </span>
+                            <strong id="repaymentYearDisplay">X</strong>
+                            <span id="summary-part2">, il devient plus avantageux d’avoir acheté plutôt que loué. À ce
+                                moment-là, la dépense dans chaque cas aura été d'environ </span>
+                            <strong id="cumulativePurchaseDisplay">Y €</strong>
+                        </p>
+                    <!-- </div> -->
                 </div>
             </div>
             <div id="simulation"></div>
-        <div class="form-actions" id="report-button"></div>
+            <div class="form-actions" id="report-button"></div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.min.js"></script>
