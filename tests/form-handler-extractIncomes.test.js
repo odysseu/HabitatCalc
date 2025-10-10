@@ -24,14 +24,14 @@ describe('extractIncomes', () => {
 
     totalIncome = extractIncomes(document);
 
-    expect(totalIncome).toBeCloseTo(0, 0);
+    expect(totalIncome).toBe(0, 0);
 
     incomeInput.value = '2000';
     durationInput.value = '50';
 
     addIncome(document);
     totalIncome = extractIncomes(document);
-    expect(totalIncome).toBeCloseTo(2000 * 0.5 * 12, 0);
+    expect(totalIncome).toBe(2000 * 50 / 100, 0);
 
   });
 });

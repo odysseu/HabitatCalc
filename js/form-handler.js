@@ -216,7 +216,7 @@ export function extractIncomes() {
     incomeContainers.forEach(container => {
         let income = parseFloat(container.querySelector('input[name^="income"]').value) || 0;
         let incomeShare = parseFloat(container.querySelector('input[name^="income-share"]').value) || 100;
-        cumulIncomes += income * (incomeShare / 100) * 12;
+        cumulIncomes += income * (incomeShare / 100);
     });
     return cumulIncomes;
 }
