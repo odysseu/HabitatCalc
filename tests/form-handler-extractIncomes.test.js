@@ -31,7 +31,7 @@ describe('extractIncomes', () => {
 
     addIncome(document);
     totalIncome = extractIncomes(document);
-    expect(totalIncome).toBe(2000 * 50 / 100, 0);
+    expect(totalIncome).toBe(2000 * (50 / 100) * 12, 0);
 
   });
 });

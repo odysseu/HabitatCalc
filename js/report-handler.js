@@ -1,58 +1,59 @@
-let myChart = null; // graph variable to store the chart instance
+let myChart = null; // Global variable to store the chart instance
 import { calculateMonthlyPayment, extractIncomes, calculateAPR, findPivotYear, calculateRentLosses, calculatePurchaseLosses } from './form-handler.js';
 import { loadTranslations } from './handle-language.js';
 import { forceLightMode, restoreMode } from './dark-mode.js';
+// import Chart from './chart.js/auto';
+// import zoomPlugin from './chartjs-plugin-zoom';
 
-function updateSummary(repaymentYear, cumulativePurchase) {
+/**
+ * Updates the summary section with the repayment year and cumulative purchase losses.
+ */
+export function updateSummary(repaymentYear, cumulativePurchase) {
     document.getElementById('repaymentYearDisplay').textContent = repaymentYear;
     document.getElementById('cumulativePurchaseDisplay').textContent = `${cumulativePurchase.toFixed(0)}\u00A0€`;
 }
 
+/**
+ * Generates a financial report based on form inputs.
+ */
 export async function generateReport() {
-    // Get the values from the form
-    const price = parseFloat(document.getElementById('price').value);
-    const notary = parseFloat(document.getElementById('notary').value) / 100;
-    const appreciationRate = parseFloat(document.getElementById('appreciation-rate').value) / 100;
-    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100;
-    const contribution = parseFloat(document.getElementById('contribution').value);
-    const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100;
-    const loanDuration = parseInt(document.getElementById('loanDuration').value);
-    const insuranceRate = parseInt(document.getElementById('insurance-rate').value) / 100;
-    const fictitiousRent = parseFloat(document.getElementById('fictitiousRent').value);
-    const buyHousingTax = parseFloat(document.getElementById('buyHousingTax').value);
-    const rentingHousingTax = parseFloat(document.getElementById('rentingHousingTax').value);
-    const propertyTax = parseFloat(document.getElementById('propertyTax').value);
-    const fictitiousRentRate = parseFloat(document.getElementById('fictitiousRentRate').value) / 100;
-    const coOwnershipFees = parseFloat(document.getElementById('coOwnership').value);
-    const maxDuration = 200;
-    const fileFees = parseFloat(document.getElementById('file-fees').value);
-    // Calculations
-    const notaryFees = price * notary;
-    const agencyCommissionFees = price * agencyCommission;
-    const purchaseTotal = price + notaryFees + agencyCommissionFees + fileFees;
-    const borrowedAmount = purchaseTotal - contribution;
+    const {
+        price, notary, appreciationRate, agencyCommission, contribution,
+        interestRate, loanDuration, insuranceRate, fictitiousRent,
+        buyHousingTax, rentingHousingTax, propertyTax, fictitiousRentRate,
+        coOwnershipFees, fileFees, maxDuration
+    } = getReportFormValues();
+
+    const { notaryFees, agencyCommissionFees, purchaseTotal, borrowedAmount } = calculatePurchaseTotals(price, notary, agencyCommission, fileFees, contribution);
     const monthlyPayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
     const loanTotalCost = monthlyPayment * loanDuration * 12;
     const totalInterestCost = loanTotalCost - borrowedAmount;
     const cumulIncomes = extractIncomes();
     const cumulMonthlyIncomes = cumulIncomes / 12;
     const APR = calculateAPR();
-    const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
+    const repaymentYear = findPivotYear(
+        price, notaryFees, agencyCommissionFees, contribution,
+        monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
+        appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees
+    );
     const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4);
     const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate, rentingHousingTax);
-    const cumulativePurchase = calculatePurchaseLosses(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, appreciationRate, maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees);
-    // const cumulRentUntilRepayment = cumulRent.slice(0, repaymentYear + 1);
-    const cumulativePurchaseUntilRepayment = cumulativePurchase.slice(0, repaymentYear + 1)[repaymentYear];
-    // Load translations
+    const cumulativePurchase = calculatePurchaseLosses(
+        price, notaryFees, agencyCommissionFees, contribution,
+        monthlyPayment, propertyTax, buyHousingTax, appreciationRate,
+        maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees
+    );
+    const cumulativePurchaseUntilRepayment = cumulativePurchase[repaymentYear];
+
     const language = document.getElementById('language-select').value;
     const translations = await loadTranslations(language);
     updateSummary(repaymentYear, cumulativePurchaseUntilRepayment);
-    // Create the main simulation container
+
     const simulationContainer = document.getElementById('simulation');
     simulationContainer.className = 'simulation';
     simulationContainer.innerHTML = '';
     simulationContainer.appendChild(createSectionTitle(translations.reportTitle));
-    // Purchase Section (collapsible)
+
     simulationContainer.appendChild(createCollapsibleResultsSection(
         translations.reportPurchase,
         [
@@ -65,7 +66,7 @@ export async function generateReport() {
             { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)}\u00A0€` }
         ]
     ));
-    // Loan Section (collapsible)
+
     simulationContainer.appendChild(createCollapsibleResultsSection(
         translations.reportLoan,
         [
@@ -79,7 +80,7 @@ export async function generateReport() {
             { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)}\u00A0€` }
         ]
     ));
-    // Renting Section (collapsible)
+
     const rentingRows = [
         { label: translations.reportFictitiousMonthlyRent, value: `${fictitiousRent.toFixed(2)}\u00A0€` },
         { label: translations.reportFictitiousRentEvolutionRate, value: `${(fictitiousRentRate * 100).toFixed(2)}\u00A0%` },
@@ -90,92 +91,27 @@ export async function generateReport() {
         rentingRows.push({ label: translations.reportMonthlyAgregatedIncome, value: `${cumulMonthlyIncomes.toFixed(2)}\u00A0€` });
     }
     simulationContainer.appendChild(createCollapsibleResultsSection(translations.reportRenting, rentingRows));
-    // Chart generation
+
     await generateChart(cumulRent, cumulativePurchase, maxCalculatedDuration);
-    // PDF download section
-    const reportButtonContainer = document.getElementById('report-button');
-    reportButtonContainer.innerHTML = '';
-    const downloadSection = document.createElement('div');
-    downloadSection.className = 'report-download-container';
-    const filenameLabel = document.createElement('label');
-    filenameLabel.setAttribute('for', 'pdf-filename');
-    filenameLabel.textContent = translations.pdfFileName;
-    const filenameInputs = document.createElement('div');
-    filenameInputs.className = 'report-download-inputs';
-    const filenameInput = document.createElement('input');
-    filenameInput.type = 'text';
-    filenameInput.id = 'pdf-filename';
-    filenameInput.name = 'pdf-filename';
-    filenameInput.placeholder = translations.pdfFileNamePlaceHolder;
-    filenameInput.required = true;
-    const downloadButton = document.createElement('button');
-    downloadButton.id = 'download-button';
-    downloadButton.className = 'button';
-    downloadButton.textContent = translations.downloadPDF;
-    filenameInputs.appendChild(filenameInput);
-    filenameInputs.appendChild(downloadButton);
-    downloadSection.appendChild(filenameLabel);
-    downloadSection.appendChild(filenameInputs);
-    reportButtonContainer.appendChild(downloadSection);
-    // Add event listener
-    document.getElementById('download-button').addEventListener('click', downloadPDF);
+    setupPDFDownloadSection(translations);
+    // setupResetZoomButton(translations);
 }
 
-// Utility function to create section title
-function createSectionTitle(text) {
-    const title = document.createElement('h2');
-    title.textContent = text;
-    return title;
-}
-
-// Utility function to create a collapsible results section with a table
-function createCollapsibleResultsSection(title, rows) {
-    const section = document.createElement('div');
-    section.className = 'results-section';
-    const toggle = document.createElement('button');
-    toggle.className = 'results-section-toggle expanded';
-    toggle.textContent = title;
-    toggle.addEventListener('click', () => {
-        content.classList.toggle('collapsed');
-        toggle.classList.toggle('expanded');
-    });
-    const content = document.createElement('div');
-    content.className = 'results-section-content';
-    const table = document.createElement('table');
-    table.className = 'results-table';
-    const tbody = document.createElement('tbody');
-    rows.forEach(row => {
-        const tr = document.createElement('tr');
-        const tdLabel = document.createElement('td');
-        tdLabel.textContent = row.label;
-        const tdValue = document.createElement('td');
-        tdValue.textContent = row.value;
-        tr.appendChild(tdLabel);
-        tr.appendChild(tdValue);
-        tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    content.appendChild(table);
-    section.appendChild(toggle);
-    section.appendChild(content);
-    return section;
-}
-
+/**
+ * Generates a chart comparing rent vs. purchase losses with zoom functionality.
+ */
 export async function generateChart(cumulRent, cumulativePurchase, maxDuration) {
-    // 1. Destroy the chart if it exists
     if (myChart) {
         myChart.destroy();
     }
-    // 2. Get the canvas element and adjust size
+
+    // Chart.register(zoomPlugin);
+
     const ctx = document.getElementById('myChart').getContext('2d');
     const canvas = ctx.canvas;
     const parent = canvas.parentNode;
-    const parentWidth = parent.clientWidth;
-    const parentHeight = parent.clientHeight;
-    // Adjust the size of the canvas for all displays
-    canvas.width = parentWidth;
-    canvas.height = parentHeight;
-    // Load translations for the chart
+    canvas.width = parent.clientWidth;
+    canvas.height = parent.clientHeight;
     const language = document.getElementById('language-select').value;
     const translations = await loadTranslations(language);
     const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
@@ -185,25 +121,30 @@ export async function generateChart(cumulRent, cumulativePurchase, maxDuration) 
     const purchaseColor = rootStyles.getPropertyValue('--graph-purchase-color').trim();
     const purchaseFillColor = rootStyles.getPropertyValue('--graph-purchase-fill-color').trim();
     const textColor = rootStyles.getPropertyValue('--graph-text-color').trim();
-    // 3. Create the new chart with responsive options
+
+    // Calculate min and max values for the y-axis
+    const allData = [...cumulRent, ...cumulativePurchase];
+    const yMin = Math.min(...allData) * 0.95; // 5% padding below min
+    const yMax = Math.max(...allData) * 1.05; // 5% padding above max
+
     myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
+            labels,
             datasets: [
                 {
-                    label: `${translations.reportRentalCumulativeExpenses}`,
+                    label: translations.reportRentalCumulativeExpenses,
                     data: cumulRent,
                     fill: true,
-                    borderColor: `${rentColor}`,
-                    backgroundColor: `${rentFillColor}`
+                    borderColor: rentColor,
+                    backgroundColor: rentFillColor
                 },
                 {
-                    label: `${translations.reportCumulPurchaseLosses}`,
+                    label: translations.reportCumulPurchaseLosses,
                     data: cumulativePurchase,
                     fill: true,
-                    borderColor: `${purchaseColor}`,
-                    backgroundColor: `${purchaseFillColor}`
+                    borderColor: purchaseColor,
+                    backgroundColor: purchaseFillColor
                 }
             ]
         },
@@ -216,23 +157,21 @@ export async function generateChart(cumulRent, cumulativePurchase, maxDuration) 
             maintainAspectRatio: false,
             scales: {
                 y: {
+                    min: yMin,
+                    max: yMax,
                     ticks: {
-                        callback: function (value) {
-                            return Intl.NumberFormat(
-                                `${translations.currencyFormat}`,
-                                {
-                                    style: 'currency',
-                                    currency: 'EUR',
-                                    maximumSignificantDigits: 5
-                                }
-                            ).format(value);
-                        },
-                        color: `${textColor}`
+                        callback: (value) => Intl.NumberFormat(translations.currencyFormat, {
+                            style: 'currency',
+                            currency: 'EUR',
+                            maximumSignificantDigits: 5
+                        }).format(value),
+                        color: textColor
                     }
                 },
                 x: {
+                    min: 0, // Only positive x-axis values
                     ticks: {
-                        color: `${textColor}`
+                        color: textColor
                     }
                 }
             },
@@ -240,217 +179,323 @@ export async function generateChart(cumulRent, cumulativePurchase, maxDuration) 
                 legend: {
                     display: true,
                     labels: {
-                        color: `${textColor}`
+                        color: textColor
                     }
                 },
                 title: {
                     display: true,
-                    text: `${translations.graphTitle}`,
-                    color: `${textColor}`
+                    text: translations.graphTitle,
+                    color: textColor
                 },
                 tooltip: {
-                    usePointStyle: true,
-                    callbacks: {
-                        labelPointStyle: function (context) {
-                            return {
-                                pointStyle: 'circle',
-                                rotation: 0
-                            };
+                    usePointStyle: true
+                },
+                zoom: {
+                    zoom: {
+                        wheel: {
+                            enabled: true,
+                        },
+                        drag: {
+                            enabled: true,
+                        },
+                        mode: 'xy',
+                        onZoom: ({chart}) => {
+                            // Handle pinch zoom direction
+                            const mc = new Hammer.Manager(chart.canvas);
+                            mc.add(new Hammer.Pinch());
+
+                            mc.on('pinchstart', (e) => {
+                                chart.lastPinchScale = e.scale;
+                            });
+
+                            mc.on('pinchmove', (e) => {
+                                const scaleDiff = e.scale - chart.lastPinchScale;
+                                chart.lastPinchScale = e.scale;
+
+                                // Determine if pinch is more horizontal or vertical
+                                const deltaX = Math.abs(e.deltaX);
+                                const deltaY = Math.abs(e.deltaY);
+
+                                if (deltaX > deltaY) {
+                                    // Horizontal pinch, zoom x-axis
+                                    chart.options.plugins.zoom.zoom.mode = 'x';
+                                } else {
+                                    // Vertical pinch, zoom y-axis
+                                    chart.options.plugins.zoom.zoom.mode = 'y';
+                                }
+                            });
                         }
+                    },
+                    pan: {
+                        enabled: true,
+                        mode: 'xy',
                     }
                 }
             }
         }
     });
-    // 4. Update the global variable
-    // document.getElementById('myChart').innerHTML = myChart;
+
+    // Initialize Hammer.js for pinch detection
+    const mc = new Hammer.Manager(canvas);
+    mc.add(new Hammer.Pinch());
+    mc.on('pinchstart', (e) => {
+        myChart.lastPinchScale = e.scale;
+    });
+
+    mc.on('pinchmove', (e) => {
+        const scaleDiff = e.scale - myChart.lastPinchScale;
+        myChart.lastPinchScale = e.scale;
+
+        // Determine if pinch is more horizontal or vertical
+        const deltaX = Math.abs(e.deltaX);
+        const deltaY = Math.abs(e.deltaY);
+
+        if (deltaX > deltaY) {
+            // Horizontal pinch, zoom x-axis
+            myChart.options.plugins.zoom.zoom.mode = 'x';
+        } else {
+            // Vertical pinch, zoom y-axis
+            myChart.options.plugins.zoom.zoom.mode = 'y';
+        }
+    });
 }
 
+/**
+ * Downloads the report as a PDF.
+ */
 export async function downloadPDF() {
     const wasDarkMode = forceLightMode();
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    // Configuration of margins and positions
     const margin = 20;
     const tableSpacing = 10;
     const pageWidth = doc.internal.pageSize.getWidth();
     const availableWidth = pageWidth - 2 * margin;
+
     const language = document.getElementById('language-select').value;
     const translations = await loadTranslations(language);
-
-    // Add a header to the PDF
     doc.setProperties({
         title: translations.reportTitle,
         subject: translations.reportTitle,
-        author: 'Your Name',
-        keywords: 'finance, report, loan, insurance',
-        creator: 'Your Application'
+        // author: 'Your Name',
+        keywords: 'finance, report, loan, insurance, simulation, purchase, rent, real estate',
+        creator: 'https://github.com/odysseu/HabitatCalc'
     });
 
-    doc.setFontSize(12);
-    doc.setTextColor(40, 40, 40);
-    doc.text(margin, margin, translations.reportTitle);
+    const {
+        price, notary, appreciationRate, agencyCommission, contribution,
+        interestRate, loanDuration, insuranceRate, fictitiousRent,
+        buyHousingTax, rentingHousingTax, propertyTax, fictitiousRentRate,
+        coOwnershipFees, fileFees, maxDuration
+    } = getReportFormValues();
 
-    let finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY : tableSpacing;
-
-    const price = parseFloat(document.getElementById('price').value);
-    const notary = parseFloat(document.getElementById('notary').value) / 100;
-    const coOwnership = parseFloat(document.getElementById('coOwnership').value);
-    const appreciationRate = parseFloat(document.getElementById('appreciation-rate').value) / 100;
-    const fictitiousRentRate = parseFloat(document.getElementById('fictitiousRentRate').value) / 100;
-    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100;
-    const contribution = parseFloat(document.getElementById('contribution').value);
-    const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100;
-    const loanDuration = parseInt(document.getElementById('loanDuration').value);
-    const insuranceRate = parseInt(document.getElementById('insurance-rate').value) / 100;
-    const fictitiousRent = parseFloat(document.getElementById('fictitiousRent').value);
-    const fileFees = parseFloat(document.getElementById('file-fees').value);
-    const buyHousingTax = parseFloat(document.getElementById('buyHousingTax').value);
-    const rentingHousingTax = parseFloat(document.getElementById('rentingHousingTax').value);
-    const propertyTax = parseFloat(document.getElementById('propertyTax').value);
-    const APR = calculateAPR();
-    const notaryFees = price * notary;
-    const agencyCommissionFees = price * agencyCommission;
-    const purchaseTotal = price + notaryFees + agencyCommissionFees;
-    const borrowedAmount = purchaseTotal - contribution;
+    const { notaryFees, agencyCommissionFees, purchaseTotal, borrowedAmount } = calculatePurchaseTotals(price, notary, agencyCommission, fileFees, contribution);
     const monthlyPayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
+    const cumulIncomes = extractIncomes();
+    const repaymentYear = findPivotYear(
+        price, notaryFees, agencyCommissionFees, contribution,
+        monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
+        appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees
+    );
+
+    addPDFHeader(doc, translations, margin);
+    addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees);
     const loanTotalCost = monthlyPayment * loanDuration * 12;
     const totalInterestCost = loanTotalCost - borrowedAmount;
-    const maxDuration = 100;
-    const coOwnershipFees = parseFloat(document.getElementById('coOwnership').value);
-    const cumulIncomes = extractIncomes();
+    const APR = calculateAPR();
+    addLoanTable(doc, translations, margin, tableSpacing, contribution, borrowedAmount, interestRate, insuranceRate, APR, monthlyPayment, totalInterestCost, loanTotalCost);
     const cumulMonthlyIncomes = cumulIncomes / 12;
-    const repaymentYear = findPivotYear(price, notaryFees, agencyCommissionFees, contribution, monthlyPayment, propertyTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees);
+    addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, propertyTax, cumulMonthlyIncomes);
+    addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear);
+    addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
+    addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
+    addChartToPDF(doc, margin, availableWidth, tableSpacing);
 
-    // Style the tables
+    const filename = document.getElementById('pdf-filename').value || document.getElementById('pdf-filename').placeholder;
+    const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
+    doc.save(pdfFilename);
+    restoreMode(wasDarkMode);
+}
+
+/**
+ * Sets up the PDF download section in the UI.
+ */
+function setupPDFDownloadSection(translations) {
+    const reportButtonContainer = document.getElementById('report-button');
+    reportButtonContainer.innerHTML = '';
+
+    const downloadSection = document.createElement('div');
+    downloadSection.className = 'report-download-container';
+
+    const filenameLabel = document.createElement('label');
+    filenameLabel.setAttribute('for', 'pdf-filename');
+    filenameLabel.textContent = translations.pdfFileName;
+
+    const filenameInputs = document.createElement('div');
+    filenameInputs.className = 'report-download-inputs';
+
+    const filenameInput = document.createElement('input');
+    filenameInput.type = 'text';
+    filenameInput.id = 'pdf-filename';
+    filenameInput.name = 'pdf-filename';
+    filenameInput.placeholder = translations.pdfFileNamePlaceHolder;
+    filenameInput.required = true;
+
+    const downloadButton = document.createElement('button');
+    downloadButton.id = 'download-button';
+    downloadButton.className = 'button';
+    downloadButton.textContent = translations.downloadPDF;
+
+    filenameInputs.appendChild(filenameInput);
+    filenameInputs.appendChild(downloadButton);
+    downloadSection.appendChild(filenameLabel);
+    downloadSection.appendChild(filenameInputs);
+    reportButtonContainer.appendChild(downloadSection);
+
+    document.getElementById('download-button').addEventListener('click', downloadPDF);
+}
+
+/**
+ * Sets up the reset zoom button for the chart.
+ */
+// function setupResetZoomButton(translations) {
+//     const chartContainer = document.getElementById('chart-container');
+//     const existingResetButton = document.getElementById('reset-zoom');
+//     if (existingResetButton) {
+//         existingResetButton.remove();
+//     }
+
+//     const resetZoomButton = document.createElement('button');
+//     resetZoomButton.id = 'reset-zoom';
+//     resetZoomButton.className = 'button';
+//     resetZoomButton.textContent = translations.resetZoom || 'Reset Zoom';
+//     resetZoomButton.addEventListener('click', () => {
+//         if (myChart) {
+//             myChart.resetZoom();
+//         }
+//     });
+//     chartContainer.appendChild(resetZoomButton);
+// }
+
+/**
+ * Extracts form values for the report.
+ */
+export function getReportFormValues() {
+    return {
+        price: parseFloat(document.getElementById('price').value),
+        notary: parseFloat(document.getElementById('notary').value) / 100,
+        appreciationRate: parseFloat(document.getElementById('appreciation-rate').value) / 100,
+        agencyCommission: parseFloat(document.getElementById('agency-commission').value) / 100,
+        contribution: parseFloat(document.getElementById('contribution').value),
+        interestRate: parseFloat(document.getElementById('interest-rate').value) / 100,
+        loanDuration: parseInt(document.getElementById('loanDuration').value),
+        insuranceRate: parseInt(document.getElementById('insurance-rate').value) / 100,
+        fictitiousRent: parseFloat(document.getElementById('fictitiousRent').value),
+        buyHousingTax: parseFloat(document.getElementById('buyHousingTax').value),
+        rentingHousingTax: parseFloat(document.getElementById('rentingHousingTax').value),
+        propertyTax: parseFloat(document.getElementById('propertyTax').value),
+        fictitiousRentRate: parseFloat(document.getElementById('fictitiousRentRate').value) / 100,
+        coOwnershipFees: parseFloat(document.getElementById('coOwnership').value),
+        fileFees: parseFloat(document.getElementById('file-fees').value),
+        maxDuration: 200
+    };
+}
+
+/**
+ * Calculates purchase totals (notary fees, agency fees, etc.).
+ */
+export function calculatePurchaseTotals(price, notary, agencyCommission, fileFees, contribution) {
+    const notaryFees = price * notary;
+    const agencyCommissionFees = price * agencyCommission;
+    const purchaseTotal = price + notaryFees + agencyCommissionFees + fileFees;
+    const borrowedAmount = purchaseTotal - contribution;
+    return { notaryFees, agencyCommissionFees, purchaseTotal, borrowedAmount };
+}
+
+/**
+ * Adds the purchase table to the PDF.
+ */
+function addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees) {
     doc.setFontSize(10);
-    doc.setTextColor(40, 40, 40);
-    doc.setDrawColor(200, 200, 200);
-    doc.setLineWidth(0.1);
-
-    // Purchase Board
     doc.autoTable({
-        startY: finalY + margin,
-        head: [[`${translations.reportPurchase}`, `${translations.reportPrice}`]],
+        startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
+        head: [[translations.reportPurchase, translations.reportPrice]],
         body: [
-            [`${translations.reportPrice}`, `${price.toFixed(2)} €`],
-            [`${translations.reportNotaryFees}`, `${notaryFees.toFixed(2)} €`],
-            [`${translations.reportAppreciationRate}`, `${(appreciationRate * 100).toFixed(2)} %`],
-            [`${translations.reportAgencyCommission}`, `${agencyCommissionFees.toFixed(2)} €`],
-            [`${translations.reportPurchaseTotal}`, `${purchaseTotal.toFixed(2)} €`],
-            [`${translations.reportCoOwnership}`, `${coOwnership.toFixed(2)} €`],
-            [`${translations.reportBuyHousingTax}`, `${buyHousingTax.toFixed(0)} €`],
-            [`${translations.reportfileFees}`, `${fileFees.toFixed(2)} €`]
+            [translations.reportPrice, `${price.toFixed(2)} €`],
+            [translations.reportNotaryFees, `${notaryFees.toFixed(2)} €`],
+            [translations.reportAppreciationRate, `${(appreciationRate * 100).toFixed(2)} %`],
+            [translations.reportAgencyCommission, `${agencyCommissionFees.toFixed(2)} €`],
+            [translations.reportPurchaseTotal, `${purchaseTotal.toFixed(2)} €`],
+            [translations.reportCoOwnership, `${coOwnershipFees.toFixed(2)} €`],
+            [translations.reportBuyHousingTax, `${buyHousingTax.toFixed(0)} €`],
+            [translations.reportfileFees, `${fileFees.toFixed(2)} €`]
         ],
-        styles: {
-            fontSize: 10,
-            cellPadding: 0.5,
-            overflow: 'linebreak',
-            halign: 'left',
-            valign: 'middle',
-            // fillColor: 240, 240, 240,
-            // textColor: 40, 40, 40,
-            // lineColor: 200, 200, 200,
-            lineWidth: 0.1
-        },
-        headStyles: {
-            // fillColor: 220, 220, 220,
-            // textColor: 40, 40, 40,
-            fontStyle: 'bold'
-        }
+        styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
+        headStyles: { fontStyle: 'bold' }
     });
+}
 
-    // Loan Table
+/**
+ * Adds the loan table to the PDF.
+ */
+function addLoanTable(doc, translations, margin, tableSpacing, contribution, borrowedAmount, interestRate, insuranceRate, APR, monthlyPayment, totalInterestCost, loanTotalCost) {
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
-        head: [[`${translations.reportLoan}`, `${translations.reportPrice}`]],
+        head: [[translations.reportLoan, translations.reportPrice]],
         body: [
-            [`${translations.contribution}`, `${contribution.toFixed(0)} €`],
-            [`${translations.reportBorrowedAmount}`, `${borrowedAmount.toFixed(0)} €`],
-            [`${translations.reportInterestRate}`, `${(interestRate * 100).toFixed(2)} %`],
-            [`${translations.reportInsuranceRate}`, `${(insuranceRate * 100).toFixed(2)} %`],
-            [`${translations.reportAPR}`, `${(APR).toFixed(2)} %`],
-            [`${translations.reportMonthlyPayment}`, `${monthlyPayment.toFixed(0)} €`],
-            [`${translations.reportTotalInterests}`, `${totalInterestCost.toFixed(0)} €`],
-            [`${translations.reportLoanTotalCost}`, `${loanTotalCost.toFixed(0)} €`]
+            [translations.contribution, `${contribution.toFixed(0)} €`],
+            [translations.reportBorrowedAmount, `${borrowedAmount.toFixed(0)} €`],
+            [translations.reportInterestRate, `${(interestRate * 100).toFixed(2)} %`],
+            [translations.reportInsuranceRate, `${(insuranceRate * 100).toFixed(2)} %`],
+            [translations.reportAPR, `${APR.toFixed(2)} %`],
+            [translations.reportMonthlyPayment, `${monthlyPayment.toFixed(0)} €`],
+            [translations.reportTotalInterests, `${totalInterestCost.toFixed(0)} €`],
+            [translations.reportLoanTotalCost, `${loanTotalCost.toFixed(0)} €`]
         ],
-        styles: {
-            fontSize: 10,
-            cellPadding: 0.5,
-            overflow: 'linebreak',
-            halign: 'left',
-            valign: 'middle',
-            // fillColor: 240, 240, 240,
-            // textColor: 40, 40, 40,
-            // lineColor: 200, 200, 200,
-            lineWidth: 0.1
-        },
-        headStyles: {
-            // fillColor: 220, 220, 220,
-            // textColor: 40, 40, 40,
-            fontStyle: 'bold'
-        }
+        styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
+        headStyles: { fontStyle: 'bold' }
     });
+}
 
-    // Renting Table
+/**
+ * Adds the renting table to the PDF.
+ */
+function addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, propertyTax, cumulMonthlyIncomes) {
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
-        head: [[`${translations.reportRenting}`, `${translations.reportPrice}`]],
+        head: [[translations.reportRenting, translations.reportPrice]],
         body: [
-            [`${translations.reportFictitiousMonthlyRent}`, `${fictitiousRent.toFixed(0)} €`],
-            [`${translations.reportFictitiousRentEvolutionRate}`, `${(fictitiousRentRate * 100).toFixed(2)} %`],
-            [`${translations.reportRentingHousingTax}`, `${rentingHousingTax.toFixed(0)} €`],
-            [`${translations.reportPropertyTax}`, `${propertyTax.toFixed(0)} €`]
+            [translations.reportFictitiousMonthlyRent, `${fictitiousRent.toFixed(0)} €`],
+            [translations.reportFictitiousRentEvolutionRate, `${(fictitiousRentRate * 100).toFixed(2)} %`],
+            [translations.reportRentingHousingTax, `${rentingHousingTax.toFixed(0)} €`],
+            [translations.reportPropertyTax, `${propertyTax.toFixed(0)} €`]
         ],
-        styles: {
-            fontSize: 10,
-            cellPadding: 0.5,
-            overflow: 'linebreak',
-            halign: 'left',
-            valign: 'middle',
-            // fillColor: 240, 240, 240,
-            // textColor: 40, 40, 40,
-            // lineColor: 200, 200, 200,
-            lineWidth: 0.1
-        },
-        headStyles: {
-            // fillColor: 220, 220, 220,
-            // textColor: 40, 40, 40,
-            fontStyle: 'bold'
-        }
+        styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
+        headStyles: { fontStyle: 'bold' }
     });
 
-    // Add the cumulative incomes to the PDF
     if (cumulMonthlyIncomes > 0) {
         doc.autoTable({
             startY: doc.lastAutoTable.finalY + tableSpacing,
-            head: [[`${translations.reportMonthlyAgregatedIncome}`, `${translations.reportPrice}`]],
-            body: [
-                [`${translations.reportMonthlyAgregatedIncome}`, `${cumulMonthlyIncomes.toFixed(2)} €`]
-            ],
-            styles: {
-                fontSize: 10,
-                cellPadding: 0.5,
-                overflow: 'linebreak',
-                halign: 'left',
-                valign: 'middle',
-                // fillColor: 240, 240, 240,
-                // textColor: 40, 40, 40,
-                // lineColor: 200, 200, 200,
-                lineWidth: 0.1
-            },
-            headStyles: {
-                // fillColor: 220, 220, 220,
-                // textColor: 40, 40, 40,
-                fontStyle: 'bold'
-            }
+            head: [[translations.reportMonthlyAgregatedIncome, translations.reportPrice]],
+            body: [[translations.reportMonthlyAgregatedIncome, `${cumulMonthlyIncomes.toFixed(2)} €`]],
+            styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
+            headStyles: { fontStyle: 'bold' }
         });
     }
+}
 
-    // Add the year at which the rent crosses the purchase
+/**
+ * Adds the repayment year to the PDF.
+ */
+function addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear) {
     doc.text(`${translations.reportRepaymentYear}: ${repaymentYear}`, margin, doc.lastAutoTable.finalY + tableSpacing);
+}
 
-    // Calculate monthly breakdown
+/**
+ * Adds the monthly breakdown table to the PDF.
+ */
+function addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration) {
     const monthlyInterestRate = interestRate / 12;
     let remainingBalance = borrowedAmount;
     const monthlyInsurance = borrowedAmount * insuranceRate / 12;
@@ -458,28 +503,48 @@ export async function downloadPDF() {
 
     for (let month = 1; month <= loanDuration * 12; month++) {
         const interest = remainingBalance * monthlyInterestRate;
-        const principal = monthlyPayment - interest - monthlyInsurance;
+        const principal = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate) - interest - monthlyInsurance;
         remainingBalance -= principal;
-
-        monthlyData.push({
-            month: month,
-            loan: principal,
-            interests: interest,
-            insurance: monthlyInsurance
-        });
+        monthlyData.push({ month, loan: principal, interests: interest, insurance: monthlyInsurance });
     }
 
-    // Group by year and calculate yearly totals
+    doc.autoTable({
+        startY: doc.lastAutoTable.finalY + tableSpacing,
+        head: [[`Month`, `Loan`, `Interests`, `Borrower Insurance`]],
+        body: monthlyData.map(data => [
+            data.month,
+            `${data.loan.toFixed(2)} €`,
+            `${data.interests.toFixed(2)} €`,
+            `${data.insurance.toFixed(2)} €`
+        ]),
+        styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
+        headStyles: { fontStyle: 'bold' }
+    });
+}
+
+/**
+ * Adds the yearly totals table to the PDF.
+ */
+function addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration) {
+    const monthlyInterestRate = interestRate / 12;
+    let remainingBalance = borrowedAmount;
+    const monthlyInsurance = borrowedAmount * insuranceRate / 12;
+    const monthlyData = [];
+    for (let month = 1; month <= loanDuration * 12; month++) {
+        const interest = remainingBalance * monthlyInterestRate;
+        const principal = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate) - interest - monthlyInsurance;
+        remainingBalance -= principal;
+        monthlyData.push({ month, loan: principal, interests: interest, insurance: monthlyInsurance });
+    }
+
     const yearlyData = [];
     let currentYear = 1;
     let yearTotal = { loan: 0, interests: 0, insurance: 0 };
-
     for (let i = 0; i < monthlyData.length; i++) {
         const data = monthlyData[i];
         yearTotal.loan += data.loan;
         yearTotal.interests += data.interests;
         yearTotal.insurance += data.insurance;
-
         if ((i + 1) % 12 === 0 || i === monthlyData.length - 1) {
             yearlyData.push({
                 year: currentYear,
@@ -493,35 +558,6 @@ export async function downloadPDF() {
         }
     }
 
-    // Add the monthly breakdown table to the PDF
-    doc.autoTable({
-        startY: doc.lastAutoTable.finalY + tableSpacing,
-        head: [[`Month`, `Loan`, `Interests`, `Borrower Insurance`]],
-        body: monthlyData.map(data => [
-            data.month,
-            `${data.loan.toFixed(2)} €`,
-            `${data.interests.toFixed(2)} €`,
-            `${data.insurance.toFixed(2)} €`
-        ]),
-        styles: {
-            fontSize: 10,
-            cellPadding: 0.5,
-            overflow: 'linebreak',
-            halign: 'left',
-            valign: 'middle',
-            // fillColor: 240, 240, 240,
-            // textColor: 40, 40, 40,
-            // lineColor: 200, 200, 200,
-            lineWidth: 0.1
-        },
-        headStyles: {
-            // fillColor: 220, 220, 220,
-            // textColor: 40, 40, 40,
-            fontStyle: 'bold'
-        }
-    });
-
-    // Add the yearly totals table to the PDF
     doc.autoTable({
         startY: doc.lastAutoTable.finalY + tableSpacing,
         head: [[`Year`, `Loan`, `Interests`, `Borrower Insurance`, `Total`]],
@@ -532,42 +568,81 @@ export async function downloadPDF() {
             `${data.insurance.toFixed(2)} €`,
             `${data.total.toFixed(2)} €`
         ]),
-        styles: {
-            fontSize: 10,
-            cellPadding: 0.5,
-            overflow: 'linebreak',
-            halign: 'left',
-            valign: 'middle',
-            // fillColor: 240, 240, 240,
-            // textColor: 40, 40, 40,
-            // lineColor: 200, 200, 200,
-            lineWidth: 0.1
-        },
-        headStyles: {
-            // fillColor: 220, 220, 220,
-            // textColor: 40, 40, 40,
-            fontStyle: 'bold'
-        }
+        styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
+        headStyles: { fontStyle: 'bold' }
     });
+}
 
-    // Add the chart to the PDF
+/**
+ * Adds the chart to the PDF.
+ */
+function addChartToPDF(doc, margin, availableWidth, tableSpacing) {
     const chart = document.getElementById('myChart');
     const chartImageData = chart.toDataURL('image/png');
-    // Calculate the height of the image based on the available width
     const imageWidth = availableWidth;
     const imageHeight = (chart.height * imageWidth) / chart.width;
-    // If the image exceeds the page, put it on the next page
     let imageY = doc.lastAutoTable.finalY + tableSpacing;
     if (imageY + imageHeight > doc.internal.pageSize.getHeight() - margin) {
         doc.addPage();
         imageY = margin;
     }
-    doc.addImage(
-        chartImageData, 'PNG', margin, imageY, imageWidth, imageHeight
-    );
+    doc.addImage(chartImageData, 'PNG', margin, imageY, imageWidth, imageHeight);
+}
 
-    const filename = document.getElementById('pdf-filename').value || document.getElementById('pdf-filename').placeholder;
-    const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
-    doc.save(pdfFilename);
-    restoreMode(wasDarkMode);
+/**
+ * Adds a header to the PDF.
+ */
+function addPDFHeader(doc, translations, margin) {
+    doc.setFontSize(12);
+    doc.setTextColor(40, 40, 40);
+    doc.text(margin, margin, translations.reportTitle);
+}
+
+/**
+ * Creates a section title.
+ */
+function createSectionTitle(text) {
+    const title = document.createElement('h2');
+    title.textContent = text;
+    return title;
+}
+
+/**
+ * Creates a collapsible results section with a table.
+ */
+function createCollapsibleResultsSection(title, rows) {
+    const section = document.createElement('div');
+    section.className = 'results-section';
+
+    const toggle = document.createElement('button');
+    toggle.className = 'results-section-toggle expanded';
+    toggle.textContent = title;
+    toggle.addEventListener('click', () => {
+        content.classList.toggle('collapsed');
+        toggle.classList.toggle('expanded');
+    });
+
+    const content = document.createElement('div');
+    content.className = 'results-section-content';
+
+    const table = document.createElement('table');
+    table.className = 'results-table';
+
+    const tbody = document.createElement('tbody');
+    rows.forEach(row => {
+        const tr = document.createElement('tr');
+        const tdLabel = document.createElement('td');
+        tdLabel.textContent = row.label;
+        const tdValue = document.createElement('td');
+        tdValue.textContent = row.value;
+        tr.appendChild(tdLabel);
+        tr.appendChild(tdValue);
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    content.appendChild(table);
+    section.appendChild(toggle);
+    section.appendChild(content);
+    return section;
 }
