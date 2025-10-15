@@ -512,9 +512,10 @@ export function addMonthlyBreakdownTable(doc, translations, margin, tableSpacing
         monthlyData.push({ month, loan: principal, interests: interest, insurance: monthlyInsurance });
     }
 
+    console.log(translations);
     doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
-        head: [[`Month`, `Loan`, `Interests`, `Borrower Insurance`]],
+        head: [[translations.reportResultTableMonth, translations.reportResultTableLoan, translations.reportResultTableInterests, translations.reportResultTableInsurance]],
         body: monthlyData.map(data => [
             data.month,
             `${data.loan.toFixed(2)} €`,
@@ -564,7 +565,7 @@ export function addYearlyTotalsTable(doc, translations, margin, tableSpacing, bo
 
     doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
-        head: [[`Year`, `Loan`, `Interests`, `Borrower Insurance`, `Total`]],
+        head: [[translations.reportResultTableYear, translations.reportResultTableLoan, translations.reportResultTableTotalInterests, translations.reportResultTableTotalInsurance, `Total`]],
         body: yearlyData.map(data => [
             data.year,
             `${data.loan.toFixed(2)} €`,
