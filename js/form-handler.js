@@ -174,10 +174,17 @@ export function extractIncomes() {
     const incomeContainers = incomesContainer.querySelectorAll('.income-container');
 
     incomeContainers.forEach(container => {
-        const income = parseFloat(container.querySelector('input[name^="income"]').value) || 0;
-        const incomeShare = parseFloat(container.querySelector('input[name^="income-share"]').value) || 100;
+        const incomeInput = container.querySelector('input[name^="income"]');
+        const incomeShareInput = container.querySelector('input[name^="income-share"]');
+
+        // Parse income and incomeShare, defaulting to 0 if empty or invalid
+        const income = incomeInput ? parseFloat(incomeInput.value) || 0 : 0;
+        const incomeShare = incomeShareInput ? parseFloat(incomeShareInput.value) || 0 : 0;
+
+        // Add to cumulative incomes, even if income or incomeShare is 0
         cumulIncomes += income * (incomeShare / 100) * 12;
     });
+
     return cumulIncomes;
 }
 
@@ -185,6 +192,11 @@ export function extractIncomes() {
  * Calculates the monthly payment (loan + insurance).
  */
 export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnual, insuranceRate) {
+    // check that borrowedAmount and loanDuration are positive numbers
+    if (borrowedAmount <= 0 || loanDuration <= 0) {
+        console.warn('Invalid borrowed amount or loan duration:', borrowedAmount, loanDuration);
+        return 0;
+    }
     const numberMonths = loanDuration * 12;
     const monthlyInterestRate = interestRateAnnual / 12;
     const loanMonthlyPayment = interestRateAnnual === 0
@@ -237,9 +249,15 @@ export function calculatePurchaseLosses(
         const cumulPropertyTax = propertyTax * t;
         const cumulBuyHousingTax = buyHousingTax * t;
         const cumulativeCoOwnershipFees = coOwnershipFees * t;
-        const netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
-        purchaseLosses.push(Math.round(netPurchaseLosses, 0));
+
+        // Calculate net purchase losses (or profit if negative)
+        const netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - (cumulIncomes * t);
+
+        // Round to the nearest integer and ensure non-negative
+        const roundedLosses = Math.round(netPurchaseLosses);
+        purchaseLosses.push(Math.max(0, roundedLosses)); // Ensure losses are non-negative
     }
+
     return purchaseLosses;
 }
 
@@ -277,7 +295,7 @@ function isValidPercentage(value) {
 /**
  * Extracts and parses form values.
  */
-function getFormValues() {
+export function getFormValues() {
     return {
         insuranceRate: parseFloat(document.getElementById('insurance-rate').value) / 100 || 0,
         interestRate: parseFloat(document.getElementById('interest-rate').value) / 100 || 0,
@@ -293,7 +311,7 @@ function getFormValues() {
 /**
  * Calculates the borrowed amount after fees and contribution.
  */
-function calculateBorrowedAmount(price, notary, agencyCommission, fileFees, contribution) {
+export function calculateBorrowedAmount(price, notary, agencyCommission, fileFees, contribution) {
     const notaryFees = price * notary;
     const commissionFees = price * agencyCommission;
     const borrowedAmount = Math.max(0, price + notaryFees + commissionFees + fileFees - contribution);

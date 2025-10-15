@@ -320,7 +320,7 @@ export async function downloadPDF() {
 /**
  * Sets up the PDF download section in the UI.
  */
-function setupPDFDownloadSection(translations) {
+export function setupPDFDownloadSection(translations) {
     const reportButtonContainer = document.getElementById('report-button');
     reportButtonContainer.innerHTML = '';
 
