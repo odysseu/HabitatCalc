@@ -1,0 +1,12 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="143" height="28" role="img" aria-label="BRANCHES: 71%">
+  <title>BRANCHES: 71%</title>
+  <g shape-rendering="crispEdges">
+    <rect width="89" height="28" fill="#555"/>
+    <rect x="89" width="53.75" height="28" fill="#f1c40f"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="100">
+    <text transform="scale(.1)" x="445" y="175" textLength="650" fill="#fff">BRANCHES</text>
+    <text transform="scale(.1)" x="1158.75" y="175" textLength="297.5" fill="#fff" font-weight="bold">71%</text>
+  </g>
+</svg>

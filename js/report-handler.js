@@ -63,7 +63,8 @@ export async function generateReport() {
             { label: translations.reportAgencyCommission, value: `${agencyCommissionFees.toFixed(2)}\u00A0€` },
             { label: translations.reportPurchaseTotal, value: `${purchaseTotal.toFixed(2)}\u00A0€` },
             { label: translations.reportCoOwnership, value: `${coOwnershipFees.toFixed(2)}\u00A0€` },
-            { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)}\u00A0€` }
+            { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)}\u00A0€` },
+            { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)}\u00A0€` }
         ]
     ));
 
@@ -76,16 +77,15 @@ export async function generateReport() {
             { label: translations.reportInterestRate, value: `${(interestRate * 100).toFixed(2)}\u00A0%` },
             { label: translations.reportAPR, value: `${APR.toFixed(2)}\u00A0%` },
             { label: translations.reportMonthlyPayment, value: `${monthlyPayment.toFixed(2)}\u00A0€` },
-            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)}\u00A0€` },
-            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)}\u00A0€` }
+            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)}\u00A0€` },
+            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)}\u00A0€` }
         ]
     ));
 
     const rentingRows = [
         { label: translations.reportFictitiousMonthlyRent, value: `${fictitiousRent.toFixed(2)}\u00A0€` },
         { label: translations.reportFictitiousRentEvolutionRate, value: `${(fictitiousRentRate * 100).toFixed(2)}\u00A0%` },
-        { label: translations.reportRentingHousingTax, value: `${rentingHousingTax.toFixed(2)}\u00A0€` },
-        { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)}\u00A0€` }
+        { label: translations.reportRentingHousingTax, value: `${rentingHousingTax.toFixed(2)}\u00A0€` }
     ];
     if (cumulMonthlyIncomes > 0) {
         rentingRows.push({ label: translations.reportMonthlyAgregatedIncome, value: `${cumulMonthlyIncomes.toFixed(2)}\u00A0€` });
@@ -199,7 +199,7 @@ export async function generateChart(cumulRent, cumulativePurchase, maxDuration) 
                             enabled: true,
                         },
                         mode: 'xy',
-                        onZoom: ({chart}) => {
+                        onZoom: ({ chart }) => {
                             // Handle pinch zoom direction
                             const mc = new Hammer.Manager(chart.canvas);
                             mc.add(new Hammer.Pinch());
@@ -310,8 +310,8 @@ export async function downloadPDF() {
     addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
     addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
     addChartToPDF(doc, margin, availableWidth, tableSpacing);
-
-    const filename = document.getElementById('pdf-filename').value || document.getElementById('pdf-filename').placeholder;
+    // doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
+    const filename = document.getElementById('pdf-filename') ? document.getElementById('pdf-filename').value || document.getElementById('pdf-filename').placeholder : 'financial_report';
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
     doc.save(pdfFilename);
     restoreMode(wasDarkMode);
@@ -415,7 +415,7 @@ export function calculatePurchaseTotals(price, notary, agencyCommission, fileFee
 /**
  * Adds the purchase table to the PDF.
  */
-function addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees) {
+export function addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees) {
     doc.setFontSize(10);
     doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
@@ -438,9 +438,9 @@ function addPurchaseTable(doc, translations, margin, tableSpacing, price, notary
 /**
  * Adds the loan table to the PDF.
  */
-function addLoanTable(doc, translations, margin, tableSpacing, contribution, borrowedAmount, interestRate, insuranceRate, APR, monthlyPayment, totalInterestCost, loanTotalCost) {
+export function addLoanTable(doc, translations, margin, tableSpacing, contribution, borrowedAmount, interestRate, insuranceRate, APR, monthlyPayment, totalInterestCost, loanTotalCost) {
     doc.autoTable({
-        startY: doc.lastAutoTable.finalY + tableSpacing,
+        startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
         head: [[translations.reportLoan, translations.reportPrice]],
         body: [
             [translations.contribution, `${contribution.toFixed(0)} €`],
@@ -460,9 +460,9 @@ function addLoanTable(doc, translations, margin, tableSpacing, contribution, bor
 /**
  * Adds the renting table to the PDF.
  */
-function addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, propertyTax, cumulMonthlyIncomes) {
+export function addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, propertyTax, cumulMonthlyIncomes) {
     doc.autoTable({
-        startY: doc.lastAutoTable.finalY + tableSpacing,
+        startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
         head: [[translations.reportRenting, translations.reportPrice]],
         body: [
             [translations.reportFictitiousMonthlyRent, `${fictitiousRent.toFixed(0)} €`],
@@ -476,7 +476,7 @@ function addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent
 
     if (cumulMonthlyIncomes > 0) {
         doc.autoTable({
-            startY: doc.lastAutoTable.finalY + tableSpacing,
+            startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
             head: [[translations.reportMonthlyAgregatedIncome, translations.reportPrice]],
             body: [[translations.reportMonthlyAgregatedIncome, `${cumulMonthlyIncomes.toFixed(2)} €`]],
             styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
@@ -488,14 +488,18 @@ function addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent
 /**
  * Adds the repayment year to the PDF.
  */
-function addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear) {
-    doc.text(`${translations.reportRepaymentYear}: ${repaymentYear}`, margin, doc.lastAutoTable.finalY + tableSpacing);
+export function addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear) {
+    doc.text(
+        `${translations.reportRepaymentYear}: ${repaymentYear}`,
+        margin,
+        doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing
+    );
 }
 
 /**
  * Adds the monthly breakdown table to the PDF.
  */
-function addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration) {
+export function addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration) {
     const monthlyInterestRate = interestRate / 12;
     let remainingBalance = borrowedAmount;
     const monthlyInsurance = borrowedAmount * insuranceRate / 12;
@@ -509,7 +513,7 @@ function addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borro
     }
 
     doc.autoTable({
-        startY: doc.lastAutoTable.finalY + tableSpacing,
+        startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
         head: [[`Month`, `Loan`, `Interests`, `Borrower Insurance`]],
         body: monthlyData.map(data => [
             data.month,
@@ -525,7 +529,7 @@ function addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borro
 /**
  * Adds the yearly totals table to the PDF.
  */
-function addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration) {
+export function addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration) {
     const monthlyInterestRate = interestRate / 12;
     let remainingBalance = borrowedAmount;
     const monthlyInsurance = borrowedAmount * insuranceRate / 12;
@@ -559,7 +563,7 @@ function addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedA
     }
 
     doc.autoTable({
-        startY: doc.lastAutoTable.finalY + tableSpacing,
+        startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
         head: [[`Year`, `Loan`, `Interests`, `Borrower Insurance`, `Total`]],
         body: yearlyData.map(data => [
             data.year,
@@ -576,12 +580,12 @@ function addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedA
 /**
  * Adds the chart to the PDF.
  */
-function addChartToPDF(doc, margin, availableWidth, tableSpacing) {
+export function addChartToPDF(doc, margin, availableWidth, tableSpacing) {
     const chart = document.getElementById('myChart');
     const chartImageData = chart.toDataURL('image/png');
     const imageWidth = availableWidth;
     const imageHeight = (chart.height * imageWidth) / chart.width;
-    let imageY = doc.lastAutoTable.finalY + tableSpacing;
+    let imageY = doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing;
     if (imageY + imageHeight > doc.internal.pageSize.getHeight() - margin) {
         doc.addPage();
         imageY = margin;
@@ -592,7 +596,7 @@ function addChartToPDF(doc, margin, availableWidth, tableSpacing) {
 /**
  * Adds a header to the PDF.
  */
-function addPDFHeader(doc, translations, margin) {
+export function addPDFHeader(doc, translations, margin) {
     doc.setFontSize(12);
     doc.setTextColor(40, 40, 40);
     doc.text(margin, margin, translations.reportTitle);
@@ -601,7 +605,7 @@ function addPDFHeader(doc, translations, margin) {
 /**
  * Creates a section title.
  */
-function createSectionTitle(text) {
+export function createSectionTitle(text) {
     const title = document.createElement('h2');
     title.textContent = text;
     return title;
@@ -610,7 +614,7 @@ function createSectionTitle(text) {
 /**
  * Creates a collapsible results section with a table.
  */
-function createCollapsibleResultsSection(title, rows) {
+export function createCollapsibleResultsSection(title, rows) {
     const section = document.createElement('div');
     section.className = 'results-section';
 

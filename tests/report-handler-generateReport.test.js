@@ -4,12 +4,40 @@
 import { generateReport } from '../js/report-handler.js';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import Chart from '../node_modules/chart.js/auto';
 
 describe('generateReport', () => {
   beforeAll(() => {
     const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
     document.body.innerHTML = html;
+
+    // Mock Chart globally
+    global.Chart = class {
+      constructor(ctx, config) {
+        this.ctx = ctx;
+        this.config = config;
+      }
+      destroy() {}
+    };
+
+    // Mock Hammer globally
+    global.Hammer = {
+      Manager: class {
+        constructor(element) {
+          this.element = element;
+          this.handlers = {};
+        }
+        add(input) {
+          // Mock add method
+        }
+        on(event, handler) {
+          if (!this.handlers[event]) {
+            this.handlers[event] = [];
+          }
+          this.handlers[event].push(handler);
+        }
+      },
+      Pinch: class {}
+    };
   });
 
   test('generates a report with purchase, loan, and renting sections', async () => {
@@ -32,6 +60,7 @@ describe('generateReport', () => {
       fileFees: 1000,
       maxDuration: 30,
     });
+
     jest.spyOn(require('../js/handle-language.js'), 'loadTranslations').mockResolvedValue({
       reportTitle: 'Report Title',
       reportPurchase: 'Purchase',
@@ -61,6 +90,7 @@ describe('generateReport', () => {
       graphTitle: 'Graph Title',
       currencyFormat: 'fr-FR',
     });
+
     jest.spyOn(require('../js/report-handler.js'), 'generateChart').mockResolvedValue();
     jest.spyOn(require('../js/report-handler.js'), 'setupPDFDownloadSection').mockImplementation();
     jest.spyOn(require('../js/form-handler.js'), 'calculateMonthlyPayment').mockReturnValue(1160.46);
@@ -69,6 +99,12 @@ describe('generateReport', () => {
     jest.spyOn(require('../js/form-handler.js'), 'findPivotYear').mockReturnValue(10);
     jest.spyOn(require('../js/form-handler.js'), 'calculateRentLosses').mockReturnValue(Array(20).fill(12000));
     jest.spyOn(require('../js/form-handler.js'), 'calculatePurchaseLosses').mockReturnValue(Array(20).fill(15000));
+    jest.spyOn(require('../js/report-handler.js'), 'calculatePurchaseTotals').mockReturnValue({
+      borrowedAmount: 265000,
+      notaryFees: 24000,
+      agencyCommissionFees: 0,
+      purchaseTotal: 334000,
+    });
 
     await generateReport();
 

@@ -80,7 +80,7 @@ export async function updateContent(translations) {
         const fictitiousRentLabel = document.querySelector('label[for="fictitiousRent"]');
         const notaryLabel = document.querySelector('label[for="notary"]');
         const pdfFileNameLabel = document.querySelector('label[for="pdf-filename"]');
-        const pdfFileNamePlaceHolder =  document.getElementById("pdf-filename");
+        const pdfFileNamePlaceHolder = document.getElementById("pdf-filename");
         const priceLabel = document.querySelector('label[for="price"]');
         const purchaseSection = document.getElementById('purchase-section');
         const loanSection = document.getElementById('loan-section');
@@ -130,7 +130,7 @@ export async function updateContent(translations) {
         }
         if (summaryPart1) summaryPart1.textContent = translations.summaryPart1;
         if (summaryPart2) summaryPart2.textContent = translations.summaryPart2;
-        
+
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
         if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;
         if (interestRateLabel) interestRateLabel.innerHTML = `${translations.interestRate} <span class="help-icon">? <span class="help-text">${translations.helpInterestRate}</span></span>`;
@@ -141,9 +141,9 @@ export async function updateContent(translations) {
         if (downloadButton) downloadButton.textContent = translations.downloadPDF;
         if (title) title.textContent = translations.title;
         if (welcomeMessage) welcomeMessage.querySelector('p').innerHTML = translations.welcomeMessage;
-        
+
     }
-    else  {
+    else {
         console.warn('Translations are not available or invalid.');
     }
 }
