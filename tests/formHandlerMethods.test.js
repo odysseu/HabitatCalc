@@ -31,7 +31,7 @@ describe('form-handler.js methods', () => {
       0,      // coOwnershipFees
       0       // fileFees
     );
-    expect(year).toBe(1); // Adjust expected value based on your calculation logic
+    expect(year).toBe(3); // Adjust expected value based on your calculation logic
   });
   test('calculatePurchaseLosses calculates purchase losses correctly', () => {
     const losses = calculatePurchaseLosses(
@@ -51,7 +51,7 @@ describe('form-handler.js methods', () => {
     );
     expect(losses.length).toBe(30);
     expect(losses[0]).toBeGreaterThan(0);
-    expect(losses[0]).toBe(20000);
+    expect(losses[0]).toBe(30000);
   });
   test('calculatePurchaseLosses calculates purchase losses correctly with housing tax', () => {
     const losses = calculatePurchaseLosses(
@@ -71,7 +71,7 @@ describe('form-handler.js methods', () => {
     );
     expect(losses.length).toBe(30);
     expect(losses[0]).toBeGreaterThan(0);
-    expect(losses[0]).toBe(21000);
+    expect(losses[0]).toBe(31000);
   });
   test('calculateRentLosses calculates rent losses correctly', () => {
     const losses = calculateRentLosses(1500, 30, 0.03, 0);
@@ -97,6 +97,6 @@ describe('form-handler.js methods', () => {
       0,      // coOwnershipFees
       0       // fileFees
     );
-    expect(year).toBe(1);
+    expect(year).toBe(3);
   });
 });

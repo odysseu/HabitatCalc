@@ -54,12 +54,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Manual trigger button
     document.getElementById('calculate-button').addEventListener('click', generateReport);
     // Add income field
-    document.getElementById('change-income-button').addEventListener('click', addIncome);
+    document.getElementById('add-income-button').addEventListener('click', addIncome);
 
     // Add event delegation for delete buttons
     const incomesContainer = document.getElementById('incomes-container');
     incomesContainer.addEventListener('click', async function(event) {
-        if (event.target.classList.contains('change-income-button')) {
+        if (event.target && event.target.id && event.target.id.startsWith('delete-income-button')) {
             deleteIncome(event.target);
             await generateReport();
         }

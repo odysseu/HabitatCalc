@@ -14,7 +14,8 @@
 
 <body>
     <div id="welcome-message" class="welcome-message">
-        <p>Bienvenue!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il devient
+        <p>Bienvenue&nbsp;!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il
+            devient
             rentable d'acheter un bien plutôt que de le louer.</p>
         <button id="close-welcome">Fermer</button>
     </div>
@@ -52,34 +53,34 @@
                             <h2 id="purchase-section" class="form-section-toggle">Achat</h2>
                             <div class="form-section-content">
                                 <div class="form-group">
-                                    <label for="price">Prix du bien (€)</label>
+                                    <label for="price">Prix du bien&nbsp;(€)</label>
                                     <input type="number" step="0.01" id="price" name="price" value="300000" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="notary">Frais de notaire (%)</label>
+                                    <label for="notary">Frais de notaire&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="notary" name="notary" value="8" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="appreciation-rate">Taux appréciation bien (%)</label>
+                                    <label for="appreciation-rate">Taux appréciation bien&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="appreciation-rate" name="appreciation-rate"
                                         value="2" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="agency-commission">Commission agence (%)</label>
+                                    <label for="agency-commission">Commission agence&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="agency-commission" name="agency-commission"
                                         value="0" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="coOwnership">Frais de copropriété</label>
+                                    <label for="coOwnership">Frais de copropriété&nbsp;(€)</label>
                                     <input type="number" step="0.01" id="coOwnership" name="coOwnership" value="0"
                                         required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="buyingHousingTax">Taxe d'habitation (€)</label>
+                                    <label for="buyHousingTax">Taxe d'habitation&nbsp;(€)</label>
                                     <input type="number" id="buyHousingTax" name="buyHousingTax" value="0" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="propertyTax">Taxe foncière (€)</label>
+                                    <label for="propertyTax">Taxe foncière&nbsp;(€)</label>
                                     <input type="number" id="propertyTax" name="propertyTax" value="1000" required>
                                 </div>
                             </div>
@@ -88,17 +89,18 @@
                             <h2 id="renting-section" class="form-section-toggle">Location</h2>
                             <div class="form-section-content">
                                 <div class="form-group">
-                                    <label for="fictitiousRent">Loyer fictif mensuel (€)</label>
+                                    <label for="fictitiousRent">Loyer fictif mensuel&nbsp;(€)</label>
                                     <input type="number" id="fictitiousRent" name="fictitiousRent" value="1000"
                                         required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fictitiousRentRate">Taux évolution annuelle du loyer fictif (%)</label>
+                                    <label for="fictitiousRentRate">Taux évolution annuelle du loyer
+                                        fictif&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="fictitiousRentRate" name="fictitiousRentRate"
                                         value="1" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="rentingHousingTax">Taxe d'habitation (€)</label>
+                                    <label for="rentingHousingTax">Taxe d'habitation&nbsp;(€)</label>
                                     <input type="number" id="rentingHousingTax" name="rentingHousingTax" value="0"
                                         required>
                                 </div>
@@ -108,22 +110,22 @@
                             <h2 id="loan-section" class="form-section-toggle">Emprunt</h2>
                             <div class="form-section-content">
                                 <div class="form-group">
-                                    <label for="file-fees">Frais de dossier (€)</label>
+                                    <label for="file-fees">Frais de dossier&nbsp;(€)</label>
                                     <input type="number" step="1" id="file-fees" name="file-fees" value="0" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contribution">Apport personnel (€)</label>
+                                    <label for="contribution">Apport personnel&nbsp;(€)</label>
                                     <input type="number" step="0.01" id="contribution" name="contribution" value="0"
                                         required>
                                 </div>
                                 <div class="form-group interest-rate-container">
-                                    <label for="interest-rate">Taux d'intérêt (%)</label>
+                                    <label for="interest-rate">Taux d'intérêt&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="interest-rate" name="interest-rate" value="1"
                                         required>
                                     <div class="input-overlay" id="apr-overlay">TAEG 0.00%</div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="insurance-rate">Taux de l'assurance emprunteur (%)</label>
+                                    <label for="insurance-rate">Taux de l'assurance emprunteur&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="insurance-rate" name="insurance-rate" value="0"
                                         required>
                                 </div>
@@ -141,11 +143,12 @@
                                     <div class="income-container">
                                         <div class="income-inputs">
                                             <input type="number" id="income-0" name="income-0"
-                                                placeholder="Revenu mensuel (€)" required>
+                                                placeholder="Revenu mensuel&nbsp;(€)" required>
                                             <input type="number" step="0.01" id="income-share-0" name="income-share-0"
-                                                placeholder="Durée (% de l'année)" required>
+                                                placeholder="Durée&nbsp;(% de l'année)" required>
                                         </div>
-                                        <button type="button" id="change-income-button">+</button>
+                                        <button class="change-income-button" type="button"
+                                            id="add-income-button">+</button>
                                     </div>
                                 </div>
                             </div>
@@ -155,26 +158,30 @@
                         </div>
                     </form>
                 </div>
-                <div id="chart-container" class="chart-container">
-                    <canvas id="myChart"></canvas>
-                </div>
-                <div class="summary-box">
-                    <p>
-                        <span id="summary-part1">À partir de l’année </span>
-                        <strong id="repaymentYearDisplay">X</strong>
-                        <span id="summary-part2">, il devient plus avantageux d’avoir acheté plutôt que loué. À ce
-                            moment-là, la dépense dans chaque cas aura été d'environ </span>
-                        <strong id="cumulativePurchaseDisplay">Y €</strong>
-                    </p>
+                <div class="chart-summary-wrapper">
+                    <div id="chart-container" class="chart-container">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                    <div id="summary-box" class="summary-box">
+                        <p>
+                            <span id="summary-part1">À partir de l’année </span>
+                            <strong id="repaymentYearDisplay">X</strong>
+                            <span id="summary-part2">, il devient plus avantageux d’avoir acheté plutôt que loué. À ce
+                                moment-là, la dépense dans chaque cas aura été d'environ </span>
+                            <strong id="cumulativePurchaseDisplay">Y&nbsp;€</strong>
+                        </p>
+                    </div>
                 </div>
             </div>
             <div id="simulation"></div>
+            <div class="form-actions" id="report-button"></div>
         </div>
-        <div class="form-actions" id="report-button"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script>
+    <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
     <script type="module" src="js/form-handler.js"></script>
     <script type="module" src="js/report-handler.js"></script>
     <script type="module" src="js/dark-mode.js"></script>

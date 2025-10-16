@@ -72,6 +72,10 @@ If you're using codespace, for exemple the URL could be `https://fictional-somet
 
 ## Testing 🧪
 
+**Test Coverage**
+
+![Lines](./badges_output/lines_chart.svg) ![Statements](./badges_output/statements_chart.svg)  ![Branches](./badges_output/branches_chart.svg)  ![Functions](./badges_output/functions_chart.svg)
+
 ### Prerequisites
 
 - **Node.js**: Ensure you have Node.js (version 16 or higher) installed. Download it from [nodejs.org](https://nodejs.org).

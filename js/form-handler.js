@@ -2,12 +2,20 @@
 import { loadTranslations, updateContent } from './handle-language.js';
 import { generateReport } from './report-handler.js';
 
+/**
+ * Resets the form and chart to their initial state.
+ */
 export async function resetForm() {
-    // Properly reset the incomes-container by setting its innerHTML
-    document.getElementById('incomes-container').innerHTML = '<div class="income-container"> <div class="income-inputs"> <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel (€)" required> <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée (% de l\'année)" required> </div> <button type="button" id="change-income-button">+</button> </div>';
-    // console.log("First incomes-container:", document.getElementById('incomes-container').innerHTML);
+    document.getElementById('incomes-container').innerHTML =
+        '<div class="income-container">' +
+        '  <div class="income-inputs">' +
+        '    <input type="number" id="income-0" name="income-0" placeholder="Revenu mensuel&nbsp;(€)" required>' +
+        '    <input type="number" step="0.01" id="income-share-0" name="income-share-0" placeholder="Durée&nbsp;(% de l\'année)" required>' +
+        '  </div>' +
+        '  <button class="change-income-button" type="button" id="add-income-button">+</button>' +
+        '</div>';
+
     document.getElementById('form-calculator').reset();
-    // console.log("Second incomes-container:", document.getElementById('incomes-container').innerHTML);
     document.getElementById('simulation').innerHTML = '';
     let canvas = document.getElementById('myChart');
     if (!(canvas instanceof HTMLCanvasElement)) {
@@ -25,69 +33,40 @@ export async function resetForm() {
     }
     const languageSelect = document.getElementById('language-select').value;
     const translation = await loadTranslations(languageSelect);
-    // console.log("third incomes-container:", document.getElementById('incomes-container').innerHTML);
     updateContent(translation);
-    // console.log("Final incomes-container:", document.getElementById('incomes-container').innerHTML);
 }
 /**
- * Calculates the Annual Percentage Rate (APR) based on form values.
- * Note: This is a simplified estimation and does not follow the official APR calculation (which requires solving for the rate in the present value equation of all cash flows).
+ * Calculates the Annual Percentage Rate (APR) using the Newton-Raphson method.
  */
 export function calculateAPR() {
-    const insuranceRate = parseFloat(document.getElementById('insurance-rate').value) / 100 || 0;
-    const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 || 0;
-    const fileFees = parseFloat(document.getElementById('file-fees').value) || 0;
-    const price = parseFloat(document.getElementById('price').value) || 0;
-    const notary = parseFloat(document.getElementById('notary').value) / 100 || 0;
-    const agencyCommission = parseFloat(document.getElementById('agency-commission').value) / 100 || 0;
-    const contribution = parseFloat(document.getElementById('contribution').value) || 0;
-    const loanDuration = parseFloat(document.getElementById('loanDuration').value) || 0;
+    const {
+        insuranceRate,
+        interestRate,
+        fileFees,
+        price,
+        notary,
+        agencyCommission,
+        contribution,
+        loanDuration
+    } = getFormValues();
 
-    const notaryFees = price * notary;
-    const commissionFees = price * agencyCommission;
-    const borrowedAmount = Math.max(0, price + notaryFees + commissionFees + fileFees - contribution);
-
+    const { borrowedAmount, notaryFees, commissionFees } = calculateBorrowedAmount(price, notary, agencyCommission, fileFees, contribution);
     if (borrowedAmount <= 0 || loanDuration <= 0) {
         console.warn('Invalid borrowed amount or loan duration:', borrowedAmount, loanDuration);
         return 0;
     }
 
-    // Calculate total monthly payment (loan + insurance)
     const monthlyPayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
-    // console.log('Monthly payment calculated:', monthlyPayment);
-
-    // Official APR calculation requires solving for the rate (r) in the equation:
-    // borrowedAmount = Σ [monthlyPayment / (1 + r)^n], for n = 1 to total months
-    // We'll use the Newton-Raphson method for approximation
-
     const totalMonths = loanDuration * 12;
-    let guess = interestRate / 12; // initial guess (monthly rate)
-    let aprMonthly = guess;
-    let epsilon = 1e-7;
-    let maxIter = 10000;
+    let aprMonthly = interestRate / 12;
+    const epsilon = 1e-7;
+    const maxIter = 10000;
 
-    function f(r) {
-        let sum = 0;
-        for (let n = 1; n <= totalMonths; n++) {
-            sum += monthlyPayment / Math.pow(1 + r, n);
-        }
-        return sum - borrowedAmount;
-    }
-
-    function fPrime(r) {
-        let sum = 0;
-        for (let n = 1; n <= totalMonths; n++) {
-            sum -= n * monthlyPayment / Math.pow(1 + r, n + 1);
-        }
-        return sum;
-    }
-
-    // Newton-Raphson iteration
     for (let i = 0; i < maxIter; i++) {
-        let y = f(aprMonthly);
-        let yPrime = fPrime(aprMonthly);
-        if (Math.abs(yPrime) < 1e-10) break; // Avoid division by zero
-        let next = aprMonthly - y / yPrime;
+        const y = calculateAPRFunction(aprMonthly, monthlyPayment, totalMonths, borrowedAmount);
+        const yPrime = calculateAPRDerivative(aprMonthly, monthlyPayment, totalMonths);
+        if (Math.abs(yPrime) < 1e-10) break;
+        const next = aprMonthly - y / yPrime;
         if (Math.abs(next - aprMonthly) < epsilon) {
             aprMonthly = next;
             break;
@@ -95,46 +74,59 @@ export function calculateAPR() {
         aprMonthly = next;
     }
 
-    // APR annualized and as a percentage
-    let apr = aprMonthly * 12 * 100;
-    // console.log('APR calculated:', apr);
+    const apr = aprMonthly * 12 * 100;
     return apr > 0 && isFinite(apr) ? apr : 0;
 }
 
+/**
+ * Helper function for APR calculation: f(r) = Σ [monthlyPayment / (1 + r)^n] - borrowedAmount
+ */
+function calculateAPRFunction(r, monthlyPayment, totalMonths, borrowedAmount) {
+    let sum = 0;
+    for (let n = 1; n <= totalMonths; n++) {
+        sum += monthlyPayment / Math.pow(1 + r, n);
+    }
+    return sum - borrowedAmount;
+}
 
+/**
+ * Helper function for APR calculation: f'(r) = -Σ [n * monthlyPayment / (1 + r)^(n+1)]
+ */
+function calculateAPRDerivative(r, monthlyPayment, totalMonths) {
+    let sum = 0;
+    for (let n = 1; n <= totalMonths; n++) {
+        sum -= n * monthlyPayment / Math.pow(1 + r, n + 1);
+    }
+    return sum;
+}
+
+/**
+ * Adds a new income input container.
+ */
 export function addIncome() {
     const container = document.getElementById('incomes-container');
     const incomeContainers = container.querySelectorAll('.income-container');
     const incomeCount = incomeContainers.length;
-
-    // Récupérer les valeurs du dernier conteneur
     const lastIncomeContainer = incomeContainers[0];
     const currentIncomeValue = lastIncomeContainer.querySelector('input[name^="income-"]').value.trim();
     const currentTimeShareValue = lastIncomeContainer.querySelector('input[name^="income-share-"]').value.trim();
 
-    // Verify that inputs are valid numbers and within expected ranges
     if (!isValidNumber(currentIncomeValue) || !isValidPercentage(currentTimeShareValue)) {
-        console.log("Invalid input detected:", {
-            income: currentIncomeValue,
-            duration: currentTimeShareValue
-        });
+        console.log("Invalid input detected:", { income: currentIncomeValue, duration: currentTimeShareValue });
         return;
     }
 
-    // Créer un nouveau conteneur
     const newIncomeContainer = document.createElement('div');
     newIncomeContainer.className = 'income-container';
 
-    // Créer la div pour les inputs
     const incomeInputsDiv = document.createElement('div');
     incomeInputsDiv.className = 'income-inputs';
 
-    // create income inputs
     const inputIncome = document.createElement('input');
     inputIncome.type = 'number';
     inputIncome.id = `income-${incomeCount}`;
     inputIncome.name = `income-${incomeCount}`;
-    inputIncome.placeholder = 'Revenu mensuel (€)';
+    inputIncome.placeholder = 'Revenu mensuel&nbsp;(€)';
     inputIncome.required = true;
     inputIncome.value = currentIncomeValue;
 
@@ -143,88 +135,71 @@ export function addIncome() {
     inputDuration.step = '0.01';
     inputDuration.id = `income-share-${incomeCount}`;
     inputDuration.name = `income-share-${incomeCount}`;
-    inputDuration.placeholder = 'Durée (% de l\'année)';
+    inputDuration.placeholder = 'Durée&nbsp;(% de l\'année)';
     inputDuration.required = true;
     inputDuration.value = currentTimeShareValue;
 
-    // Add inputs to the div
     incomeInputsDiv.appendChild(inputIncome);
     incomeInputsDiv.appendChild(inputDuration);
     newIncomeContainer.appendChild(incomeInputsDiv);
 
-    // create delete button
     const deleteButton = document.createElement('button');
     deleteButton.type = 'button';
+    deleteButton.id = `delete-income-button-${incomeCount}`;
     deleteButton.className = 'change-income-button';
     deleteButton.textContent = '-';
-    deleteButton.onclick = function() { deleteIncome(this); };
+    deleteButton.onclick = () => deleteIncome(deleteButton);
 
-    // Add delete button to the new income container
     newIncomeContainer.appendChild(deleteButton);
-
-    // Add the new income container to the main container
     container.appendChild(newIncomeContainer);
 
-    // Reset the input fields in the last container
     lastIncomeContainer.querySelector('input[name^="income-"]').value = "";
     lastIncomeContainer.querySelector('input[name^="income-share-"]').value = "";
 }
 
-function isValidNumber(value) {
-    try {
-        if (value === "" || value === null || value === undefined) {
-            return false;
-        }
-
-        const num = parseFloat(value);
-        return !isNaN(num) && isFinite(num) && num >= 0;
-    } catch (error) {
-        console.warn("Error checking if value is a valid number:", { value, error });
-        return false;
-    }
-}
-
-function isValidPercentage(value) {
-    try {
-        if (value === "" || value === null || value === undefined) {
-            return false;
-        }
-
-        const num = parseFloat(value);
-        return !isNaN(num) && isFinite(num) && num >= 0 && num <= 100;
-    } catch (error) {
-        console.warn("Error checking if value is a valid percentage:", { value, error });
-        return false;
-    }
-}
-
+/**
+ * Deletes an income input container.
+ */
 export function deleteIncome(button) {
     const incomeContainer = button.parentElement;
     incomeContainer.remove();
 }
 
+/**
+ * Extracts and sums all incomes, weighted by their duration.
+ */
 export function extractIncomes() {
     let cumulIncomes = 0;
     const incomesContainer = document.getElementById('incomes-container');
     const incomeContainers = incomesContainer.querySelectorAll('.income-container');
 
-    if (incomeContainers.length === 0) {
-        console.log('There are no incomes.');
-        return cumulIncomes;
-    }
-
     incomeContainers.forEach(container => {
-        let income = parseFloat(container.querySelector('input[name^="income"]').value) || 0;
-        let incomeShare = parseFloat(container.querySelector('input[name^="income-share"]').value) || 100;
+        const incomeInput = container.querySelector('input[name^="income"]');
+        const incomeShareInput = container.querySelector('input[name^="income-share"]');
+
+        // Parse income and incomeShare, defaulting to 0 if empty or invalid
+        const income = incomeInput ? parseFloat(incomeInput.value) || 0 : 0;
+        const incomeShare = incomeShareInput ? parseFloat(incomeShareInput.value) || 0 : 0;
+
+        // Add to cumulative incomes, even if income or incomeShare is 0
         cumulIncomes += income * (incomeShare / 100) * 12;
     });
+
     return cumulIncomes;
 }
 
-export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnuel, insuranceRate) {
+/**
+ * Calculates the monthly payment (loan + insurance).
+ */
+export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRateAnnual, insuranceRate) {
+    // check that borrowedAmount and loanDuration are positive numbers
+    if (borrowedAmount <= 0 || loanDuration <= 0) {
+        console.warn('Invalid borrowed amount or loan duration:', borrowedAmount, loanDuration);
+        return 0;
+    }
     const numberMonths = loanDuration * 12;
-    const monthlyInterestRate = interestRateAnnuel / 12;
-    const loanMonthlyPayment = interestRateAnnuel === 0
+    const monthlyInterestRate = interestRateAnnual / 12;
+    const loanMonthlyPayment = interestRateAnnual === 0
         ? borrowedAmount / numberMonths
         : (borrowedAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -numberMonths));
     const assuranceMonthlyPayment = borrowedAmount * (insuranceRate / 12);
@@ -232,51 +207,114 @@ export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRa
     return loanMonthlyPayment + assuranceMonthlyPayment;
 }
 
-
-export function findPivotYear(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax, appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees) {
-    const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
+/**
+ * Finds the pivot year where renting becomes more expensive than buying.
+ */
+export function findPivotYear(
+    price, notaryFees, agencyCommissionFees, contribution,
+    monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
+    appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees
+) {
+    const initialCost = price + notaryFees + agencyCommissionFees + fileFees + contribution;
+    // const initialCost = price + notaryFees + agencyCommissionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
-        // Purchase
-        const resaleValue = price * Math.pow(1 + appreciationRate, t);
-        const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
-        const cumulPropertyTax = propertyTax * t;
-        const cumulBuyHousingTax = buyHousingTax * t;
-        const cumulativeCoOwnershipFees = coOwnershipFees * t;
-        const netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
-        // rent
-        const cumulRentingHousingTax = rentingHousingTax * t;
-        const netRentLosses = cumulRentingHousingTax + (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
+        let resaleValue = price * Math.pow(1 + appreciationRate, t);
+        let cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
+        let cumulPropertyTax = propertyTax * t;
+        let cumulBuyHousingTax = buyHousingTax * t;
+        let cumulativeCoOwnershipFees = coOwnershipFees * t;
+        let netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
+        let cumulRentingHousingTax = rentingHousingTax * t;
+        let netRentLosses = cumulRentingHousingTax + (fictitiousRent * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
         if (netRentLosses > netPurchaseLosses) {
-            return t - 1; // crossing of losses
+            return t - 1;
         }
     }
     console.log('No crossing before ', maxDuration, ' years');
-    return maxDuration; // no crossing of losses
+    return maxDuration;
 }
 
-export function calculatePurchaseLosses(price, notaryFees, agencyCommisionFees, contribution, monthlyPayment, propertyTax, buyHousingTax, appreciationRate, maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees) {
+/**
+ * Calculates cumulative purchase losses over time.
+ */
+export function calculatePurchaseLosses(
+    price, notaryFees, agencyCommissionFees, contribution,
+    monthlyPayment, propertyTax, buyHousingTax, appreciationRate,
+    maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees
+) {
     const purchaseLosses = [];
-    const initialCost = price + notaryFees + agencyCommisionFees + fileFees - contribution;
+    const initialCost = price + notaryFees + agencyCommissionFees + fileFees + contribution;
     for (let t = 1; t <= maxDuration; t++) {
         const resaleValue = price * Math.pow(1 + appreciationRate, t);
         const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
         const cumulPropertyTax = propertyTax * t;
         const cumulBuyHousingTax = buyHousingTax * t;
         const cumulativeCoOwnershipFees = coOwnershipFees * t;
-        let netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax  + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
-        netPurchaseLosses = Math.round(netPurchaseLosses, 0);
-        purchaseLosses.push(netPurchaseLosses);
+
+        // Calculate net purchase losses (or profit if negative)
+        const netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - (cumulIncomes * t);
+
+        // Round to the nearest integer and ensure non-negative
+        const roundedLosses = Math.round(netPurchaseLosses);
+        purchaseLosses.push(Math.max(0, roundedLosses)); // Ensure losses are non-negative
     }
+
     return purchaseLosses;
 }
 
+/**
+ * Calculates cumulative rent losses over time.
+ */
 export function calculateRentLosses(income, rentDuration, fictitiousRentRate, rentingHousingTax) {
     const rentLosses = [];
     for (let t = 1; t <= rentDuration; t++) {
-        let cumulRentingHousingTax = rentingHousingTax * t;
-        let cumulIncome = (income * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
-        cumulIncome = Math.round(cumulIncome, 0);
-        rentLosses.push(cumulRentingHousingTax + cumulIncome);
+        const cumulRentingHousingTax = rentingHousingTax * t;
+        const cumulIncome = (income * Math.pow(1 + fictitiousRentRate, t)) * 12 * t;
+        rentLosses.push(cumulRentingHousingTax + Math.round(cumulIncome, 0));
     }
     return rentLosses;
+}
+
+/**
+ * Validates if a value is a non-negative number.
+ */
+function isValidNumber(value) {
+    if (value === "" || value === null || value === undefined) return false;
+    const num = parseFloat(value);
+    return !isNaN(num) && isFinite(num) && num >= 0;
+}
+
+/**
+ * Validates if a value is a valid percentage (0-100).
+ */
+function isValidPercentage(value) {
+    if (value === "" || value === null || value === undefined) return false;
+    const num = parseFloat(value);
+    return !isNaN(num) && isFinite(num) && num >= 0 && num <= 100;
+}
+
+/**
+ * Extracts and parses form values.
+ */
+export function getFormValues() {
+    return {
+        insuranceRate: parseFloat(document.getElementById('insurance-rate').value) / 100 || 0,
+        interestRate: parseFloat(document.getElementById('interest-rate').value) / 100 || 0,
+        fileFees: parseFloat(document.getElementById('file-fees').value) || 0,
+        price: parseFloat(document.getElementById('price').value) || 0,
+        notary: parseFloat(document.getElementById('notary').value) / 100 || 0,
+        agencyCommission: parseFloat(document.getElementById('agency-commission').value) / 100 || 0,
+        contribution: parseFloat(document.getElementById('contribution').value) || 0,
+        loanDuration: parseFloat(document.getElementById('loanDuration').value) || 0,
+    };
+}
+
+/**
+ * Calculates the borrowed amount after fees and contribution.
+ */
+export function calculateBorrowedAmount(price, notary, agencyCommission, fileFees, contribution) {
+    const notaryFees = price * notary;
+    const commissionFees = price * agencyCommission;
+    const borrowedAmount = Math.max(0, price + notaryFees + commissionFees + fileFees - contribution);
+    return { borrowedAmount, notaryFees, commissionFees };
 }
