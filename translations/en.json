@@ -28,7 +28,6 @@
     "helpRentingHousingTax": "The annual cost of living in the property you are renting.",
     "fictitiousRent": "Monthly fictitious rent\u00A0(€)",
     "notary": "Notary fees\u00A0(%)",
-    "pdfFileName": "PDF file name",
     "pdfFileNamePlaceHolder": "real-estate-simulation.pdf",
     "price": "Property price\u00A0(€)",
     "reportPurchase": "Purchase",
@@ -48,6 +47,7 @@
     "reportMonthlyPayment": "Monthly payment",
     "reportBorrowedAmount": "Amount borrowed",
     "reportPrice": "Price of the bare property",
+    "reportValue": "Value",
     "reportAppreciationRate": "Annual price appreciation rate",
     "reportInsuranceRate": "Borrower insurance rate",
     "reportFictitiousRentEvolutionRate": "Annual fictitious rent increase rate",
@@ -77,14 +77,15 @@
     "summaryPart2": ", it becomes more advantageous to have bought rather than rented. At this point, the money spent in any case would be approximately ",
     "title": "Real Estate Project Calculator",
     "welcomeMessage": "Welcome\u00A0!<br /><br />This tool is a real estate investment calculator to determine when it becomes profitable to buy a property rather than rent it.",
-    "reportResultTableMonth": "Month",
+    "reportResultTableOrderNumber": "Order Number",
     "reportResultTableLoan": "Loan",
     "reportResultTableInterests": "Interests",
-    "reportResultTableInsurance": "Borrower Insurance",year
+    "reportResultTableInsurance": "Borrower Insurance",
     "reportResultTableYear": "Year",
     "reportResultTableTotalLoan": "Total Loan",
     "reportResultTableTotalInterests": "Total Interests",
     "reportResultTableTotalInsurance": "Total Insurance",
     "reportResultTableCumulPurchase": "Cumulative Purchase",
-    "reportResultTableCumulRenting": "Cumulative Renting"
+    "reportResultTableCumulRenting": "Cumulative Renting",
+    "reportResultTableTotal": "Total"
 }

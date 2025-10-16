@@ -215,7 +215,8 @@ export function findPivotYear(
     monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
     appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees
 ) {
-    const initialCost = price + notaryFees + agencyCommissionFees + fileFees - contribution;
+    const initialCost = price + notaryFees + agencyCommissionFees + fileFees + contribution;
+    // const initialCost = price + notaryFees + agencyCommissionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         let resaleValue = price * Math.pow(1 + appreciationRate, t);
         let cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
@@ -242,7 +243,7 @@ export function calculatePurchaseLosses(
     maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees
 ) {
     const purchaseLosses = [];
-    const initialCost = price + notaryFees + agencyCommissionFees + fileFees - contribution;
+    const initialCost = price + notaryFees + agencyCommissionFees + fileFees + contribution;
     for (let t = 1; t <= maxDuration; t++) {
         const resaleValue = price * Math.pow(1 + appreciationRate, t);
         const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;

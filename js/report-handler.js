@@ -59,12 +59,12 @@ export async function generateReport() {
         [
             { label: translations.reportPrice, value: `${price.toFixed(2)}\u00A0€` },
             { label: translations.reportNotaryFees, value: `${notaryFees.toFixed(2)}\u00A0€` },
-            { label: translations.reportAppreciationRate, value: `${(appreciationRate * 100).toFixed(2)}\u00A0%` },
             { label: translations.reportAgencyCommission, value: `${agencyCommissionFees.toFixed(2)}\u00A0€` },
             { label: translations.reportPurchaseTotal, value: `${purchaseTotal.toFixed(2)}\u00A0€` },
             { label: translations.reportCoOwnership, value: `${coOwnershipFees.toFixed(2)}\u00A0€` },
             { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)}\u00A0€` },
-            { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)}\u00A0€` }
+            { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)}\u00A0€` },
+            { label: translations.reportAppreciationRate, value: `${(appreciationRate * 100).toFixed(2)}\u00A0%` }
         ]
     ));
 
@@ -77,8 +77,8 @@ export async function generateReport() {
             { label: translations.reportInterestRate, value: `${(interestRate * 100).toFixed(2)}\u00A0%` },
             { label: translations.reportAPR, value: `${APR.toFixed(2)}\u00A0%` },
             { label: translations.reportMonthlyPayment, value: `${monthlyPayment.toFixed(2)}\u00A0€` },
-            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)}\u00A0€` },
-            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)}\u00A0€` }
+            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)}\u00A0€` },
+            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)}\u00A0€` }
         ]
     ));
 
@@ -299,13 +299,13 @@ export async function downloadPDF() {
     );
 
     addPDFHeader(doc, translations, margin);
-    addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees);
+    addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees, propertyTax);
     const loanTotalCost = monthlyPayment * loanDuration * 12;
     const totalInterestCost = loanTotalCost - borrowedAmount;
     const APR = calculateAPR();
     addLoanTable(doc, translations, margin, tableSpacing, contribution, borrowedAmount, interestRate, insuranceRate, APR, monthlyPayment, totalInterestCost, loanTotalCost);
     const cumulMonthlyIncomes = cumulIncomes / 12;
-    addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, propertyTax, cumulMonthlyIncomes);
+    addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, cumulMonthlyIncomes);
     addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear);
     addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
     addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
@@ -327,9 +327,9 @@ export function setupPDFDownloadSection(translations) {
     const downloadSection = document.createElement('div');
     downloadSection.className = 'report-download-container';
 
-    const filenameLabel = document.createElement('label');
-    filenameLabel.setAttribute('for', 'pdf-filename');
-    filenameLabel.textContent = translations.pdfFileName;
+    // const filenameLabel = document.createElement('label');
+    // filenameLabel.setAttribute('for', 'pdf-filename');
+    // filenameLabel.textContent = translations.pdfFileName;
 
     const filenameInputs = document.createElement('div');
     filenameInputs.className = 'report-download-inputs';
@@ -348,7 +348,7 @@ export function setupPDFDownloadSection(translations) {
 
     filenameInputs.appendChild(filenameInput);
     filenameInputs.appendChild(downloadButton);
-    downloadSection.appendChild(filenameLabel);
+    // downloadSection.appendChild(filenameLabel);
     downloadSection.appendChild(filenameInputs);
     reportButtonContainer.appendChild(downloadSection);
 
@@ -415,20 +415,21 @@ export function calculatePurchaseTotals(price, notary, agencyCommission, fileFee
 /**
  * Adds the purchase table to the PDF.
  */
-export function addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees) {
+export function addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees, propertyTax) {
     doc.setFontSize(10);
     doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
-        head: [[translations.reportPurchase, translations.reportPrice]],
+        head: [[translations.reportPurchase, translations.reportValue]],
         body: [
             [translations.reportPrice, `${price.toFixed(2)} €`],
             [translations.reportNotaryFees, `${notaryFees.toFixed(2)} €`],
-            [translations.reportAppreciationRate, `${(appreciationRate * 100).toFixed(2)} %`],
             [translations.reportAgencyCommission, `${agencyCommissionFees.toFixed(2)} €`],
+            [translations.reportfileFees, `${fileFees.toFixed(2)} €`],
             [translations.reportPurchaseTotal, `${purchaseTotal.toFixed(2)} €`],
-            [translations.reportCoOwnership, `${coOwnershipFees.toFixed(2)} €`],
+            [translations.reportPropertyTax, `${propertyTax.toFixed(0)} €`],
             [translations.reportBuyHousingTax, `${buyHousingTax.toFixed(0)} €`],
-            [translations.reportfileFees, `${fileFees.toFixed(2)} €`]
+            [translations.reportCoOwnership, `${coOwnershipFees.toFixed(2)} €`],
+            [translations.reportAppreciationRate, `${(appreciationRate * 100).toFixed(2)} %`]
         ],
         styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
         headStyles: { fontStyle: 'bold' }
@@ -441,7 +442,7 @@ export function addPurchaseTable(doc, translations, margin, tableSpacing, price,
 export function addLoanTable(doc, translations, margin, tableSpacing, contribution, borrowedAmount, interestRate, insuranceRate, APR, monthlyPayment, totalInterestCost, loanTotalCost) {
     doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
-        head: [[translations.reportLoan, translations.reportPrice]],
+        head: [[translations.reportLoan, translations.reportValue]],
         body: [
             [translations.contribution, `${contribution.toFixed(0)} €`],
             [translations.reportBorrowedAmount, `${borrowedAmount.toFixed(0)} €`],
@@ -460,15 +461,14 @@ export function addLoanTable(doc, translations, margin, tableSpacing, contributi
 /**
  * Adds the renting table to the PDF.
  */
-export function addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, propertyTax, cumulMonthlyIncomes) {
+export function addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, cumulMonthlyIncomes) {
     doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
-        head: [[translations.reportRenting, translations.reportPrice]],
+        head: [[translations.reportRenting, translations.reportValue]],
         body: [
             [translations.reportFictitiousMonthlyRent, `${fictitiousRent.toFixed(0)} €`],
             [translations.reportFictitiousRentEvolutionRate, `${(fictitiousRentRate * 100).toFixed(2)} %`],
-            [translations.reportRentingHousingTax, `${rentingHousingTax.toFixed(0)} €`],
-            [translations.reportPropertyTax, `${propertyTax.toFixed(0)} €`]
+            [translations.reportRentingHousingTax, `${rentingHousingTax.toFixed(0)} €`]
         ],
         styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
         headStyles: { fontStyle: 'bold' }
@@ -477,7 +477,7 @@ export function addRentingTable(doc, translations, margin, tableSpacing, fictiti
     if (cumulMonthlyIncomes > 0) {
         doc.autoTable({
             startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
-            head: [[translations.reportMonthlyAgregatedIncome, translations.reportPrice]],
+            head: [[translations.reportMonthlyAgregatedIncome, translations.reportValue]],
             body: [[translations.reportMonthlyAgregatedIncome, `${cumulMonthlyIncomes.toFixed(2)} €`]],
             styles: { fontSize: 10, cellPadding: 0.5, overflow: 'linebreak', halign: 'left', valign: 'middle', lineWidth: 0.1 },
             headStyles: { fontStyle: 'bold' }
@@ -512,10 +512,9 @@ export function addMonthlyBreakdownTable(doc, translations, margin, tableSpacing
         monthlyData.push({ month, loan: principal, interests: interest, insurance: monthlyInsurance });
     }
 
-    console.log(translations);
     doc.autoTable({
-        startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
-        head: [[translations.reportResultTableMonth, translations.reportResultTableLoan, translations.reportResultTableInterests, translations.reportResultTableInsurance]],
+        startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + 2 * tableSpacing : margin + tableSpacing,
+        head: [[translations.reportResultTableOrderNumber, translations.reportResultTableLoan, translations.reportResultTableInterests, translations.reportResultTableInsurance]],
         body: monthlyData.map(data => [
             data.month,
             `${data.loan.toFixed(2)} €`,
@@ -565,7 +564,7 @@ export function addYearlyTotalsTable(doc, translations, margin, tableSpacing, bo
 
     doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
-        head: [[translations.reportResultTableYear, translations.reportResultTableLoan, translations.reportResultTableTotalInterests, translations.reportResultTableTotalInsurance, `Total`]],
+        head: [[translations.reportResultTableYear, translations.reportResultTableLoan, translations.reportResultTableTotalInterests, translations.reportResultTableTotalInsurance, translations.reportResultTableTotal]],
         body: yearlyData.map(data => [
             data.year,
             `${data.loan.toFixed(2)} €`,

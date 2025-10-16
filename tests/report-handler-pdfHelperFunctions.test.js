@@ -79,6 +79,7 @@ beforeAll(() => {
         reportPurchaseTotal: 'Purchase Total',
         reportCoOwnership: 'Co-Ownership Fees',
         reportBuyHousingTax: 'Buy Housing Tax',
+        reportPropertyTax: 'Property Tax',
         reportfileFees: 'File Fees',
       },
       20,
@@ -90,6 +91,7 @@ beforeAll(() => {
       334000,
       1500,
       500,
+      1000,
       1000
     );
     expect(mockDoc.autoTable).toHaveBeenCalled();
@@ -131,7 +133,6 @@ beforeAll(() => {
         reportFictitiousMonthlyRent: 'Fictitious Monthly Rent',
         reportFictitiousRentEvolutionRate: 'Fictitious Rent Evolution Rate',
         reportRentingHousingTax: 'Renting Housing Tax',
-        reportPropertyTax: 'Property Tax',
         reportMonthlyAgregatedIncome: 'Monthly Aggregated Income',
       },
       20,
@@ -139,7 +140,6 @@ beforeAll(() => {
       1000,
       0.01,
       300,
-      1000,
       4000 / 12
     );
     expect(mockDoc.autoTable).toHaveBeenCalled();

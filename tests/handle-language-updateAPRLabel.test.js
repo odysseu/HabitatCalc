@@ -79,7 +79,7 @@ describe('updateAPRLabel', () => {
         const translations = undefined;
         await updateAPRLabel(apr, translations);
         // expect(consoleErrorSpy).toHaveBeenCalledWith('APR element not found or translations are not available.');
-        console.log('translations : ', translations);
+        // console.log('translations : ', translations);
         const currentAprElement = document.getElementById('apr-overlay');
         expect(currentAprElement.textContent).toBe('APR_IDIOT_TRANSLATION: 1.25%');
         consoleErrorSpy.mockRestore();
