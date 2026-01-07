@@ -31,7 +31,7 @@
         "jest": "^30.0.2",
         "jest-environment-jsdom": "^30.0.2",
         "js-coverage-badges": "^1.1.1",
-        "jspdf": "^3.0.1",
+        "jspdf": "^4.0.0",
         "jspdf-autotable": "^5.0.2",
         "node-fetch": "^3.3.2",
         "type-detect": "^4.1.0"
