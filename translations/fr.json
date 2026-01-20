@@ -87,5 +87,22 @@
     "reportResultTableTotalInsurance": "Total Assurance",
     "reportResultTableCumulPurchase": "Cumul Achat",
     "reportResultTableCumulRenting": "Cumul Location",
-    "reportResultTableTotal": "Total"
+    "reportResultTableTotal": "Total",
+    "helpTitle": "Aide",
+    "helpFormulasHeading": "Formules utilisées",
+    "helpTotalPurchaseCost": "Coût d'achat total :",
+    "helpTotalPurchaseCostFormula": "Coût = Prix + Frais de notaire + Frais d'agence",
+    "helpBorrowedAmount": "Montant emprunté :",
+    "helpBorrowedAmountFormula": "Montant = Coût d'achat - Apport personnel",
+    "helpMonthlyPayment": "Paiement mensuel du prêt :",
+    "helpMonthlyPaymentFormula": "M = P × [r(1+r)^n] / [(1+r)^n - 1]",
+    "helpMonthlyPaymentDesc": "où P = montant du prêt, r = taux mensuel, n = nombre de mois",
+    "helpAPR": "TAEG (Taux Annuel Effectif Global) :",
+    "helpAPRFormula": "Taux annuel incluant les intérêts et l'assurance emprunteur",
+    "helpAnnualPurchaseCost": "Coût total d'achat par année :",
+    "helpAnnualPurchaseCostFormula": "Coût = Paiement mensuel × 12 + Taxes + Frais de copropriété",
+    "helpAnnualRentalCost": "Coût total de location par année :",
+    "helpAnnualRentalCostFormula": "Coût = Loyer mensuel × 12 + Taxes",
+    "helpPropertyAppreciation": "Appréciation de la propriété :",
+    "helpPropertyAppreciationFormula": "Valeur = Valeur initiale × (1 + Taux d'appréciation)^années"
 }

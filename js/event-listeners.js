@@ -66,16 +66,19 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     // Welcome message close
+    const welcomeOverlay = document.getElementById('welcome-overlay');
     const welcomeMessage = document.getElementById('welcome-message');
     const closeButton = document.getElementById('close-welcome');
     closeButton.addEventListener('click', function () {
-        welcomeMessage.style.display = 'none';
+        welcomeOverlay.classList.remove('active');
     });
-    document.addEventListener('click', function (event) {
-        if (!welcomeMessage.contains(event.target) && event.target !== closeButton) {
-            welcomeMessage.style.display = 'none';
-        }
-    });
+    if (welcomeOverlay) {
+        welcomeOverlay.addEventListener('click', function (event) {
+            if (event.target === welcomeOverlay) {
+                welcomeOverlay.classList.remove('active');
+            }
+        });
+    }
     // Language change
     selectedLanguageElement.addEventListener('change', async function () {
         const lang = selectedLanguageElement.value;

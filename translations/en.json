@@ -87,5 +87,22 @@
     "reportResultTableTotalInsurance": "Total Insurance",
     "reportResultTableCumulPurchase": "Cumulative Purchase",
     "reportResultTableCumulRenting": "Cumulative Renting",
-    "reportResultTableTotal": "Total"
+    "reportResultTableTotal": "Total",
+    "helpTitle": "Help",
+    "helpFormulasHeading": "Formulas Used",
+    "helpTotalPurchaseCost": "Total purchase cost:",
+    "helpTotalPurchaseCostFormula": "Cost = Price + Notary fees + Agency fees",
+    "helpBorrowedAmount": "Amount borrowed:",
+    "helpBorrowedAmountFormula": "Amount = Total purchase cost - Personal contribution",
+    "helpMonthlyPayment": "Monthly loan payment:",
+    "helpMonthlyPaymentFormula": "M = P × [r(1+r)^n] / [(1+r)^n - 1]",
+    "helpMonthlyPaymentDesc": "where P = loan amount, r = monthly rate, n = number of months",
+    "helpAPR": "APR (Annual Percentage Rate):",
+    "helpAPRFormula": "Annual rate including interest and borrower insurance",
+    "helpAnnualPurchaseCost": "Total annual purchase cost:",
+    "helpAnnualPurchaseCostFormula": "Cost = Monthly payment × 12 + Taxes + Co-ownership fees",
+    "helpAnnualRentalCost": "Total annual rental cost:",
+    "helpAnnualRentalCostFormula": "Cost = Monthly rent × 12 + Taxes",
+    "helpPropertyAppreciation": "Property appreciation:",
+    "helpPropertyAppreciationFormula": "Value = Initial value × (1 + Appreciation rate)^years"
 }

@@ -1,0 +1,50 @@
+<div id="help-modal" class="help-modal">
+    <div class="help-modal-overlay"></div>
+    <div class="help-modal-content">
+        <button class="help-modal-close" id="help-modal-close">×</button>
+        <h2 id="help-modal-title" data-i18n="helpTitle">Aide</h2>
+        <div class="help-modal-body">
+            <div class="formula">
+                <h3 data-i18n="helpFormulasHeading">Formules utilisées</h3>
+                
+                <div class="help-formula-item">
+                    <p><strong data-i18n="helpTotalPurchaseCost">Coût d'achat total :</strong></p>
+                    <p><span class="math">\( \text{Coût} = \text{Prix} + \text{Frais de notaire} + \text{Frais d'agence} \)</span></p>
+                </div>
+
+                <div class="help-formula-item">
+                    <p><strong data-i18n="helpBorrowedAmount">Montant emprunté :</strong></p>
+                    <p><span class="math">\( \text{Montant} = \text{Coût d'achat} - \text{Apport personnel} \)</span></p>
+                </div>
+
+                <div class="help-formula-item">
+                    <p><strong data-i18n="helpMonthlyPayment">Paiement mensuel du prêt :</strong></p>
+                    <p><span class="math">\( M = P \cdot \frac{\frac{r}{12}}{1 - (1 + \frac{r}{12})^{-n}} \)</span></p>
+                    <p class="formula-desc" data-i18n="helpMonthlyPaymentDesc">où P = montant du prêt, r = taux annuel, n = nombre de mois</p>
+                </div>
+
+                <div class="help-formula-item">
+                    <p><strong data-i18n="helpAPR">TAEG (Taux Annuel Effectif Global) :</strong></p>
+                    <p><span class="math">\( \text{TAEG} = \text{Taux d'intérêt} + \text{Taux assurance emprunteur} \)</span></p>
+                </div>
+
+                <div class="help-formula-item">
+                    <p><strong data-i18n="helpAnnualPurchaseCost">Coût total d'achat par année :</strong></p>
+                    <p><span class="math">\( C_{achat} = (M \times 12) + \text{Taxes} + \text{Frais de copropriété} \)</span></p>
+                </div>
+
+                <div class="help-formula-item">
+                    <p><strong data-i18n="helpAnnualRentalCost">Coût total de location par année :</strong></p>
+                    <p><span class="math">\( C_{location} = (L \times 12) + \text{Taxes} \)</span></p>
+                    <p class="formula-desc">où L = loyer mensuel</p>
+                </div>
+
+                <div class="help-formula-item">
+                    <p><strong data-i18n="helpPropertyAppreciation">Appréciation de la propriété :</strong></p>
+                    <p><span class="math">\( V_n = V_0 \times (1 + t)^n \)</span></p>
+                    <p class="formula-desc">où V₀ = valeur initiale, t = taux d'appréciation annuel, n = nombre d'années</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

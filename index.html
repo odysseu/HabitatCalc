@@ -13,11 +13,13 @@
 </head>
 
 <body>
-    <div id="welcome-message" class="welcome-message">
-        <p>Bienvenue&nbsp;!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il
-            devient
-            rentable d'acheter un bien plutôt que de le louer.</p>
-        <button id="close-welcome">Fermer</button>
+    <div id="welcome-overlay" class="welcome-overlay active">
+        <div id="welcome-message" class="welcome-message">
+            <p>Bienvenue&nbsp;!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il
+                devient
+                rentable d'acheter un bien plutôt que de le louer.</p>
+            <button id="close-welcome">Fermer</button>
+        </div>
     </div>
     <header class="sticky-header">
         <div class="header-left">
@@ -28,6 +30,12 @@
         </div>
         <h1 id="title-section">Calculette Projet Immobilier</h1>
         <div class="header-right">
+            <div class="help-icon-container">
+                <button id="help-icon-button" class="help-icon-button" aria-label="Help">
+                    Σ
+                </button>
+                <span id="help-icon-tooltip" class="logo-help">Aide</span>
+            </div>
             <div class="github-logo">
                 <a href="https://github.com/odysseu/HabitatCalc" target="_self">
                     <img src="logos/github-logo-light.png" alt="GitHub Logo" class="github-logo" id="github-logo">
@@ -182,11 +190,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.min.js"></script>
     <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script type="module" src="js/form-handler.js"></script>
     <script type="module" src="js/report-handler.js"></script>
     <script type="module" src="js/dark-mode.js"></script>
     <script type="module" src="js/handle-language.js"></script>
     <script type="module" src="js/event-listeners.js"></script>
+    <script type="module" src="js/help-modal.js"></script>
 </body>
 
 </html>
