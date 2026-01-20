@@ -3,10 +3,11 @@
  */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { initiateLanguageSelection } from '../js/handle-language';
-// import { loadTranslations, updateContent } from '../handle-language';
 
-// Mock loadTranslations et updateContent
+// We need to mock fetch before importing the module
+global.fetch = jest.fn();
+
+// Mock handle-language before importing initiateLanguageSelection
 jest.mock('../js/handle-language.js', () => {
     const originalModule = jest.requireActual('../js/handle-language.js');
     return {
@@ -15,6 +16,8 @@ jest.mock('../js/handle-language.js', () => {
         updateContent: jest.fn()
     };
 });
+
+import { initiateLanguageSelection, loadTranslations } from '../js/handle-language';
 
 describe('initiateLanguageSelection', () => {
 

@@ -5,6 +5,10 @@
     "jest": {
         "testEnvironment": "jsdom",
         "collectCoverage": true,
+        "collectCoverageFrom": [
+            "js/**/*.js",
+            "!js/**/*.test.js"
+        ],
         "coverageDirectory": "coverage",
         "coverageReporters": [
             "text",

@@ -3,7 +3,7 @@
  */
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { loadTranslations, updateAPRLabel } from '../js/handle-language';
+import { loadTranslations, updateAPRLabel, updateContent } from '../js/handle-language';
 
 describe('updateAPRLabel', () => {
     let aprElement;
@@ -105,5 +105,34 @@ describe('updateAPRLabel', () => {
         // expect(consoleErrorSpy).toHaveBeenCalledWith('APR element not found or translations are not available.');
         expect(document.getElementById('apr-overlay')).toBe(null);
         consoleErrorSpy.mockRestore();
+    });
+});
+
+describe('updateContent with null or invalid translations', () => {
+    beforeEach(() => {
+        const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
+        document.body.innerHTML = html;
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should handle null translations gracefully', () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        
+        updateContent(null);
+        
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Translations are not available or invalid.');
+        consoleWarnSpy.mockRestore();
+    });
+
+    it('should handle undefined translations gracefully', () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        
+        updateContent(undefined);
+        
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Translations are not available or invalid.');
+        consoleWarnSpy.mockRestore();
     });
 });
