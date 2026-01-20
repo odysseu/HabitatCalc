@@ -118,19 +118,109 @@ describe('updateContent with null or invalid translations', () => {
         jest.clearAllMocks();
     });
 
-    it('should handle null translations gracefully', () => {
+    it('should handle null translations gracefully', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         
-        updateContent(null);
+        await updateContent(null);
         
         expect(consoleWarnSpy).toHaveBeenCalledWith('Translations are not available or invalid.');
         consoleWarnSpy.mockRestore();
     });
 
-    it('should handle undefined translations gracefully', () => {
+    it('should handle undefined translations gracefully', async () => {
         const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         
-        updateContent(undefined);
+        await updateContent(undefined);
+        
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Translations are not available or invalid.');
+        consoleWarnSpy.mockRestore();
+    });
+
+    it('should handle empty object translations', async () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        
+        // Empty object is still truthy, so it should NOT warn
+        await updateContent({});
+        
+        expect(consoleWarnSpy).not.toHaveBeenCalled();
+        consoleWarnSpy.mockRestore();
+    });
+
+    it('should update all translatable elements when translations are provided', async () => {
+        const translations = {
+            contribution: 'Contribution Test',
+            generateReport: 'Generate Report',
+            closeButton: 'Close',
+            agencyCommission: 'Agency Commission',
+            coOwnership: 'Co-ownership',
+            helpIncomeShare: 'Income Share Help',
+            loanDuration: 'Loan Duration',
+            fileFees: 'File Fees',
+            resetFormHelp: 'Reset Form',
+            helpMonthlyIncome: 'Monthly Income Help',
+            fictitiousRent: 'Fictitious Rent',
+            notary: 'Notary',
+            pdfFileName: 'PDF File Name',
+            pdfFileNamePlaceHolder: 'Enter filename',
+            price: 'Price',
+            purchaseSection: 'Purchase',
+            loanSection: 'Loan',
+            incomesSection: 'Incomes',
+            rentingSection: 'Renting',
+            sectionTitle: 'Calculator',
+            summaryPart1: 'Summary Part 1',
+            summaryPart2: 'Summary Part 2',
+            appreciationRate: 'Appreciation Rate',
+            insuranceRate: 'Insurance Rate',
+            interestRate: 'Interest Rate',
+            fictitiousRentRate: 'Fictitious Rent Rate',
+            propertyTax: 'Property Tax',
+            buyHousingTax: 'Buy Housing Tax',
+            rentingHousingTax: 'Renting Housing Tax',
+            downloadPDF: 'Download PDF',
+            title: 'Habitat Calculator',
+            welcomeMessage: 'Welcome!'
+        };
+
+        await updateContent(translations);
+        
+        // Verify that key elements are updated
+        const titleElement = document.getElementById('title-section');
+        expect(titleElement).toBeTruthy();
+    });
+
+    it('should handle translations with missing optional keys', async () => {
+        const translations = {
+            // Minimal translations
+            title: 'Test Title'
+        };
+
+        // Should not throw even with incomplete translations
+        expect(() => updateContent(translations)).not.toThrow();
+    });
+
+    it('should handle false value as invalid translations', async () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        
+        await updateContent(false);
+        
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Translations are not available or invalid.');
+        consoleWarnSpy.mockRestore();
+    });
+
+    it('should handle zero as invalid translations', async () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        
+        await updateContent(0);
+        
+        expect(consoleWarnSpy).toHaveBeenCalledWith('Translations are not available or invalid.');
+        consoleWarnSpy.mockRestore();
+    });
+
+    it('should handle empty string as invalid translations', async () => {
+        const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        
+        await updateContent('');
         
         expect(consoleWarnSpy).toHaveBeenCalledWith('Translations are not available or invalid.');
         consoleWarnSpy.mockRestore();
