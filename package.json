@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "test": "jest --coverage --silent"
+        "test": "jest --coverage --silent && npx js-coverage-badges badges_output mode:chart"
     },
     "jest": {
         "testEnvironment": "jsdom",
