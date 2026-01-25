@@ -34,6 +34,50 @@ export async function loadTranslations(language) {
     }
 }
 
+/**
+ * Generic function to update all elements with data-i18n attributes
+ */
+function updateElementsWithDataI18n(translations) {
+    if (!translations) return;
+
+    // Update all elements with data-i18n attribute
+    document.querySelectorAll('[data-i18n]').forEach((element) => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[key]) {
+            // Check if element has data-i18n-html attribute to use innerHTML instead of textContent
+            if (element.hasAttribute('data-i18n-html')) {
+                element.innerHTML = translations[key];
+            } else {
+                element.textContent = translations[key];
+            }
+        }
+    });
+
+    // Update all elements with data-i18n-placeholder attribute
+    document.querySelectorAll('[data-i18n-placeholder]').forEach((element) => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (translations[key]) {
+            element.placeholder = translations[key];
+        }
+    });
+
+    // Update all elements with data-i18n-help attribute (for help text in tooltips)
+    document.querySelectorAll('[data-i18n-help]').forEach((element) => {
+        const key = element.getAttribute('data-i18n-help');
+        const labelKey = element.getAttribute('data-i18n');
+        if (translations[key] && translations[labelKey]) {
+            element.innerHTML = `${translations[labelKey]} <span class="help-icon">? <span class="help-text">${translations[key]}</span></span>`;
+        }
+    });
+
+    // Update APR overlay
+    const aprElement = document.getElementById('apr-overlay');
+    if (aprElement && translations.APR) {
+        const aprValue = aprElement.textContent.match(/[\d.]+/)?.[0] || '0.00';
+        aprElement.textContent = `${translations.APR}: ${aprValue}%`;
+    }
+}
+
 export async function updateAPRLabel(apr, translations) {
     const aprElement = document.getElementById('apr-overlay');
     let aprLabel, aprValue;
@@ -65,91 +109,16 @@ export async function updateAPRLabel(apr, translations) {
 
 export async function updateContent(translations) {
     if (translations) {
-        // console.log('Updating content with translations:', translations);
-        const contributionLabel = document.querySelector('label[for="contribution"]');
-        const calculateButton = document.getElementById('calculate-button');
-        const closeButton = document.getElementById('close-welcome');
-        const agencyCommisionFeesLabel = document.querySelector('label[for="agency-commission"]');
-        const coOwnershipLabel = document.querySelector('label[for="coOwnership"]');
-        const incomeShare0 = document.getElementById('income-share-0');
-        const loanDurationLabel = document.querySelector('label[for="loanDuration"]');
-        const fileFeesLabel = document.querySelector('label[for="file-fees"]');
-        const resetLogoHelp = document.querySelector('.logo-help');
-        const logoHelp = document.querySelector('.github-logo-help');
-        const income0 = document.getElementById('income-0');
-        const fictitiousRentLabel = document.querySelector('label[for="fictitiousRent"]');
-        const notaryLabel = document.querySelector('label[for="notary"]');
-        const pdfFileNameLabel = document.querySelector('label[for="pdf-filename"]');
-        const pdfFileNamePlaceHolder = document.getElementById("pdf-filename");
-        const priceLabel = document.querySelector('label[for="price"]');
-        const purchaseSection = document.getElementById('purchase-section');
-        const loanSection = document.getElementById('loan-section');
-        const rentingSection = document.getElementById('renting-section');
-        const incomesSection = document.getElementById('incomes-section');
-        const sectionTitle = document.getElementById('title-section');
-        const apr = document.getElementById('apr-overlay');
-        const propertyTaxLabel = document.querySelector('label[for="propertyTax"]');
-        const buyHousingTaxLabel = document.querySelector('label[for="buyHousingTax"]');
-        const rentingHousingTaxLabel = document.querySelector('label[for="rentingHousingTax"]');
-        const downloadButton = document.querySelector('#download-button button');
-        const title = document.getElementById('title');
-        const appreciationRateLabel = document.querySelector('label[for="appreciation-rate"]');
-        const insuranceRateLabel = document.querySelector('label[for="insurance-rate"]');
-        const interestRateLabel = document.querySelector('label[for="interest-rate"]');
-        const fictitiousRentRateLabel = document.querySelector('label[for="fictitiousRentRate"]');
-        const welcomeMessage = document.getElementById('welcome-message');
-        const summaryPart1 = document.getElementById('summary-part1');
-        const summaryPart2 = document.getElementById('summary-part2');
-        const summaryPart3 = document.getElementById('summary-part3');
-        const summaryPart4 = document.getElementById('summary-part4');
-        const summaryPart5 = document.getElementById('summary-part5');
+        // Use the generic data-i18n approach
+        updateElementsWithDataI18n(translations);
 
-
-        if (contributionLabel) contributionLabel.innerHTML = `${translations.contribution} <span class="help-icon">? <span class="help-text">${translations.helpContribution}</span></span>`;
-        if (calculateButton) calculateButton.textContent = translations.generateReport;
-        if (closeButton) closeButton.textContent = translations.closeButton;
-        if (agencyCommisionFeesLabel) agencyCommisionFeesLabel.innerHTML = `${translations.agencyCommission} <span class="help-icon">? <span class="help-text">${translations.helpAgencyCommission}</span></span>`;
-        if (coOwnershipLabel) coOwnershipLabel.innerHTML = `${translations.coOwnership} <span class="help-icon">? <span class="help-text">${translations.helpCoOwnership}</span></span>`;
-        if (incomeShare0) incomeShare0.placeholder = translations.helpIncomeShare;
-        if (loanDurationLabel) loanDurationLabel.innerHTML = `${translations.loanDuration} <span class="help-icon">? <span class="help-text">${translations.helpLoanDuration}</span></span>`;
-        if (fileFeesLabel) fileFeesLabel.innerHTML = `${translations.fileFees} <span class="help-icon">? <span class="help-text">${translations.helpFileFees}</span></span>`;
-        if (resetLogoHelp) resetLogoHelp.textContent = translations.resetFormHelp;
-        if (logoHelp) logoHelp.textContent = translations.resetFormHelp;
-        if (income0) income0.placeholder = translations.helpMonthlyIncome;
-        if (fictitiousRentLabel) fictitiousRentLabel.innerHTML = `${translations.fictitiousRent} <span class="help-icon">? <span class="help-text">${translations.helpFictitiousRent}</span></span>`;
-        if (notaryLabel) notaryLabel.innerHTML = `${translations.notary} <span class="help-icon">? <span class="help-text">${translations.helpNotary}</span></span>`;
-        if (pdfFileNameLabel) pdfFileNameLabel.textContent = translations.pdfFileName;
-        if (pdfFileNamePlaceHolder) pdfFileNamePlaceHolder.placeholder = translations.pdfFileNamePlaceHolder;
-        if (priceLabel) priceLabel.innerHTML = `${translations.price} <span class="help-icon">? <span class="help-text">${translations.helpPrice}</span></span>`;
-        if (purchaseSection) purchaseSection.textContent = translations.purchaseSection;
-        if (loanSection) loanSection.textContent = translations.loanSection;
-        if (incomesSection) incomesSection.textContent = translations.incomesSection;
-        if (rentingSection) rentingSection.textContent = translations.rentingSection;
-        if (sectionTitle) sectionTitle.textContent = translations.sectionTitle;
-        if (apr) {
-            // console.log("calculating APR inside updateContent");
-            const aprValue = calculateAPR(); //apr.textContent = `${translations.reportAPR}: `;
+        // Handle APR calculation separately as it needs to preserve the value
+        const aprElement = document.getElementById('apr-overlay');
+        if (aprElement) {
+            const aprValue = calculateAPR();
             updateAPRLabel(aprValue, translations);
         }
-        if (summaryPart1) summaryPart1.textContent = translations.summaryPart1;
-        if (summaryPart2) summaryPart2.textContent = translations.summaryPart2;
-        if (summaryPart3) summaryPart3.textContent = translations.summaryPart3;
-        if (summaryPart4) summaryPart4.textContent = translations.summaryPart4;
-        if (summaryPart5) summaryPart5.textContent = translations.summaryPart5;
-
-        if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
-        if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;
-        if (interestRateLabel) interestRateLabel.innerHTML = `${translations.interestRate} <span class="help-icon">? <span class="help-text">${translations.helpInterestRate}</span></span>`;
-        if (fictitiousRentRateLabel) fictitiousRentRateLabel.innerHTML = `${translations.fictitiousRentRate} <span class="help-icon">? <span class="help-text">${translations.helpFictitiousRentRate}</span></span>`;
-        if (propertyTaxLabel) propertyTaxLabel.innerHTML = `${translations.propertyTax} <span class="help-icon">? <span class="help-text">${translations.helpPropertyTax}</span></span>`;
-        if (buyHousingTaxLabel) buyHousingTaxLabel.innerHTML = `${translations.buyHousingTax} <span class="help-icon">? <span class="help-text">${translations.helpBuyHousingTax}</span></span>`;
-        if (rentingHousingTaxLabel) rentingHousingTaxLabel.innerHTML = `${translations.rentingHousingTax} <span class="help-icon">? <span class="help-text">${translations.helpRentingHousingTax}</span></span>`;
-        if (downloadButton) downloadButton.textContent = translations.downloadPDF;
-        if (title) title.textContent = translations.title;
-        if (welcomeMessage) welcomeMessage.querySelector('p').innerHTML = translations.welcomeMessage;
-
-    }
-    else {
+    } else {
         console.warn('Translations are not available or invalid.');
     }
 }
