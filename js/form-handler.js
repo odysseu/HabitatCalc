@@ -213,14 +213,15 @@ export function calculateMonthlyPayment(borrowedAmount, loanDuration, interestRa
 export function findPivotYear(
     price, notaryFees, agencyCommissionFees, contribution,
     monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
-    appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees
+    appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees,
+    propertyTaxRate
 ) {
     const initialCost = price + notaryFees + agencyCommissionFees + fileFees + contribution;
     // const initialCost = price + notaryFees + agencyCommissionFees + fileFees - contribution;
     for (let t = 1; t <= maxDuration; t++) {
         let resaleValue = price * Math.pow(1 + appreciationRate, t);
         let cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
-        let cumulPropertyTax = propertyTax * t;
+        let cumulPropertyTax = propertyTaxRate === 0 ? propertyTax * t : propertyTax * (Math.pow(1 + propertyTaxRate, t) - 1) / propertyTaxRate;
         let cumulBuyHousingTax = buyHousingTax * t;
         let cumulativeCoOwnershipFees = coOwnershipFees * t;
         let netPurchaseLosses = initialCost + cumulMonthlyPayments + cumulPropertyTax + cumulBuyHousingTax + cumulativeCoOwnershipFees - resaleValue - cumulIncomes;
@@ -240,14 +241,15 @@ export function findPivotYear(
 export function calculatePurchaseLosses(
     price, notaryFees, agencyCommissionFees, contribution,
     monthlyPayment, propertyTax, buyHousingTax, appreciationRate,
-    maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees
+    maxDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees,
+    propertyTaxRate
 ) {
     const purchaseLosses = [];
     const initialCost = price + notaryFees + agencyCommissionFees + fileFees + contribution;
     for (let t = 1; t <= maxDuration; t++) {
         const resaleValue = price * Math.pow(1 + appreciationRate, t);
         const cumulMonthlyPayments = t <= loanDuration ? monthlyPayment * 12 * t : monthlyPayment * 12 * loanDuration;
-        const cumulPropertyTax = propertyTax * t;
+        const cumulPropertyTax = propertyTaxRate === 0 ? propertyTax * t : propertyTax * (Math.pow(1 + propertyTaxRate, t) - 1) / propertyTaxRate;
         const cumulBuyHousingTax = buyHousingTax * t;
         const cumulativeCoOwnershipFees = coOwnershipFees * t;
 

@@ -10,7 +10,14 @@ import { forceLightMode, restoreMode } from './dark-mode.js';
  */
 export function updateSummary(repaymentYear, cumulativePurchase) {
     document.getElementById('repaymentYearDisplay').textContent = repaymentYear;
-    document.getElementById('cumulativePurchaseDisplay').textContent = `${cumulativePurchase.toFixed(0)}\u00A0€`;
+    document.getElementById('cumulativePurchaseDisplay').innerHTML = `<strong>${cumulativePurchase.toFixed(0)}\u00A0€</strong>`;
+    
+    // Calculate yearly and monthly averages
+    const yearlyAverage = repaymentYear > 0 ? cumulativePurchase / repaymentYear : 0;
+    const monthlyAverage = yearlyAverage / 12;
+    
+    document.getElementById('yearlyAverageDisplay').innerHTML = `<strong>${yearlyAverage.toFixed(0)}&nbsp;€</strong>`;
+    document.getElementById('monthlyAverageDisplay').innerHTML = `<strong>${monthlyAverage.toFixed(0)}&nbsp;€</strong>`;
 }
 
 /**
@@ -21,7 +28,7 @@ export async function generateReport() {
         price, notary, appreciationRate, agencyCommission, contribution,
         interestRate, loanDuration, insuranceRate, fictitiousRent,
         buyHousingTax, rentingHousingTax, propertyTax, fictitiousRentRate,
-        coOwnershipFees, fileFees, maxDuration
+        propertyTaxRate, coOwnershipFees, fileFees, maxDuration
     } = getReportFormValues();
 
     const { notaryFees, agencyCommissionFees, purchaseTotal, borrowedAmount } = calculatePurchaseTotals(price, notary, agencyCommission, fileFees, contribution);
@@ -34,14 +41,16 @@ export async function generateReport() {
     const repaymentYear = findPivotYear(
         price, notaryFees, agencyCommissionFees, contribution,
         monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
-        appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees
+        appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees,
+        propertyTaxRate
     );
     const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4);
     const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate, rentingHousingTax);
     const cumulativePurchase = calculatePurchaseLosses(
         price, notaryFees, agencyCommissionFees, contribution,
         monthlyPayment, propertyTax, buyHousingTax, appreciationRate,
-        maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees
+        maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees,
+        propertyTaxRate
     );
     const cumulativePurchaseUntilRepayment = cumulativePurchase[repaymentYear];
 
@@ -57,13 +66,14 @@ export async function generateReport() {
     simulationContainer.appendChild(createCollapsibleResultsSection(
         translations.reportPurchase,
         [
-            { label: translations.reportPrice, value: `${price.toFixed(2)}\u00A0€` },
-            { label: translations.reportNotaryFees, value: `${notaryFees.toFixed(2)}\u00A0€` },
-            { label: translations.reportAgencyCommission, value: `${agencyCommissionFees.toFixed(2)}\u00A0€` },
-            { label: translations.reportPurchaseTotal, value: `${purchaseTotal.toFixed(2)}\u00A0€` },
-            { label: translations.reportCoOwnership, value: `${coOwnershipFees.toFixed(2)}\u00A0€` },
-            { label: translations.reportBuyHousingTax, value: `${buyHousingTax.toFixed(2)}\u00A0€` },
-            { label: translations.reportPropertyTax, value: `${propertyTax.toFixed(2)}\u00A0€` },
+            { label: translations.reportPrice, value: `<strong>${price.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportNotaryFees, value: `<strong>${notaryFees.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportAgencyCommission, value: `<strong>${agencyCommissionFees.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportPurchaseTotal, value: `<strong>${purchaseTotal.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportCoOwnership, value: `<strong>${coOwnershipFees.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportBuyHousingTax, value: `<strong>${buyHousingTax.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportPropertyTax, value: `<strong>${propertyTax.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportPropertyTaxRate, value: `${(propertyTaxRate * 100).toFixed(2)}\u00A0%` },
             { label: translations.reportAppreciationRate, value: `${(appreciationRate * 100).toFixed(2)}\u00A0%` }
         ]
     ));
@@ -71,24 +81,24 @@ export async function generateReport() {
     simulationContainer.appendChild(createCollapsibleResultsSection(
         translations.reportLoan,
         [
-            { label: translations.contribution, value: `${contribution.toFixed(2)}\u00A0€` },
-            { label: translations.reportBorrowedAmount, value: `${borrowedAmount.toFixed(2)}\u00A0€` },
+            { label: translations.contribution, value: `<strong>${contribution.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportBorrowedAmount, value: `<strong>${borrowedAmount.toFixed(2)}\u00A0€</strong>` },
             { label: translations.reportInsuranceRate, value: `${(insuranceRate * 100).toFixed(2)}\u00A0%` },
             { label: translations.reportInterestRate, value: `${(interestRate * 100).toFixed(2)}\u00A0%` },
             { label: translations.reportAPR, value: `${APR.toFixed(2)}\u00A0%` },
-            { label: translations.reportMonthlyPayment, value: `${monthlyPayment.toFixed(2)}\u00A0€` },
-            { label: translations.reportTotalInterests, value: `${totalInterestCost.toFixed(2)}\u00A0€` },
-            { label: translations.reportLoanTotalCost, value: `${loanTotalCost.toFixed(2)}\u00A0€` }
+            { label: translations.reportMonthlyPayment, value: `<strong>${monthlyPayment.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportTotalInterests, value: `<strong>${totalInterestCost.toFixed(2)}\u00A0€</strong>` },
+            { label: translations.reportLoanTotalCost, value: `<strong>${loanTotalCost.toFixed(2)}\u00A0€</strong>` }
         ]
     ));
 
     const rentingRows = [
-        { label: translations.reportFictitiousMonthlyRent, value: `${fictitiousRent.toFixed(2)}\u00A0€` },
+        { label: translations.reportFictitiousMonthlyRent, value: `<strong>${fictitiousRent.toFixed(2)}\u00A0€</strong>` },
         { label: translations.reportFictitiousRentEvolutionRate, value: `${(fictitiousRentRate * 100).toFixed(2)}\u00A0%` },
-        { label: translations.reportRentingHousingTax, value: `${rentingHousingTax.toFixed(2)}\u00A0€` }
+        { label: translations.reportRentingHousingTax, value: `<strong>${rentingHousingTax.toFixed(2)}\u00A0€</strong>` }
     ];
     if (cumulMonthlyIncomes > 0) {
-        rentingRows.push({ label: translations.reportMonthlyAgregatedIncome, value: `${cumulMonthlyIncomes.toFixed(2)}\u00A0€` });
+        rentingRows.push({ label: translations.reportMonthlyAgregatedIncome, value: `<strong>${cumulMonthlyIncomes.toFixed(2)}\u00A0€</strong>` });
     }
     simulationContainer.appendChild(createCollapsibleResultsSection(translations.reportRenting, rentingRows));
 
@@ -286,7 +296,7 @@ export async function downloadPDF() {
         price, notary, appreciationRate, agencyCommission, contribution,
         interestRate, loanDuration, insuranceRate, fictitiousRent,
         buyHousingTax, rentingHousingTax, propertyTax, fictitiousRentRate,
-        coOwnershipFees, fileFees, maxDuration
+        propertyTaxRate, coOwnershipFees, fileFees, maxDuration
     } = getReportFormValues();
 
     const { notaryFees, agencyCommissionFees, purchaseTotal, borrowedAmount } = calculatePurchaseTotals(price, notary, agencyCommission, fileFees, contribution);
@@ -295,11 +305,12 @@ export async function downloadPDF() {
     const repaymentYear = findPivotYear(
         price, notaryFees, agencyCommissionFees, contribution,
         monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
-        appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees
+        appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees,
+        propertyTaxRate
     );
 
     addPDFHeader(doc, translations, margin);
-    addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees, propertyTax);
+    addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees, propertyTax, propertyTaxRate);
     const loanTotalCost = monthlyPayment * loanDuration * 12;
     const totalInterestCost = loanTotalCost - borrowedAmount;
     const APR = calculateAPR();
@@ -394,6 +405,7 @@ export function getReportFormValues() {
         buyHousingTax: parseFloat(document.getElementById('buyHousingTax').value),
         rentingHousingTax: parseFloat(document.getElementById('rentingHousingTax').value),
         propertyTax: parseFloat(document.getElementById('propertyTax').value),
+        propertyTaxRate: parseFloat(document.getElementById('propertyTaxRate').value) / 100,
         fictitiousRentRate: parseFloat(document.getElementById('fictitiousRentRate').value) / 100,
         coOwnershipFees: parseFloat(document.getElementById('coOwnership').value),
         fileFees: parseFloat(document.getElementById('file-fees').value),
@@ -415,7 +427,7 @@ export function calculatePurchaseTotals(price, notary, agencyCommission, fileFee
 /**
  * Adds the purchase table to the PDF.
  */
-export function addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees, propertyTax) {
+export function addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees, propertyTax, propertyTaxRate) {
     doc.setFontSize(10);
     doc.autoTable({
         startY: doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
@@ -427,6 +439,7 @@ export function addPurchaseTable(doc, translations, margin, tableSpacing, price,
             [translations.reportfileFees, `${fileFees.toFixed(2)} €`],
             [translations.reportPurchaseTotal, `${purchaseTotal.toFixed(2)} €`],
             [translations.reportPropertyTax, `${propertyTax.toFixed(0)} €`],
+            [translations.reportPropertyTaxRate, `${(propertyTaxRate * 100).toFixed(2)} %`],
             [translations.reportBuyHousingTax, `${buyHousingTax.toFixed(0)} €`],
             [translations.reportCoOwnership, `${coOwnershipFees.toFixed(2)} €`],
             [translations.reportAppreciationRate, `${(appreciationRate * 100).toFixed(2)} %`]
@@ -638,7 +651,7 @@ export function createCollapsibleResultsSection(title, rows) {
         const tdLabel = document.createElement('td');
         tdLabel.textContent = row.label;
         const tdValue = document.createElement('td');
-        tdValue.textContent = row.value;
+        tdValue.innerHTML = row.value;
         tr.appendChild(tdLabel);
         tr.appendChild(tdValue);
         tbody.appendChild(tr);

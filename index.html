@@ -91,6 +91,11 @@
                                     <label for="propertyTax">Taxe foncière&nbsp;(€)</label>
                                     <input type="number" id="propertyTax" name="propertyTax" value="1000" required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="propertyTaxRate">Taux évolution annuelle taxe foncière&nbsp;(%)</label>
+                                    <input type="number" step="0.01" id="propertyTaxRate" name="propertyTaxRate"
+                                        value="0" required>
+                                </div>
                             </div>
                         </div>
                         <div class="form-section">
@@ -177,6 +182,14 @@
                             <span id="summary-part2">, il devient plus avantageux d’avoir acheté plutôt que loué. À ce
                                 moment-là, la dépense dans chaque cas aura été d'environ </span>
                             <strong id="cumulativePurchaseDisplay">Y&nbsp;€</strong>
+                            <span>.</span>
+                        </p>
+                        <p>
+                            <span id="summary-part3">Cela représente environ </span>
+                            <strong id="yearlyAverageDisplay">Z&nbsp;€</strong>
+                            <span id="summary-part4"> par an, ou </span>
+                            <strong id="monthlyAverageDisplay">W&nbsp;€</strong>
+                            <span id="summary-part5"> par mois</span>
                         </p>
                     </div>
                 </div>

@@ -100,6 +100,9 @@ export async function updateContent(translations) {
         const welcomeMessage = document.getElementById('welcome-message');
         const summaryPart1 = document.getElementById('summary-part1');
         const summaryPart2 = document.getElementById('summary-part2');
+        const summaryPart3 = document.getElementById('summary-part3');
+        const summaryPart4 = document.getElementById('summary-part4');
+        const summaryPart5 = document.getElementById('summary-part5');
 
 
         if (contributionLabel) contributionLabel.innerHTML = `${translations.contribution} <span class="help-icon">? <span class="help-text">${translations.helpContribution}</span></span>`;
@@ -130,6 +133,9 @@ export async function updateContent(translations) {
         }
         if (summaryPart1) summaryPart1.textContent = translations.summaryPart1;
         if (summaryPart2) summaryPart2.textContent = translations.summaryPart2;
+        if (summaryPart3) summaryPart3.textContent = translations.summaryPart3;
+        if (summaryPart4) summaryPart4.textContent = translations.summaryPart4;
+        if (summaryPart5) summaryPart5.textContent = translations.summaryPart5;
 
         if (appreciationRateLabel) appreciationRateLabel.innerHTML = `${translations.appreciationRate} <span class="help-icon">? <span class="help-text">${translations.helpAppreciationRate}</span></span>`;
         if (insuranceRateLabel) insuranceRateLabel.innerHTML = `${translations.insuranceRate} <span class="help-icon">? <span class="help-text">${translations.helpInsuranceRate}</span></span>`;

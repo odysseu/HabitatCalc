@@ -80,6 +80,8 @@ beforeAll(() => {
         reportCoOwnership: 'Co-Ownership Fees',
         reportBuyHousingTax: 'Buy Housing Tax',
         reportPropertyTax: 'Property Tax',
+        reportProprietaryTax: 'Proprietary Tax',
+        reportProprietaryTaxRate: 'Proprietary Tax Rate',
         reportfileFees: 'File Fees',
       },
       20,
@@ -92,7 +94,9 @@ beforeAll(() => {
       1500,
       500,
       1000,
-      1000
+      1000,
+      0,
+      0
     );
     expect(mockDoc.autoTable).toHaveBeenCalled();
   });

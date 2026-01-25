@@ -29,7 +29,9 @@ describe('findPivotYear', () => {
         0.01, // fictitiousRentRate
         4000, // cumulIncomes
         1500, // coOwnershipFees
-        1000 // fileFees
+        1000, // fileFees
+        0, // proprietaryTax
+        0 // proprietaryTaxRate
       );
       expect(pivotYear).toBeGreaterThan(0);
       expect(pivotYear).toBe(9);
