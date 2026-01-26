@@ -15,26 +15,31 @@
 <body>
     <div id="welcome-overlay" class="welcome-overlay active">
         <div id="welcome-message" class="welcome-message">
-            <p>Bienvenue&nbsp;!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il
+            <p data-i18n="welcomeMessage" data-i18n-html>Bienvenue&nbsp;!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il
                 devient
                 rentable d'acheter un bien plutôt que de le louer.</p>
-            <button id="close-welcome">Fermer</button>
+            <button id="close-welcome" data-i18n="closeButton">Fermer</button>
         </div>
     </div>
     <header class="sticky-header">
         <div class="header-left">
             <div class="logo-container">
                 <img src="logos/home-logo-light-v3.png" alt="Home Logo" class="header-logo" id="home-logo">
-                <span id="reset-logo-help" class="logo-help">Réinitialiser le formulaire</span>
+                <span id="reset-logo-help" class="logo-help" data-i18n="resetFormHelp">Réinitialiser le formulaire</span>
             </div>
         </div>
-        <h1 id="title-section">Calculette Projet Immobilier</h1>
+        <h1 id="title-section" data-i18n="sectionTitle">Calculette Projet Immobilier</h1>
         <div class="header-right">
             <div class="help-icon-container">
                 <button id="help-icon-button" class="help-icon-button" aria-label="Help">
-                    Σ
+                    <svg viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+                        <!-- Sigma symbol -->
+                        <text x="4" y="21" font-size="22" font-weight="normal" fill="currentColor">Σ</text>
+                        <!-- Question mark on bottom-right -->
+                        <text x="15" y="25" font-size="15" font-weight="normal" fill="currentColor">?</text>
+                    </svg>
                 </button>
-                <span id="help-icon-tooltip" class="logo-help">Aide</span>
+                <span id="help-icon-tooltip" class="logo-help" data-i18n="helpTitle">Aide</span>
             </div>
             <div class="github-logo">
                 <a href="https://github.com/odysseu/HabitatCalc" target="_self">
@@ -58,102 +63,107 @@
                 <div class="form-container">
                     <form id="form-calculator" class="form">
                         <div class="form-section">
-                            <h2 id="purchase-section" class="form-section-toggle">Achat</h2>
+                            <h2 id="purchase-section" class="form-section-toggle" data-i18n="purchaseSection">Achat</h2>
                             <div class="form-section-content">
                                 <div class="form-group">
-                                    <label for="price">Prix du bien&nbsp;(€)</label>
+                                    <label for="price" data-i18n="price" data-i18n-help="helpPrice">Prix du bien&nbsp;(€)</label>
                                     <input type="number" step="0.01" id="price" name="price" value="300000" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="notary">Frais de notaire&nbsp;(%)</label>
+                                    <label for="notary" data-i18n="notary" data-i18n-help="helpNotary">Frais de notaire&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="notary" name="notary" value="8" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="appreciation-rate">Taux appréciation bien&nbsp;(%)</label>
+                                    <label for="appreciation-rate" data-i18n="appreciationRate" data-i18n-help="helpAppreciationRate">Taux appréciation bien&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="appreciation-rate" name="appreciation-rate"
                                         value="2" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="agency-commission">Commission agence&nbsp;(%)</label>
+                                    <label for="agency-commission" data-i18n="agencyCommission" data-i18n-help="helpAgencyCommission">Commission agence&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="agency-commission" name="agency-commission"
                                         value="0" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="coOwnership">Frais de copropriété&nbsp;(€)</label>
+                                    <label for="coOwnership" data-i18n="coOwnership" data-i18n-help="helpCoOwnership">Frais de copropriété&nbsp;(€)</label>
                                     <input type="number" step="0.01" id="coOwnership" name="coOwnership" value="0"
                                         required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="buyHousingTax">Taxe d'habitation&nbsp;(€)</label>
+                                    <label for="buyHousingTax" data-i18n="buyHousingTax" data-i18n-help="helpBuyHousingTax">Taxe d'habitation&nbsp;(€)</label>
                                     <input type="number" id="buyHousingTax" name="buyHousingTax" value="0" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="propertyTax">Taxe foncière&nbsp;(€)</label>
+                                    <label for="propertyTax" data-i18n="propertyTax" data-i18n-help="helpPropertyTax">Taxe foncière&nbsp;(€)</label>
                                     <input type="number" id="propertyTax" name="propertyTax" value="1000" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="propertyTaxRate" data-i18n="propertyTaxRate" data-i18n-help="helpPropertyTaxEvolution">Taux évolution annuelle taxe foncière&nbsp;(%)</label>
+                                    <input type="number" step="0.01" id="propertyTaxRate" name="propertyTaxRate"
+                                        value="0" required>
                                 </div>
                             </div>
                         </div>
                         <div class="form-section">
-                            <h2 id="renting-section" class="form-section-toggle">Location</h2>
+                            <h2 id="renting-section" class="form-section-toggle" data-i18n="rentingSection">Location</h2>
                             <div class="form-section-content">
                                 <div class="form-group">
-                                    <label for="fictitiousRent">Loyer fictif mensuel&nbsp;(€)</label>
+                                    <label for="fictitiousRent" data-i18n="fictitiousRent" data-i18n-help="helpFictitiousRent">Loyer fictif mensuel&nbsp;(€)</label>
                                     <input type="number" id="fictitiousRent" name="fictitiousRent" value="1000"
                                         required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="fictitiousRentRate">Taux évolution annuelle du loyer
+                                    <label for="fictitiousRentRate" data-i18n="fictitiousRentRate" data-i18n-help="helpFictitiousRentRate">Taux évolution annuelle du loyer
                                         fictif&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="fictitiousRentRate" name="fictitiousRentRate"
                                         value="1" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="rentingHousingTax">Taxe d'habitation&nbsp;(€)</label>
+                                    <label for="rentingHousingTax" data-i18n="rentingHousingTax" data-i18n-help="helpRentingHousingTax">Taxe d'habitation&nbsp;(€)</label>
                                     <input type="number" id="rentingHousingTax" name="rentingHousingTax" value="0"
                                         required>
                                 </div>
                             </div>
                         </div>
                         <div class="form-section">
-                            <h2 id="loan-section" class="form-section-toggle">Emprunt</h2>
+                            <h2 id="loan-section" class="form-section-toggle" data-i18n="loanSection">Emprunt</h2>
                             <div class="form-section-content">
                                 <div class="form-group">
-                                    <label for="file-fees">Frais de dossier&nbsp;(€)</label>
+                                    <label for="file-fees" data-i18n="fileFees" data-i18n-help="helpFileFees">Frais de dossier&nbsp;(€)</label>
                                     <input type="number" step="1" id="file-fees" name="file-fees" value="0" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="contribution">Apport personnel&nbsp;(€)</label>
+                                    <label for="contribution" data-i18n="contribution" data-i18n-help="helpContribution">Apport personnel&nbsp;(€)</label>
                                     <input type="number" step="0.01" id="contribution" name="contribution" value="0"
                                         required>
                                 </div>
                                 <div class="form-group interest-rate-container">
-                                    <label for="interest-rate">Taux d'intérêt&nbsp;(%)</label>
+                                    <label for="interest-rate" data-i18n="interestRate" data-i18n-help="helpInterestRate">Taux d'intérêt&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="interest-rate" name="interest-rate" value="1"
                                         required>
                                     <div class="input-overlay" id="apr-overlay">TAEG 0.00%</div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="insurance-rate">Taux de l'assurance emprunteur&nbsp;(%)</label>
+                                    <label for="insurance-rate" data-i18n="insuranceRate" data-i18n-help="helpInsuranceRate">Taux de l'assurance emprunteur&nbsp;(%)</label>
                                     <input type="number" step="0.01" id="insurance-rate" name="insurance-rate" value="0"
                                         required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="loanDuration">Durée du prêt (années)</label>
+                                    <label for="loanDuration" data-i18n="loanDuration" data-i18n-help="helpLoanDuration">Durée du prêt (années)</label>
                                     <input type="number" step="1" id="loanDuration" name="loanDuration" value="20"
                                         required>
                                 </div>
                             </div>
                         </div>
                         <div class="form-section">
-                            <h2 id="incomes-section" class="form-section-toggle">Revenus</h2>
+                            <h2 id="incomes-section" class="form-section-toggle" data-i18n="incomesSection">Revenus</h2>
                             <div class="form-section-content">
                                 <div class="incomes-container" id="incomes-container">
                                     <div class="income-container">
                                         <div class="income-inputs">
                                             <input type="number" id="income-0" name="income-0"
-                                                placeholder="Revenu mensuel&nbsp;(€)" required>
+                                                data-i18n-placeholder="helpMonthlyIncome" placeholder="Revenu mensuel&nbsp;(€)" required>
                                             <input type="number" step="0.01" id="income-share-0" name="income-share-0"
-                                                placeholder="Durée&nbsp;(% de l'année)" required>
+                                                data-i18n-placeholder="helpIncomeShare" placeholder="Durée&nbsp;(% de l'année)" required>
                                         </div>
                                         <button class="change-income-button" type="button"
                                             id="add-income-button">+</button>
@@ -162,7 +172,7 @@
                             </div>
                         </div>
                         <div class="form-actions">
-                            <button type="button" id="calculate-button">Calculer</button>
+                            <button type="button" id="calculate-button" data-i18n="generateReport">Calculer</button>
                         </div>
                     </form>
                 </div>
@@ -172,11 +182,19 @@
                     </div>
                     <div id="summary-box" class="summary-box">
                         <p>
-                            <span id="summary-part1">À partir de l’année </span>
+                            <span id="summary-part1" data-i18n="summaryPart1">À partir de l'année </span>
                             <strong id="repaymentYearDisplay">X</strong>
-                            <span id="summary-part2">, il devient plus avantageux d’avoir acheté plutôt que loué. À ce
+                            <span id="summary-part2" data-i18n="summaryPart2">, il devient plus avantageux d'avoir acheté plutôt que loué. À ce
                                 moment-là, la dépense dans chaque cas aura été d'environ </span>
                             <strong id="cumulativePurchaseDisplay">Y&nbsp;€</strong>
+                            <span>.</span>
+                        </p>
+                        <p>
+                            <span id="summary-part3" data-i18n="summaryPart3">Cela représente environ </span>
+                            <strong id="yearlyAverageDisplay">Z&nbsp;€</strong>
+                            <span id="summary-part4" data-i18n="summaryPart4"> par an, ou </span>
+                            <strong id="monthlyAverageDisplay">W&nbsp;€</strong>
+                            <span id="summary-part5" data-i18n="summaryPart5"> par mois</span>
                         </p>
                     </div>
                 </div>

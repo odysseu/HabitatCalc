@@ -22,12 +22,12 @@
     --light-input-border-color: #cccccc5f;
     --dark-input-border-color: #cccccc1f;
     --welcome-message-light-bg-color: #aac3cf;
-    --welcome-message-dark-bg-color: #314050;
+    --welcome-message-dark-bg-color: #283543;
     --toggle-light-bg-color: #b8cee082;
     --toggle-dark-bg-color: #1b3b627a;
     --slider-background-color: #ccc;
-    --light-result-table-background-color: #aac3cf;
-    --dark-result-table-background-color: #314050;
+    /* --light-result-table-background-color: #aac3cf; */
+    /* --dark-result-table-background-color: #283543; */
     --light-result-section-table-background-color: #6dc0e6c2;
     --dark-result-section-table-background-color: #1f558fc2;
     --light-even-row-color: #f2f2f2;
@@ -67,7 +67,7 @@ body {
     --graph-purchase-fill-color: var(--graph-purchase-fill-color-light);
     --graph-text-color: var(--graph-text-color-light);
     --border-color: var(--light-border-color);
-    --result-table-background-color: var(--light-result-table-background-color);
+    /* --result-table-background-color: var(--light-result-table-background-color); */
     --result-section-table-background-color: var(--light-result-section-table-background-color);
     --input-bg: var(--input-light-bg);
     --bg-color: var(--light-bg-color);
@@ -99,7 +99,7 @@ body.dark-mode {
     --graph-text-color: var(--graph-text-color-dark);
     --summary-bg-color: var(--dark-bg-color);
     --border-color: var(--dark-border-color);
-    --result-table-background-color: var(--dark-result-table-background-color);
+    /* --result-table-background-color: var(--dark-result-table-background-color); */
     --result-section-table-background-color: var(--dark-result-section-table-background-color);
     --input-bg: var(--input-dark-bg);
     --bg-color: var(--dark-bg-color);

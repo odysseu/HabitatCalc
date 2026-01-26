@@ -40,23 +40,8 @@ async function loadHelpModal() {
         helpModalOverlay = document.querySelector('.help-modal-overlay');
         helpModalCloseButton = document.getElementById('help-modal-close');
         
-        // Add event listeners
-        helpIcon.addEventListener('click', openHelpModal);
-        helpModalCloseButton.addEventListener('click', closeHelpModal);
-        helpModalOverlay.addEventListener('click', closeHelpModal);
-        
-        // Close modal when pressing Escape key
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && helpModal.classList.contains('active')) {
-                closeHelpModal();
-            }
-        });
-
-        // Listen to language changes
-        languageSelect.addEventListener('change', async (event) => {
-            const language = event.target.value;
-            await updateHelpModalTranslations(language);
-        });
+        // Attach event listeners
+        attachHelpModalEventListeners();
 
         // Initial translation update
         const initialLanguage = languageSelect.value || 'fr';
@@ -67,6 +52,31 @@ async function loadHelpModal() {
     } catch (error) {
         console.error('Error loading help modal:', error);
     }
+}
+
+/**
+ * Attaches event listeners to help modal elements
+ */
+function attachHelpModalEventListeners() {
+    // Help icon click
+    helpIcon.addEventListener('click', openHelpModal);
+    
+    // Close button and overlay clicks
+    helpModalCloseButton.addEventListener('click', closeHelpModal);
+    helpModalOverlay.addEventListener('click', closeHelpModal);
+    
+    // Close modal when pressing Escape key
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && helpModal.classList.contains('active')) {
+            closeHelpModal();
+        }
+    });
+
+    // Listen to language changes
+    languageSelect.addEventListener('change', async (event) => {
+        const language = event.target.value;
+        await updateHelpModalTranslations(language);
+    });
 }
 
 /**
@@ -113,4 +123,4 @@ function closeHelpModal() {
 // Load the help modal when the DOM is ready
 document.addEventListener('DOMContentLoaded', loadHelpModal);
 
-export { openHelpModal, closeHelpModal };
+export { openHelpModal, closeHelpModal, attachHelpModalEventListeners, updateHelpModalTranslations };

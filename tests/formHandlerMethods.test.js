@@ -29,7 +29,9 @@ describe('form-handler.js methods', () => {
       0.01,   // fictitiousRentRate
       0,      // cumulIncomes
       0,      // coOwnershipFees
-      0       // fileFees
+      0,      // fileFees
+      0,      // proprietaryTax
+      0       // proprietaryTaxRate
     );
     expect(year).toBe(3); // Adjust expected value based on your calculation logic
   });
@@ -47,7 +49,8 @@ describe('form-handler.js methods', () => {
       20,     // loanDuration
       0,      // cumulIncomes
       0,      // coOwnershipFees
-      0       // fileFees
+      0,      // fileFees
+      0       // propertyTaxRate
     );
     expect(losses.length).toBe(30);
     expect(losses[0]).toBeGreaterThan(0);
@@ -67,7 +70,8 @@ describe('form-handler.js methods', () => {
       20,     // loanDuration
       0,      // cumulIncomes
       0,      // coOwnershipFees
-      0       // fileFees
+      0,      // fileFees
+      0       // propertyTaxRate
     );
     expect(losses.length).toBe(30);
     expect(losses[0]).toBeGreaterThan(0);
@@ -95,7 +99,9 @@ describe('form-handler.js methods', () => {
       0.01,   // fictitiousRentRate
       0,      // cumulIncomes
       0,      // coOwnershipFees
-      0       // fileFees
+      0,      // fileFees
+      0,      // proprietaryTax
+      0       // proprietaryTaxRate
     );
     expect(year).toBe(3);
   });
