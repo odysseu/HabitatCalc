@@ -106,9 +106,11 @@
     "resetFormHelp": "Réinitialiser le formulaire",
     "sectionTitle": "Calculette Projet Immobilier",
     "summaryPart1": "À partir de l’année ",
-    "summaryPart2": ", il devient plus avantageux d’avoir acheté plutôt que loué. À ce moment-là, la dépense dans chaque cas aura été d'environ ",    "summaryPart3": "Cela représente environ ",
+    "summaryPart2": ", il devient plus avantageux d’avoir acheté plutôt que loué. À ce moment-là, la dépense dans chaque cas aura été d'environ ",
+    "summaryPart3": "Cela représente environ ",
     "summaryPart4": "\u00A0par an, ou ",
-    "summaryPart5": "\u00A0par mois",    "title": "Calculette Projet Immobilier",
+    "summaryPart5": "\u00A0par mois",
+    "title": "Calculette Projet Immobilier",
     "welcomeMessage": "Bienvenue\u00A0!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il devient rentable d'acheter un bien plutôt que de le louer.",
     "year": "Année"
 }

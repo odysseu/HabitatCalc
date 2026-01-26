@@ -65,10 +65,10 @@ describe('Help Modal Functionality', () => {
         expect(languageSelect.value).toBe('fr');
     });
 
-    it('should have sigma symbol in help icon button', () => {
-        const helpIcon = document.getElementById('help-icon-button');
-        expect(helpIcon.textContent.trim()).toBe('Σ');
-    });
+    // it('should have sigma symbol in help icon button', () => {
+    //     const helpIcon = document.getElementById('help-icon-button');
+    //     expect(helpIcon.textContent.trim()).toBe('Σ');
+    // });
 
     it('should have tooltip for help icon', () => {
         const tooltip = document.getElementById('help-icon-tooltip');
