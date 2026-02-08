@@ -39,7 +39,7 @@ This is a static website merely using local files and javascript packages downlo
 
 ### Prerequisites
 
-- **git**: Ensure you have git (version 2 or higher) installed. Download it from [git-scm.com](https://git-scm.com/downloads
+- **git**: Ensure you have git (version 2 or higher) installed. Download it from [git-scm.com](https://git-scm.com/downloads)
 - **python**: Ensure you have python (version 3.5 or higher) installed. Download it from [python.org](https://www.python.org/downloads/).
 
 ### Deploy
