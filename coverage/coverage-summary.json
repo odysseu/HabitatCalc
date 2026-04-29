@@ -2,27 +2,27 @@
   "total": {
     "lines": {
       "total": 549,
-      "covered": 515,
+      "covered": 526,
       "skipped": 0,
-      "pct": 93.8
+      "pct": 95.81
     },
     "statements": {
       "total": 572,
-      "covered": 534,
+      "covered": 545,
       "skipped": 0,
-      "pct": 93.35
+      "pct": 95.27
     },
     "functions": {
       "total": 80,
-      "covered": 70,
+      "covered": 72,
       "skipped": 0,
-      "pct": 87.5
+      "pct": 90
     },
     "branches": {
       "total": 214,
-      "covered": 177,
+      "covered": 183,
       "skipped": 0,
-      "pct": 82.71
+      "pct": 85.51
     },
     "branchesTrue": {
       "total": 0,
@@ -138,27 +138,27 @@
   "/workspaces/HabitatCalc/js/help-modal.js": {
     "lines": {
       "total": 46,
-      "covered": 35,
+      "covered": 46,
       "skipped": 0,
-      "pct": 76.08
+      "pct": 100
     },
     "functions": {
       "total": 10,
-      "covered": 8,
+      "covered": 10,
       "skipped": 0,
-      "pct": 80
+      "pct": 100
     },
     "statements": {
       "total": 47,
-      "covered": 36,
+      "covered": 47,
       "skipped": 0,
-      "pct": 76.59
+      "pct": 100
     },
     "branches": {
       "total": 18,
-      "covered": 8,
+      "covered": 14,
       "skipped": 0,
-      "pct": 44.44
+      "pct": 77.77
     }
   },
   "/workspaces/HabitatCalc/js/report-handler.js": {
