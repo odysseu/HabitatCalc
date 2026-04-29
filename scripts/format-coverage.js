@@ -1,29 +1,21 @@
 #!/usr/bin/env node
 
 /**
- * Formats the coverage-summary.json file for better readability
+ * Formats the coverage-summary.json file using jq for better readability
  */
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const COVERAGE_SUMMARY_PATH = path.join(__dirname, '..', 'coverage', 'coverage-summary.json');
 
 function formatCoverageSummary() {
     try {
-        // Read the coverage summary file
-        const rawData = fs.readFileSync(COVERAGE_SUMMARY_PATH, 'utf8');
+        // Use jq to format the JSON with 2-space indentation
+        execSync(`jq '.' ${COVERAGE_SUMMARY_PATH} > ${COVERAGE_SUMMARY_PATH}.tmp && mv ${COVERAGE_SUMMARY_PATH}.tmp ${COVERAGE_SUMMARY_PATH}`, { encoding: 'utf8' });
         
-        // Parse JSON
-        const coverageData = JSON.parse(rawData);
-        
-        // Format with 2-space indentation
-        const formattedData = JSON.stringify(coverageData, null, 2);
-        
-        // Write back formatted JSON
-        fs.writeFileSync(COVERAGE_SUMMARY_PATH, formattedData + '\n', 'utf8');
-        
-        console.log('✓ coverage-summary.json formatted successfully');
+        console.log('✓ coverage-summary.json formatted successfully with jq');
         
         // Also format the lcov.info if it exists
         const lcovPath = path.join(__dirname, '..', 'coverage', 'lcov.info');
