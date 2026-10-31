@@ -1,19 +1,82 @@
 let myChart = null; // Global variable to store the chart instance
-import { calculateMonthlyPayment, extractIncomes, calculateAPR, findPivotYear, calculateRentLosses, calculatePurchaseLosses } from './form-handler.js';
+import { 
+    calculateMonthlyPayment, extractIncomes, calculateAPR, 
+    findPivotYear, calculateRentLosses, calculatePurchaseLosses,
+    findPivotPoint, calculateCumulativeRentCosts, calculateCumulativePurchaseCosts
+} from './form-handler.js';
 import { loadTranslations } from './handle-language.js';
 import { forceLightMode, restoreMode } from './dark-mode.js';
 // import Chart from './chart.js/auto';
 // import zoomPlugin from './chartjs-plugin-zoom';
 
 /**
- * Updates the summary section with the repayment year and cumulative purchase losses.
+ * Updates the summary section with the repayment point (years and months) and cumulative purchase losses.
+ * @param {Object|number} pivot - Either a pivot point object {years, months, totalMonths} or a year number
+ * @param {number} cumulativePurchase - Cumulative purchase losses at pivot point
+ * @param {Object} translations - Translation object
  */
-export function updateSummary(repaymentYear, cumulativePurchase) {
+export function updateSummary(pivot, cumulativePurchase, translations = {}) {
+    let repaymentYear, repaymentMonth, totalMonths;
+    
+    // Handle both old format (number) and new format (object)
+    if (typeof pivot === 'number') {
+        repaymentYear = pivot;
+        repaymentMonth = 0;
+        totalMonths = pivot * 12;
+    } else {
+        repaymentYear = pivot.years;
+        repaymentMonth = pivot.months || 0;
+        totalMonths = pivot.totalMonths;
+    }
+    
+    // Update the year display
     document.getElementById('repaymentYearDisplay').textContent = repaymentYear;
+    
+    // For the month display and labels, handle based on whether we have monthly precision
+    // Check if the new elements exist (they might not in tests or old HTML)
+    const repaymentMonthDisplay = document.getElementById('repaymentMonthDisplay');
+    const summaryAnd = document.getElementById('summary-and');
+    const summaryMonthsLabel = document.getElementById('summary-months-label');
+    const summaryYearsLabel = document.getElementById('summary-years-label');
+    
+    // Only update month-related elements if they all exist
+    const hasMonthElements = repaymentMonthDisplay && summaryAnd && summaryMonthsLabel && summaryYearsLabel;
+    
+    if (hasMonthElements) {
+        // Always show years label
+        const yearsText = repaymentYear === 1 
+            ? (translations.year || 'year') 
+            : (translations.years || 'years');
+        summaryYearsLabel.textContent = ' ' + yearsText + ' ';
+        summaryYearsLabel.style.display = 'inline';
+        
+        if (repaymentMonth > 0) {
+            // Show months with proper translation
+            repaymentMonthDisplay.textContent = repaymentMonth;
+            summaryAnd.textContent = (translations.and || 'and') + ' ';
+            const monthsText = repaymentMonth === 1 
+                ? (translations.month || 'month') 
+                : (translations.months || 'months');
+            summaryMonthsLabel.textContent = ' ' + monthsText;
+            summaryAnd.style.display = 'inline';
+            repaymentMonthDisplay.style.display = 'inline';
+            summaryMonthsLabel.style.display = 'inline';
+        } else {
+            // Hide month-related elements if no months
+            repaymentMonthDisplay.textContent = '';
+            summaryAnd.textContent = '';
+            summaryMonthsLabel.textContent = '';
+            summaryAnd.style.display = 'none';
+            repaymentMonthDisplay.style.display = 'none';
+            summaryMonthsLabel.style.display = 'none';
+        }
+    }
+    
     document.getElementById('cumulativePurchaseDisplay').innerHTML = `<strong>${cumulativePurchase.toFixed(0)}\u00A0€</strong>`;
     
     // Calculate yearly and monthly averages
-    const yearlyAverage = repaymentYear > 0 ? cumulativePurchase / repaymentYear : 0;
+    const years = totalMonths / 12;
+    const yearlyAverage = years > 0 ? cumulativePurchase / years : 0;
     const monthlyAverage = yearlyAverage / 12;
     
     document.getElementById('yearlyAverageDisplay').innerHTML = `<strong>${yearlyAverage.toFixed(0)}&nbsp;€</strong>`;
@@ -28,7 +91,7 @@ export async function generateReport() {
         price, notary, appreciationRate, agencyCommission, contribution,
         interestRate, loanDuration, insuranceRate, fictitiousRent,
         buyHousingTax, rentingHousingTax, propertyTax, fictitiousRentRate,
-        propertyTaxRate, coOwnershipFees, fileFees, maxDuration
+        propertyTaxRate, coOwnershipFees, fileFees, maxDuration, rentingPropertyTaxRate
     } = getReportFormValues();
 
     const { notaryFees, agencyCommissionFees, purchaseTotal, borrowedAmount } = calculatePurchaseTotals(price, notary, agencyCommission, fileFees, contribution);
@@ -38,25 +101,60 @@ export async function generateReport() {
     const cumulIncomes = extractIncomes();
     const cumulMonthlyIncomes = cumulIncomes / 12;
     const APR = calculateAPR();
-    const repaymentYear = findPivotYear(
-        price, notaryFees, agencyCommissionFees, contribution,
-        monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
-        appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees,
-        propertyTaxRate
-    );
-    const maxCalculatedDuration = Math.max(loanDuration, repaymentYear + 4);
-    const cumulRent = calculateRentLosses(fictitiousRent, maxCalculatedDuration, fictitiousRentRate, rentingHousingTax);
-    const cumulativePurchase = calculatePurchaseLosses(
-        price, notaryFees, agencyCommissionFees, contribution,
-        monthlyPayment, propertyTax, buyHousingTax, appreciationRate,
-        maxCalculatedDuration, loanDuration, cumulIncomes, coOwnershipFees, fileFees,
-        propertyTaxRate
-    );
-    const cumulativePurchaseUntilRepayment = cumulativePurchase[repaymentYear];
+
+    // Use monthly precision calculations with existing functions
+    // Map report-handler parameter names to form-handler parameter names
+    // Ensure all values are valid numbers (not NaN)
+    const safe = (val) => (typeof val === 'number' && !isNaN(val) && isFinite(val)) ? val : 0;
+    
+    const pivotParams = {
+        price: safe(price),
+        notaryRate: safe(notary),
+        agencyCommissionRate: safe(agencyCommission),
+        fileFees: safe(fileFees),
+        contribution: safe(contribution),
+        annualInterestRate: safe(interestRate),
+        loanDurationYears: safe(loanDuration),
+        annualInsuranceRate: safe(insuranceRate),
+        annualPropertyTax: safe(propertyTax),
+        annualPropertyTaxRate: safe(propertyTaxRate),
+        buyHousingTax: safe(buyHousingTax),
+        coOwnershipFees: safe(coOwnershipFees),
+        annualAppreciationRate: safe(appreciationRate),
+        annualIncomes: safe(cumulIncomes),
+        baseMonthlyRent: safe(fictitiousRent),
+        annualRentRate: safe(fictitiousRentRate),
+        monthlyRentingPropertyTax: safe(rentingHousingTax) / 12,
+        rentingPropertyTaxRate: safe(rentingPropertyTaxRate),
+        maxDurationYears: safe(maxDuration)
+    };
+
+    // Find pivot point with monthly precision
+    const pivot = findPivotPoint(pivotParams);
+    
+    // Calculate maximum duration to display (in years)
+    const maxCalculatedDurationYears = Math.max(loanDuration, Math.ceil(pivot.totalMonths / 12) + 4);
+
+    // Generate annual data for the chart from monthly calculations
+    // Note: calculateCumulativePurchaseCosts and calculateCumulativeRentCosts use 0-based monthIndex
+    // We use Math.max(0, ...) for purchase to match the behavior of calculatePurchaseLosses
+    const cumulRent = [];
+    const cumulativePurchase = [];
+    
+    for (let year = 1; year <= maxCalculatedDurationYears; year++) {
+        const monthIndex = year * 12; // Convert to 0-based month index
+        cumulRent.push(calculateCumulativeRentCosts(pivotParams, monthIndex));
+        // Apply max(0, ...) to match the logic of calculatePurchaseLosses
+        const purchaseCost = calculateCumulativePurchaseCosts(pivotParams, monthIndex);
+        cumulativePurchase.push(Math.max(0, purchaseCost));
+    }
+
+    // Get cumulative purchase cost at pivot point for summary
+    const cumulativePurchaseUntilRepayment = calculateCumulativePurchaseCosts(pivotParams, pivot.totalMonths);
 
     const language = document.getElementById('language-select').value;
     const translations = await loadTranslations(language);
-    updateSummary(repaymentYear, cumulativePurchaseUntilRepayment);
+    updateSummary(pivot, cumulativePurchaseUntilRepayment, translations);
 
     const simulationContainer = document.getElementById('simulation');
     simulationContainer.className = 'simulation';
@@ -102,7 +200,7 @@ export async function generateReport() {
     }
     simulationContainer.appendChild(createCollapsibleResultsSection(translations.reportRenting, rentingRows));
 
-    await generateChart(cumulRent, cumulativePurchase, maxCalculatedDuration);
+    await generateChart(cumulRent, cumulativePurchase, maxCalculatedDurationYears);
     setupPDFDownloadSection(translations);
     // setupResetZoomButton(translations);
 }
@@ -124,7 +222,7 @@ export async function generateChart(cumulRent, cumulativePurchase, maxDuration) 
     canvas.height = parent.clientHeight;
     const language = document.getElementById('language-select').value;
     const translations = await loadTranslations(language);
-    const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i}`);
+    const labels = Array.from({ length: maxDuration }, (_, i) => `${translations.year} ${i + 1}`);
     const rootStyles = getComputedStyle(document.body);
     const rentColor = rootStyles.getPropertyValue('--graph-rent-color').trim();
     const rentFillColor = rootStyles.getPropertyValue('--graph-rent-fill-color').trim();
@@ -296,18 +394,43 @@ export async function downloadPDF() {
         price, notary, appreciationRate, agencyCommission, contribution,
         interestRate, loanDuration, insuranceRate, fictitiousRent,
         buyHousingTax, rentingHousingTax, propertyTax, fictitiousRentRate,
-        propertyTaxRate, coOwnershipFees, fileFees, maxDuration
+        propertyTaxRate, coOwnershipFees, fileFees, maxDuration, rentingPropertyTaxRate
     } = getReportFormValues();
 
     const { notaryFees, agencyCommissionFees, purchaseTotal, borrowedAmount } = calculatePurchaseTotals(price, notary, agencyCommission, fileFees, contribution);
     const monthlyPayment = calculateMonthlyPayment(borrowedAmount, loanDuration, interestRate, insuranceRate);
     const cumulIncomes = extractIncomes();
-    const repaymentYear = findPivotYear(
-        price, notaryFees, agencyCommissionFees, contribution,
-        monthlyPayment, propertyTax, buyHousingTax, rentingHousingTax,
-        appreciationRate, maxDuration, loanDuration, fictitiousRent, fictitiousRentRate, cumulIncomes, coOwnershipFees, fileFees,
-        propertyTaxRate
-    );
+    
+    // Ensure all values are valid numbers (not NaN)
+    const safe = (val) => (typeof val === 'number' && !isNaN(val) && isFinite(val)) ? val : 0;
+    
+    // Use monthly precision calculations for PDF as well
+    const pivotParams = {
+        price: safe(price),
+        notaryRate: safe(notary),
+        agencyCommissionRate: safe(agencyCommission),
+        fileFees: safe(fileFees),
+        contribution: safe(contribution),
+        annualInterestRate: safe(interestRate),
+        loanDurationYears: safe(loanDuration),
+        annualInsuranceRate: safe(insuranceRate),
+        annualPropertyTax: safe(propertyTax),
+        annualPropertyTaxRate: safe(propertyTaxRate),
+        buyHousingTax: safe(buyHousingTax),
+        coOwnershipFees: safe(coOwnershipFees),
+        annualAppreciationRate: safe(appreciationRate),
+        annualIncomes: safe(cumulIncomes),
+        baseMonthlyRent: safe(fictitiousRent),
+        annualRentRate: safe(fictitiousRentRate),
+        monthlyRentingPropertyTax: safe(rentingHousingTax) / 12,
+        rentingPropertyTaxRate: safe(rentingPropertyTaxRate),
+        maxDurationYears: safe(maxDuration)
+    };
+    
+    const pivot = findPivotPoint(pivotParams);
+    
+    // For backward compatibility with PDF functions that expect repaymentYear
+    const repaymentYear = pivot.years + (pivot.months > 0 ? 1 : 0);
 
     addPDFHeader(doc, translations, margin);
     addPurchaseTable(doc, translations, margin, tableSpacing, price, notaryFees, appreciationRate, agencyCommissionFees, purchaseTotal, coOwnershipFees, buyHousingTax, fileFees, propertyTax, propertyTaxRate);
@@ -317,7 +440,7 @@ export async function downloadPDF() {
     addLoanTable(doc, translations, margin, tableSpacing, contribution, borrowedAmount, interestRate, insuranceRate, APR, monthlyPayment, totalInterestCost, loanTotalCost);
     const cumulMonthlyIncomes = cumulIncomes / 12;
     addRentingTable(doc, translations, margin, tableSpacing, fictitiousRent, fictitiousRentRate, rentingHousingTax, cumulMonthlyIncomes);
-    addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear);
+    addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear, pivot);
     addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
     addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
     addChartToPDF(doc, margin, availableWidth, tableSpacing);
@@ -404,6 +527,7 @@ export function getReportFormValues() {
         fictitiousRent: parseFloat(document.getElementById('fictitiousRent').value),
         buyHousingTax: parseFloat(document.getElementById('buyHousingTax').value),
         rentingHousingTax: parseFloat(document.getElementById('rentingHousingTax').value),
+        rentingPropertyTaxRate: parseFloat(document.getElementById('rentingPropertyTaxRate').value) / 100,
         propertyTax: parseFloat(document.getElementById('propertyTax').value),
         propertyTaxRate: parseFloat(document.getElementById('propertyTaxRate').value) / 100,
         fictitiousRentRate: parseFloat(document.getElementById('fictitiousRentRate').value) / 100,
@@ -501,9 +625,22 @@ export function addRentingTable(doc, translations, margin, tableSpacing, fictiti
 /**
  * Adds the repayment year to the PDF.
  */
-export function addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear) {
+export function addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear, pivot = null) {
+    let displayText = repaymentYear;
+    
+    // If pivot with monthly precision is provided, use it
+    if (pivot && pivot.years !== undefined) {
+        if (pivot.months > 0) {
+            const andText = translations.and || 'and';
+            const monthText = pivot.months === 1 ? (translations.month || 'month') : (translations.months || 'months');
+            displayText = `${pivot.years} ${andText} ${pivot.months} ${monthText}`;
+        } else {
+            displayText = `${pivot.years}`;
+        }
+    }
+    
     doc.text(
-        `${translations.reportRepaymentYear}: ${repaymentYear}`,
+        `${translations.reportRepaymentYear}: ${displayText}`,
         margin,
         doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing
     );

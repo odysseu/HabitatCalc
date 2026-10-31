@@ -30,11 +30,12 @@ describe('findPivotYear', () => {
         4000, // cumulIncomes
         1500, // coOwnershipFees
         1000, // fileFees
-        0, // proprietaryTax
-        0 // proprietaryTaxRate
+        0, // propertyTaxRate
+        0.01 // rentingPropertyTaxRate
       );
       expect(pivotYear).toBeGreaterThan(0);
-      expect(pivotYear).toBe(9);
+      // Updated expected value after correcting the geometric series formula for rent
+      expect(pivotYear).toBe(12);
     });
   });
 });

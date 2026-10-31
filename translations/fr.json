@@ -102,6 +102,8 @@
     "reportTotalInterests": "Total intérêts",
     "reportValue": "Valeur",
     "rentingHousingTax": "Taxe d'habitation\u00A0(€)",
+    "rentingPropertyTaxRate": "Taux d'évolution annuelle taxe foncière location\u00A0(%)",
+    "helpRentingPropertyTaxRate": "Taux d'évolution annuel moyen de la taxe foncière pour la location (par exemple 1% pour une augmentation annuelle de 1%).",
     "rentingSection": "Location",
     "resetFormHelp": "Réinitialiser le formulaire",
     "sectionTitle": "Calculette Projet Immobilier",
@@ -112,5 +114,15 @@
     "summaryPart5": "\u00A0par mois",
     "title": "Calculette Projet Immobilier",
     "welcomeMessage": "Bienvenue\u00A0!<br /><br />Cet outil est une calculatrice d'investissement immobilier pour savoir quand il devient rentable d'acheter un bien plutôt que de le louer.",
-    "year": "Année"
+    "year": "an",
+    "years": "ans",
+    "and": "et",
+    "month": "mois",
+    "months": "mois",
+    "helpCumulativeRentCosts": "Coût cumulé de location avec précision mensuelle :",
+    "helpCumulativeRentCostsFormula": "Série géométrique avec composition mensuelle du taux annuel : S = a × ((1+r/12)^n - 1) / (r/12)",
+    "helpCumulativePurchaseCosts": "Coût cumulé d'achat avec précision mensuelle :",
+    "helpCumulativePurchaseCostsFormula": "Coûts initiaux + paiements mensuels + taxes - valeur de revente - revenus",
+    "helpPivotPoint": "Point de basculement où acheter devient plus avantageux que louer, calculé avec précision mensuelle",
+    "helpPivotPointFormula": "Trouve le mois où : Coût cumulé location > Coût cumulé achat"
 }

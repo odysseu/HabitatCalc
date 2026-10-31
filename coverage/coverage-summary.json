@@ -1,28 +1,28 @@
 {
   "total": {
     "lines": {
-      "total": 549,
-      "covered": 526,
+      "total": 663,
+      "covered": 627,
       "skipped": 0,
-      "pct": 95.81
+      "pct": 94.57
     },
     "statements": {
-      "total": 572,
-      "covered": 545,
+      "total": 698,
+      "covered": 658,
       "skipped": 0,
-      "pct": 95.27
+      "pct": 94.26
     },
     "functions": {
-      "total": 80,
-      "covered": 72,
+      "total": 91,
+      "covered": 83,
       "skipped": 0,
-      "pct": 90
+      "pct": 91.2
     },
     "branches": {
-      "total": 214,
-      "covered": 183,
+      "total": 287,
+      "covered": 238,
       "skipped": 0,
-      "pct": 85.51
+      "pct": 82.92
     },
     "branchesTrue": {
       "total": 0,
@@ -85,28 +85,28 @@
   },
   "/workspaces/HabitatCalc/js/form-handler.js": {
     "lines": {
-      "total": 150,
-      "covered": 150,
+      "total": 216,
+      "covered": 210,
       "skipped": 0,
-      "pct": 100
+      "pct": 97.22
     },
     "functions": {
-      "total": 17,
-      "covered": 16,
+      "total": 26,
+      "covered": 25,
       "skipped": 0,
-      "pct": 94.11
+      "pct": 96.15
     },
     "statements": {
-      "total": 160,
-      "covered": 157,
+      "total": 235,
+      "covered": 226,
       "skipped": 0,
-      "pct": 98.12
+      "pct": 96.17
     },
     "branches": {
-      "total": 79,
-      "covered": 75,
+      "total": 98,
+      "covered": 91,
       "skipped": 0,
-      "pct": 94.93
+      "pct": 92.85
     }
   },
   "/workspaces/HabitatCalc/js/handle-language.js": {
@@ -163,28 +163,28 @@
   },
   "/workspaces/HabitatCalc/js/report-handler.js": {
     "lines": {
-      "total": 221,
-      "covered": 198,
+      "total": 269,
+      "covered": 239,
       "skipped": 0,
-      "pct": 89.59
+      "pct": 88.84
     },
     "functions": {
-      "total": 28,
-      "covered": 21,
+      "total": 30,
+      "covered": 23,
       "skipped": 0,
-      "pct": 75
+      "pct": 76.66
     },
     "statements": {
-      "total": 225,
-      "covered": 202,
+      "total": 276,
+      "covered": 246,
       "skipped": 0,
-      "pct": 89.77
+      "pct": 89.13
     },
     "branches": {
-      "total": 40,
-      "covered": 30,
+      "total": 94,
+      "covered": 69,
       "skipped": 0,
-      "pct": 75
+      "pct": 73.4
     }
   }
 }

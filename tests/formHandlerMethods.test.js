@@ -30,8 +30,8 @@ describe('form-handler.js methods', () => {
       0,      // cumulIncomes
       0,      // coOwnershipFees
       0,      // fileFees
-      0,      // proprietaryTax
-      0       // proprietaryTaxRate
+      0,      // propertyTaxRate
+      0       // rentingPropertyTaxRate
     );
     expect(year).toBe(3); // Adjust expected value based on your calculation logic
   });
@@ -78,7 +78,7 @@ describe('form-handler.js methods', () => {
     expect(losses[0]).toBe(31000);
   });
   test('calculateRentLosses calculates rent losses correctly', () => {
-    const losses = calculateRentLosses(1500, 30, 0.03, 0);
+    const losses = calculateRentLosses(1500, 30, 0.03, 0, 0);
     expect(losses.length).toBe(30);
     expect(losses[0]).toBeGreaterThan(0);
   });
@@ -100,8 +100,8 @@ describe('form-handler.js methods', () => {
       0,      // cumulIncomes
       0,      // coOwnershipFees
       0,      // fileFees
-      0,      // proprietaryTax
-      0       // proprietaryTaxRate
+      0,      // propertyTaxRate
+      0       // rentingPropertyTaxRate
     );
     expect(year).toBe(3);
   });

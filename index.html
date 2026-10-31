@@ -122,6 +122,11 @@
                                     <input type="number" id="rentingHousingTax" name="rentingHousingTax" value="0"
                                         required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="rentingPropertyTaxRate" data-i18n="rentingPropertyTaxRate" data-i18n-help="helpRentingPropertyTaxRate">Taux évolution annuelle taxe foncière location&nbsp;(%)</label>
+                                    <input type="number" step="0.01" id="rentingPropertyTaxRate" name="rentingPropertyTaxRate" value="1"
+                                        required>
+                                </div>
                             </div>
                         </div>
                         <div class="form-section">
@@ -182,8 +187,12 @@
                     </div>
                     <div id="summary-box" class="summary-box">
                         <p>
-                            <span id="summary-part1" data-i18n="summaryPart1">À partir de l'année </span>
+                            <span id="summary-part1" data-i18n="summaryPart1">À partir de </span>
                             <strong id="repaymentYearDisplay">X</strong>
+                            <strong id="summary-years-label" data-i18n="year"></strong>
+                            <strong id="summary-and" data-i18n="and"></strong>
+                            <strong id="repaymentMonthDisplay">Y</strong>
+                            <strong id="summary-months-label" data-i18n="month"></strong>
                             <span id="summary-part2" data-i18n="summaryPart2">, il devient plus avantageux d'avoir acheté plutôt que loué. À ce
                                 moment-là, la dépense dans chaque cas aura été d'environ </span>
                             <strong id="cumulativePurchaseDisplay">Y&nbsp;€</strong>

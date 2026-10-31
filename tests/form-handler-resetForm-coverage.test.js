@@ -184,7 +184,8 @@ describe('Form Handler - findPivotYear Edge Cases', () => {
                 0, // cumulIncomes
                 0, // coOwnershipFees
                 0, // fileFees
-                0 // propertyTaxRate
+                0, // propertyTaxRate
+                0 // rentingPropertyTaxRate
             );
             
             // With negative appreciation, property value decreases, making purchase losses grow
@@ -217,7 +218,8 @@ describe('Form Handler - findPivotYear Edge Cases', () => {
                 0, // cumulIncomes
                 0, // coOwnershipFees
                 1000, // fileFees
-                0 // propertyTaxRate
+                0, // propertyTaxRate
+                0 // rentingPropertyTaxRate
             );
             
             // Should return a year before maxDuration
@@ -231,7 +233,7 @@ describe('Form Handler - findPivotYear Edge Cases', () => {
     describe('findPivotYear - Parameter validation', () => {
         it('should handle zero duration', () => {
             const result = findPivotYear(
-                0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0
             );
             expect(result).toBe(1);
         });
@@ -240,7 +242,7 @@ describe('Form Handler - findPivotYear Edge Cases', () => {
             const result = findPivotYear(
                 100000, 2000, 3000, 10000, 1500, 100, 100, 500,
                 0.5, // Very high appreciation rate (50%)
-                50, 20, 1200, 0.01, 0, 0, 1000, 0
+                50, 20, 1200, 0.01, 0, 0, 1000, 0, 0
             );
             expect(result).toBeLessThanOrEqual(50);
         });
@@ -248,7 +250,7 @@ describe('Form Handler - findPivotYear Edge Cases', () => {
         it('should handle zero property tax rate', () => {
             const result = findPivotYear(
                 100000, 2000, 3000, 10000, 1500, 100, 100, 500,
-                0.02, 50, 20, 1200, 0.01, 0, 0, 1000, 0
+                0.02, 50, 20, 1200, 0.01, 0, 0, 1000, 0, 0
             );
             expect(result).toBeLessThanOrEqual(50);
         });
@@ -322,13 +324,13 @@ describe('Form Handler - calculatePurchaseLosses Edge Cases', () => {
 describe('Form Handler - calculateRentLosses Edge Cases', () => {
     describe('calculateRentLosses - Edge Cases', () => {
         it('should handle zero values', () => {
-            const result = calculateRentLosses(0, 10, 0, 0);
+            const result = calculateRentLosses(0, 10, 0, 0, 0);
             expect(Array.isArray(result)).toBe(true);
             expect(result.length).toBe(10);
         });
 
         it('should handle zero fictitiousRent', () => {
-            const result = calculateRentLosses(0, 10, 0.05, 100);
+            const result = calculateRentLosses(0, 10, 0.05, 100, 0);
             expect(Array.isArray(result)).toBe(true);
             result.forEach(loss => {
                 expect(Number.isFinite(loss)).toBe(true);
@@ -336,20 +338,20 @@ describe('Form Handler - calculateRentLosses Edge Cases', () => {
         });
 
         it('should handle zero rentingHousingTax', () => {
-            const result = calculateRentLosses(1000, 10, 0.05, 0);
+            const result = calculateRentLosses(1000, 10, 0.05, 0, 0);
             expect(Array.isArray(result)).toBe(true);
             expect(result.length).toBe(10);
         });
 
         it('should handle high fictitiousRentRate', () => {
-            const result = calculateRentLosses(1000, 5, 1.0, 0);
+            const result = calculateRentLosses(1000, 5, 1.0, 0, 0);
             expect(Array.isArray(result)).toBe(true);
             // With 100% growth rate, values should grow rapidly
             expect(result[4]).toBeGreaterThan(result[0]);
         });
 
         it('should use Math.round for cumulIncome', () => {
-            const result = calculateRentLosses(1000, 1, 0, 0);
+            const result = calculateRentLosses(1000, 1, 0, 0, 0);
             expect(Number.isInteger(result[0])).toBe(true);
         });
     });
