@@ -583,7 +583,7 @@ describe('Report Handler - Chart and PDF Coverage Tests', () => {
             
             expect(mockDoc.setFontSize).toHaveBeenCalledWith(12);
             expect(mockDoc.setTextColor).toHaveBeenCalledWith(40, 40, 40);
-            expect(mockDoc.text).toHaveBeenCalledWith(20, 20, 'Test Report');
+            expect(mockDoc.text).toHaveBeenCalledWith('Test Report', 20, 20);
         });
     });
 });

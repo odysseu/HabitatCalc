@@ -429,6 +429,20 @@ export async function downloadPDF() {
     
     const pivot = findPivotPoint(pivotParams);
     
+    // Calculate maximum duration to display (in years)
+    const maxCalculatedDurationYears = Math.max(loanDuration, Math.ceil(pivot.totalMonths / 12) + 4);
+
+    // Generate annual data for the vector chart
+    const cumulRent = [];
+    const cumulativePurchase = [];
+    
+    for (let year = 1; year <= maxCalculatedDurationYears; year++) {
+        const monthIndex = year * 12;
+        cumulRent.push(calculateCumulativeRentCosts(pivotParams, monthIndex));
+        const purchaseCost = calculateCumulativePurchaseCosts(pivotParams, monthIndex);
+        cumulativePurchase.push(Math.max(0, purchaseCost));
+    }
+    
     // For backward compatibility with PDF functions that expect repaymentYear
     const repaymentYear = pivot.years + (pivot.months > 0 ? 1 : 0);
 
@@ -443,7 +457,7 @@ export async function downloadPDF() {
     addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear, pivot);
     addMonthlyBreakdownTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
     addYearlyTotalsTable(doc, translations, margin, tableSpacing, borrowedAmount, interestRate, insuranceRate, loanDuration);
-    addChartToPDF(doc, margin, availableWidth, tableSpacing);
+    addVectorChartToPDF(doc, margin, availableWidth, tableSpacing, cumulRent, cumulativePurchase, maxCalculatedDurationYears, pivot, translations);
     // doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing,
     const filename = document.getElementById('pdf-filename') ? document.getElementById('pdf-filename').value || document.getElementById('pdf-filename').placeholder : 'financial_report';
     const pdfFilename = filename.endsWith('.pdf') ? filename : filename + ".pdf";
@@ -627,15 +641,15 @@ export function addRentingTable(doc, translations, margin, tableSpacing, fictiti
  */
 export function addRepaymentYear(doc, translations, margin, tableSpacing, repaymentYear, pivot = null) {
     let displayText = repaymentYear;
-    
     // If pivot with monthly precision is provided, use it
     if (pivot && pivot.years !== undefined) {
+        const yearText = pivot.years === 1 ? (translations.year || 'year') : (translations.years || 'years');
         if (pivot.months > 0) {
             const andText = translations.and || 'and';
             const monthText = pivot.months === 1 ? (translations.month || 'month') : (translations.months || 'months');
-            displayText = `${pivot.years} ${andText} ${pivot.months} ${monthText}`;
+            displayText = `${pivot.years} ${yearText} ${andText} ${pivot.months} ${monthText}`;
         } else {
-            displayText = `${pivot.years}`;
+            displayText = `${pivot.years} ${yearText}`;
         }
     }
     
@@ -744,12 +758,233 @@ export function addChartToPDF(doc, margin, availableWidth, tableSpacing) {
 }
 
 /**
+ * Adds a vector chart to the PDF with the given data.
+ * This creates a clean, non-pixelated chart that takes half the page height.
+ * Falls back to PNG image if vector drawing is not supported.
+ */
+export function addVectorChartToPDF(doc, margin, availableWidth, tableSpacing, cumulRent, cumulativePurchase, maxDuration, pivot, translations) {
+    // Check if doc has the required vector drawing methods
+    const hasVectorSupport = doc && 
+        typeof doc.setDrawColor === 'function' &&
+        typeof doc.setFillColor === 'function' &&
+        typeof doc.line === 'function' &&
+        typeof doc.rect === 'function' &&
+        typeof doc.text === 'function' &&
+        typeof doc.moveTo === 'function' &&
+        typeof doc.lineTo === 'function' &&
+        typeof doc.stroke === 'function' &&
+        typeof doc.fill === 'function' &&
+        typeof doc.setLineWidth === 'function' &&
+        typeof doc.setFontSize === 'function';
+    
+    // If no vector support, fall back to PNG image
+    if (!hasVectorSupport) {
+        addChartToPDF(doc, margin, availableWidth, tableSpacing);
+        return;
+    }
+    
+    // Calculate chart dimensions (half of page height)
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const chartHeight = (pageHeight - 2 * margin) / 2;
+    let chartY = doc.lastAutoTable ? doc.lastAutoTable.finalY + tableSpacing : margin + tableSpacing;
+    
+    // Check if we need a new page
+    if (chartY + chartHeight > pageHeight - margin) {
+        doc.addPage();
+        chartY = margin;
+    }
+    
+    // Set up colors (hex format for jsPDF v4)
+    const rentColor = '#FF6384';      // Red
+    const purchaseColor = '#36A2EB';  // Blue
+    const textColor = '#000000';
+    const gridColor = '#C8C8C8';
+    const whiteColor = '#FFFFFF';
+    const blackColor = '#000000';
+    const pivotLineColor = '#000000';
+    
+    // Calculate value ranges - force Y-axis to start at 0
+    const allValues = [...cumulRent, ...cumulativePurchase];
+    const minValue = 0; // Force Y-axis to start at 0
+    const maxValue = Math.max(...allValues, 0) * 1.05; // Ensure max is at least 0
+    const valueRange = maxValue - minValue;
+    
+    // Helper functions for coordinate conversion
+    const valueToY = (value) => {
+        if (valueRange === 0) return chartY + chartHeight / 2;
+        // With minValue = 0, we want 0 at the bottom (chartY + chartHeight) and maxValue at the top (chartY)
+        return chartY + chartHeight - ((value - minValue) / valueRange * chartHeight);
+    };
+    const yearToX = (year) => {
+        if (maxDuration <= 1) return margin + availableWidth / 2;
+        return margin + (availableWidth * (year - 1) / (maxDuration - 1));
+    };
+    
+    // Helper function to format currency with spaces as thousand separator
+    const formatCurrency = (value) => {
+        const rounded = Math.round(value);
+        return new Intl.NumberFormat('fr-FR', {
+            style: 'currency',
+            currency: 'EUR',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(rounded).replace(/\u202F|\u00A0|\u2009|\u205F/g, ' ');
+    };
+    
+    // Draw chart border only - no fill to show paper color through
+    doc.setDrawColor(gridColor);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, chartY, availableWidth, chartHeight, 'S');
+    
+    // Draw grid lines (horizontal) with nice rounded values
+    doc.setDrawColor(gridColor);
+    doc.setLineWidth(0.2);
+    
+    // Always show 5 horizontal grid lines with nicely rounded currency values
+    for (let i = 0; i <= 5; i++) {
+        const yPos = chartY + (chartHeight * i / 5);
+        doc.line(margin, yPos, margin + availableWidth, yPos);
+        
+        // Calculate the value at this grid line
+        const value = maxValue - (valueRange * i / 5);
+        
+        // Round to nearest nice value (5000, 10000, 25000, 50000, etc.)
+        let roundedValue;
+        if (value >= 1000000) {
+            roundedValue = Math.round(value / 100000) * 100000;
+        } else if (value >= 500000) {
+            roundedValue = Math.round(value / 50000) * 50000;
+        } else if (value >= 100000) {
+            roundedValue = Math.round(value / 25000) * 25000;
+        } else if (value >= 50000) {
+            roundedValue = Math.round(value / 10000) * 10000;
+        } else {
+            roundedValue = Math.round(value / 5000) * 5000;
+        }
+        
+        // Add value label on the left
+        doc.setTextColor(textColor);
+        doc.setFontSize(7);
+        const valueText = formatCurrency(roundedValue);
+        const textWidth = doc.getTextWidth(valueText);
+        doc.text(valueText, margin - textWidth - 2, yPos + 1);
+    }
+    
+    // Draw axes
+    doc.setDrawColor(textColor);
+    doc.setLineWidth(0.5);
+    doc.line(margin, chartY, margin, chartY + chartHeight);        // Y-axis
+    doc.line(margin, chartY + chartHeight, margin + availableWidth, chartY + chartHeight); // X-axis
+    
+    // Draw X-axis labels (years)
+    doc.setFontSize(8);
+    const labelStep = Math.max(1, Math.ceil(maxDuration / 5));
+    for (let year = 1; year <= maxDuration; year += labelStep) {
+        const xPos = yearToX(year);
+        const label = `${translations.year || 'Year'} ${year}`;
+        const textWidth = doc.getTextWidth(label);
+        doc.text(label, xPos - textWidth / 2, chartY + chartHeight + 4);
+    }
+    
+    // Draw purchase curve (blue) - thin lines, no fill to avoid overlay issues
+    doc.setDrawColor(purchaseColor);
+    doc.setLineWidth(0.5);
+    
+    if (cumulativePurchase.length > 0) {
+        const startX = yearToX(1);
+        const startY = valueToY(cumulativePurchase[0]);
+        doc.moveTo(startX, startY);
+        for (let year = 2; year <= maxDuration; year++) {
+            doc.lineTo(yearToX(year), valueToY(cumulativePurchase[year - 1]));
+        }
+        doc.stroke();
+        
+        // Add legend
+        doc.setFontSize(9);
+        doc.setTextColor(purchaseColor);
+        doc.text(translations.reportCumulPurchaseLosses || 'Purchase', margin + availableWidth - 80, chartY + 16);
+    }
+    
+    // Draw rent curve (red) - thin lines, no fill to avoid overlay issues
+    doc.setDrawColor(rentColor);
+    doc.setLineWidth(0.5);
+    
+    if (cumulRent.length > 0) {
+        const startX = yearToX(1);
+        const startY = valueToY(cumulRent[0]);
+        doc.moveTo(startX, startY);
+        for (let year = 2; year <= maxDuration; year++) {
+            doc.lineTo(yearToX(year), valueToY(cumulRent[year - 1]));
+        }
+        doc.stroke();
+        
+        // Add legend
+        doc.setFontSize(9);
+        doc.setTextColor(rentColor);
+        doc.text(translations.reportRentalCumulativeExpenses || 'Rent', margin + availableWidth - 80, chartY + 8);
+    }
+    
+    // Draw pivot point vertical line - precise to the month
+    if (pivot && pivot.years !== undefined) {
+        // Calculate exact position including months (pivot.totalMonths is the exact crossing point)
+        const pivotYearExact = pivot.totalMonths / 12;
+        const pivotX = yearToX(pivotYearExact);
+        
+        doc.setDrawColor(pivotLineColor);
+        doc.setLineWidth(0.5);
+        if (typeof doc.setLineDash === 'function') {
+            doc.setLineDash([2, 2]);
+        }
+        doc.line(pivotX, chartY, pivotX, chartY + chartHeight);
+        
+        // Add label with year and month
+        doc.setFontSize(7);
+        doc.setTextColor(blackColor);
+        if (typeof doc.setLineDash === 'function') {
+            doc.setLineDash([]);
+        }
+        const yearLabel = pivot.years || 0;
+        const monthLabel = pivot.months || 0;
+        const label = `${yearLabel} ${translations.year || 'Year'} ${monthLabel} ${translations.months || translations.month || 'Month'}`;
+        const textWidth = doc.getTextWidth(label);
+        doc.text(label, pivotX - textWidth / 2, chartY + chartHeight + 8);
+    }
+    
+    // Add horizontal line at crossing point and value on Y-axis
+    if (pivot && typeof pivot.totalMonths === 'number' && Array.isArray(cumulRent) && cumulRent.length > pivot.totalMonths) {
+        try {
+            const pivotYearExact = pivot.totalMonths / 12;
+            const crossingValue = cumulRent[pivot.totalMonths];
+            const crossingY = valueToY(crossingValue);
+            const pivotX = yearToX(pivotYearExact);
+            
+            // Only draw if crossingY is within visible chart area
+            if (!isNaN(crossingY) && crossingY >= chartY && crossingY <= chartY + chartHeight) {
+                // Draw horizontal line across the entire chart at crossing Y
+                doc.setDrawColor('#999999'); // Medium gray, visible on both light and dark backgrounds
+                doc.setLineWidth(0.5);
+                doc.line(margin, crossingY, margin + availableWidth, crossingY);
+                
+                // Add crossing value on the Y-axis (left side) like other values
+                const valueText = formatCurrency(crossingValue);
+                const textWidth = doc.getTextWidth(valueText);
+                doc.setTextColor(textColor);
+                doc.setFontSize(7);
+                doc.text(valueText, margin - textWidth - 2, crossingY + 1);
+            }
+        } catch (e) {
+            console.error('Error drawing crossing line:', e);
+        }
+    }
+}
+
+/**
  * Adds a header to the PDF.
  */
 export function addPDFHeader(doc, translations, margin) {
     doc.setFontSize(12);
     doc.setTextColor(40, 40, 40);
-    doc.text(margin, margin, translations.reportTitle);
+    doc.text(translations.reportTitle, margin, margin);
 }
 
 /**
