@@ -10,6 +10,18 @@ describe('generateReport', () => {
     const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
     document.body.innerHTML = html;
 
+    // Mock canvas getContext for jsdom
+    const mockContext = {
+      canvas: {
+        width: 800,
+        height: 600,
+        parentNode: { clientWidth: 800, clientHeight: 600 }
+      },
+      clearRect: jest.fn(),
+      getImageData: jest.fn(() => ({ data: new Array(4).fill(0) }))
+    };
+    HTMLCanvasElement.prototype.getContext = jest.fn(() => mockContext);
+
     // Mock Chart globally
     global.Chart = class {
       constructor(ctx, config) {
