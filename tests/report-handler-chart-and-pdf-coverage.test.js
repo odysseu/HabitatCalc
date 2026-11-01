@@ -154,6 +154,21 @@ describe('Report Handler - Chart and PDF Coverage Tests', () => {
             toDataURL: jest.fn(() => 'data:image/png;base64,test')
         };
         
+        // Mock getElementById to return our mock canvas
+        jest.spyOn(document, 'getElementById').mockImplementation((id) => {
+            if (id === 'myChart') {
+                return mockCanvas;
+            }
+            if (id === 'language-select') {
+                return {
+                    value: 'fr',
+                    addEventListener: jest.fn(),
+                    removeEventListener: jest.fn()
+                };
+            }
+            return document.querySelector(`#${id}`);
+        });
+        
         document.body.innerHTML = `
             <div id="chart-container"></div>
             <canvas id="myChart"></canvas>
