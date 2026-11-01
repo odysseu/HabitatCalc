@@ -24,7 +24,16 @@ global.fetch = jest.fn((url) => {
 });
 describe('resetForm', () => {
     let initial_price, initial_notary, initial_appreciation, initial_agency, initial_coOwnership, initial_file, initial_contribution, initial_interestRate, initial_insuranceRate, initial_loanDuration, initial_fictitiousRent, initial_fictitiousRentRate, initialBuyHousingTax, initialRentingHousingTax, initial_propertyTax;
+    let mockContext;
+    
     beforeAll(() => {
+        // Mock canvas getContext for jsdom
+        mockContext = {
+            clearRect: jest.fn(),
+            getImageData: jest.fn(() => ({ data: new Array(4).fill(0) }))
+        };
+        HTMLCanvasElement.prototype.getContext = jest.fn(() => mockContext);
+        
         // Load the index.html file
         const html = readFileSync(resolve(__dirname, '../index.html'), 'utf8');
         document.body.innerHTML = html;
@@ -93,9 +102,8 @@ describe('resetForm', () => {
         expect(document.getElementById('simulation').innerHTML).toBe('');
         // Check if canvas is cleared
         const canvas = document.getElementById('myChart');
+        expect(canvas).toBeTruthy();
         const context = canvas.getContext('2d');
-        // Create a mock for getImageData to avoid actual canvas operations
-        context.getImageData = jest.fn(() => ({ data: new Array(4).fill(0) }));
-        expect(context.getImageData).not.toHaveBeenCalled();
+        expect(context.clearRect).toHaveBeenCalled();
     });
 });
